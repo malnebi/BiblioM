@@ -11,8 +11,8 @@
 
     <div class="flex justify-between items-center mt-auto">
         <div>
-            @foreach ($tags as $tag)
-            <x-tag $:tag size="small">Backend</x-tag>
+            @foreach ($job->tags as $tag)
+            <x-tag :$tag size="small"/>
             @endforeach
         </div>
             <x-employer-logo :width="42"/>

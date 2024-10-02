@@ -14,8 +14,8 @@
     </div>
 
         <div >
-            @foreach ($tags as $tag)
-            <x-tag $:tag>Backend</x-tag>
+            @foreach($job->tags as $tag)
+            <x-tag :$tag/>
             @endforeach       
         </div>
 
