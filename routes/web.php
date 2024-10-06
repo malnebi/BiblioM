@@ -5,10 +5,13 @@ use App\Http\Controllers\JobController;
 use App\Http\Controllers\RegisteredUserController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\SearchController;
+use App\Http\Controllers\TagController;
 
 
 Route::get('/', [JobController::class, 'index'])->name('home'); 
 Route::get('/search', SearchController::class);
+Route::get('/tags/{tag:name}', TagController::class);  // tags/frontend
+
 
 Route::middleware('guest')->group(function () {
     
