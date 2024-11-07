@@ -1,17 +1,16 @@
 <!doctype html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Pixel Positions</title>
+    <title>BiBLiB</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&display=swap"
-        rel="stylesheet">
-        
+    <link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
@@ -24,36 +23,44 @@
                 </a>
             </div>
 
+            <!-- Center Side Of Navbar -->
             <div class="space-x-6 font-bold">
-                <a href="#">Jobs</a>
-                <a href="#">Careers</a>
-                <a href="#">Salaries</a>
-                <a href="#">Companies</a>
+                @auth
+                    <x-nav-link href="/home" :active="request()->is('home')"> Home</x-nav-link>
+                    <x-nav-link href="/users" :active="request()->is('users')">Users</x-nav-link>
+                    <x-nav-link href="/books" :active="request()->is('books')"> Books</x-nav-link>
+                    <x-nav-link href="/clients" :active="request()->is('clients')"> Clients</x-nav-link>
+                    <x-nav-link href="/loans" :active="request()->is('loans')"> Loans</x-nav-link>
+                    <a href="#">Libraries</a>
+                @endauth
+
+                <x-nav-link href="/privacy" :active="request()->is('privacy')"> Privacy </x-nav-link>
+                <x-nav-link href="/about-app" :active="request()->is('about-app')"> About app </x-nav-link>
+
             </div>
+            <!-- Right Side Of Navbar -->
             @auth
                 <div class="flex space-x-6 font-bold">
-                    <a href="/jobs/create">Post a Job</a>
-            <form method="POST" action="/logout" flex>
-                @csrf
-                @method('DELETE')
-                <button type="submit">Log Out</button>  
+                    <a href="/books/create">Add a Book</a>
+                    <x-forms.form method="POST" action="/logout" enctype="multipart/form-data">
+                        <button type="submit">Log Out</button>
+                    </x-forms.form>
                 </div>
             @endauth
-
             @guest
                 <div>
-                    <a href="/register">Sign Up</a>
-                </div>
-                <div>
-                    <a href="/login">Log In</a>
+                    <x-nav-link href="/register"> Register</x-nav-link>
+                    <x-nav-link href="/login"> Log In</x-nav-link>
                 </div>
             @endguest
         </nav>
-
+        
+        
         <main class="mt-10 max-w-[986px] mx-auto">
             {{ $slot }}
         </main>
+        
     </div>
-
 </body>
+
 </html>

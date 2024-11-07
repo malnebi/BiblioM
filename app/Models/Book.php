@@ -7,13 +7,20 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-use App\Models\Employer;
+use App\Models\Library;
 use App\Models\Tag;
 
-class Job extends Model
+class Book extends Model
 {
     use HasFactory;
     
+    protected $fillable = [
+        'author_fname', // Add this line
+        'author_lname', // Add this line
+        'title',
+        'year', 
+    ];
+
     public function tag(string $name): void{
 
         $tag = Tag::firstOrCreate(['name' => $name]);
@@ -26,12 +33,18 @@ class Job extends Model
         return $this->belongsToMany(Tag::class);
     }
 
-
-    public function employer(): BelongsTo
+    public function library(): BelongsTo
     {
-        return $this->belongsTo(Employer::class);
+        return $this->belongsTo(Library::class);
     }
-
+    public function client()
+    {
+        return $this->belongsTo('App\Models\Client');
+    }
+    public function loans()
+    {
+        return $this->hasMany('App\Models\Loan');
+    }
 
 
 }

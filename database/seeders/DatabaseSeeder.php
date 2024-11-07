@@ -2,9 +2,15 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\User;
+use App\Models\Tag;
+use App\Models\Book;
+use App\Models\Library;
+use App\Models\Client;
+use Illuminate\Database\Eloquent\Factories\Sequence;
+
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,13 +19,29 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-         User::factory(10)->create();
+         User::factory(3)->create();
 
-//        User::factory()->create([
-  //          'name' => 'Test User',
-    //        'email' => 'test@example.com',
-      //  ]);
+        // \App\Models\User::factory()->create([
+        //     'name' => 'Test User',
+        //     'email' => 'test@example.com',
+        // ]);
 
-        $this->call(JobSeeder::class);
+        $tags = Tag::factory(3)->create();  // creatig collection of 3 tags
+        Book::factory(10)->hasAttached($tags)->create( new Sequence([
+            'featured' => false,
+//            'schedule' => 'Full Time'
+        ],[ 
+            'featured' => true, 
+  //          'schedule' => 'Part Time'
+        ])); // attaching tags to those 20 books
+
+        Library::factory(3)->create();
+
+        Client::factory(3)->create();
+
+
     }
+
+    
+
 }

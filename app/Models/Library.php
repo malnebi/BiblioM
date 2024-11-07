@@ -7,9 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\User;
-use App\Models\Job;
+use App\Models\Book;
 
-class Employer extends Model
+class Library extends Model
 {
     use HasFactory;
 
@@ -20,8 +20,8 @@ class Employer extends Model
     }
 
 
-    public function jobs(): HasMany
+    public function books(): HasMany
     {
-        return $this->hasMany(Job::class);
+        return $this->hasMany(Book::class);
     }
 }

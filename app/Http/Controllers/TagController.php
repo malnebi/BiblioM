@@ -15,7 +15,7 @@ class TagController extends Controller
 
         
         
-        return view('results', ['jobs' => $tag->jobs] );  // pass all jobs associated with this tag    }
+        return view('results', ['books' => $tag->books] );  // pass all jobs associated with this tag    }
 
  }
 }

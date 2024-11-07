@@ -4,10 +4,11 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\User;
+
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Employer>
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Library>
  */
-class EmployerFactory extends Factory
+class LibraryFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -20,6 +21,7 @@ class EmployerFactory extends Factory
             'name' => fake()->name(),
             'logo' => fake()->imageUrl(),
             'user_id' => User::factory(),
+
             //
         ];
     }

@@ -5,16 +5,16 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use App\Models\Job;
+use App\Models\Book;
 
 class Tag extends Model
 {
     use HasFactory;
 
 
-    public function jobs(): BelongsToMany{
+    public function books(): BelongsToMany{
 
-     return $this->belongsToMany(Job::class);
+     return $this->belongsToMany(Book::class);
 
     }
 
