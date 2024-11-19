@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Book;
+use App\Models\Tag;
 
 class SearchController extends Controller
 {
@@ -21,4 +22,7 @@ class SearchController extends Controller
         return view('results', ['books' => $books] );  // pass throught list of jobs
 
     }
+
+
+    
 }

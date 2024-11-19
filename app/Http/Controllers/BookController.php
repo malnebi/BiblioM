@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Tag;
+use App\Models\User;
+use App\Models\Loan;
+use App\Models\Library; 
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -78,10 +81,26 @@ class BookController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Book $book)
+    public function show($id)
     {
-        //
-    }
+        $book = Book::find($id);       
+         
+   //     $numberOfLoans = Loan::where('loans.book_id','=', $id )->count(); 
+   //     $clientName=Loan::where([['book_id','=', $id]])->get(); // ime klienta koji je poyajmio knjigu
+
+        if (!$book) 
+        {
+        abort(404);
+        }
+
+        $data = [
+
+            'book' => $book,
+//            'numberOfLoans' => $numberOfLoans,
+//            'clientName' => $clientName,  
+        ];
+        return view('books.book', $data);
+     }
 
     /**
      * Show the form for editing the specified resource.
@@ -106,4 +125,28 @@ class BookController extends Controller
     {
         //
     }
-}
+
+    /**
+     * Display a listing of the resource for specified library.
+     */
+
+    public function libBooks($lib)
+    {
+
+        $library = Auth::user()->library->id;
+        $books = Book::where('library_id', $library)->with(['library'])->get();
+         
+        
+
+
+        $data = [
+            'library' => Auth::user()->library,
+            'numOfBooks' => $books->count(),
+            'books' => $books,
+        ];
+     
+            return view('homeLib', $data);         
+        }
+    }
+
+

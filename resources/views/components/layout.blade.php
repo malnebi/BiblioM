@@ -27,7 +27,8 @@
             <div class="space-x-6 font-bold">
                 @auth
                     <x-nav-link href="/home" :active="request()->is('home')"> Home</x-nav-link>
-                    <x-nav-link href="/users" :active="request()->is('users')">Users</x-nav-link>
+                    <x-nav-link href="/homeLib/{lib}" :active="request()->is('homeLib')"> My Library</x-nav-link>
+                    
                     <x-nav-link href="/books" :active="request()->is('books')"> Books</x-nav-link>
                     <x-nav-link href="/clients" :active="request()->is('clients')"> Clients</x-nav-link>
                     <x-nav-link href="/loans" :active="request()->is('loans')"> Loans</x-nav-link>
