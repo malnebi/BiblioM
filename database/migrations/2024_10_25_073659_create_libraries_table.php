@@ -15,7 +15,9 @@ return new class extends Migration
     {
         Schema::create('libraries', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(User::class);
+         //   $table->foreign('owner_id')->references('id')->on('users')->onDelete('cascade');
+
+            $table->foreignIdFor(User::class, 'owner_id');
             $table->string('name');
             $table->string('logo');
             $table->timestamps();

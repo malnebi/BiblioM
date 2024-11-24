@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 use App\Models\Book;
-use App\Models\Client;
+use App\Models\Library;
 use App\Models\User;
 
 
@@ -19,14 +19,14 @@ class Loan extends Model
         return $this->belongsTo(Book::class);
     }   
 
-    public function client()
+    public function user() // koji je pozajmio knjigu
     {
-        return $this->belongsTo(Client::class);
+        return $this->belongsTo(User::class);
     }   
 
            
-  public function user()    
+  public function library() // koja je vlasnik knjige   
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Library::class);
     }    
 }

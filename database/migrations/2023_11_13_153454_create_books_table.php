@@ -15,7 +15,8 @@ return new class extends Migration
     {
         Schema::create('books', function (Blueprint $table) {
             $table->id();
-            $table->foreignIdFor(Library::class);
+            $table->foreignIdFor(Library::class, 'library_id');
+            $table->integer('lib_book_id'); // Add this line
             $table->string('author_fname', 100)->nullable();
             $table->string('author_lname', 100)->nullable();
             $table->string('title', 200)->nullable();
@@ -23,10 +24,10 @@ return new class extends Migration
             $table->string('publisher_place', 100)->nullable();
             $table->string('year', 10)->nullable();
             $table->tinyInteger('loan')->default(0);
-            $table->unsignedBigInteger('client_id')->nullable();
+            $table->unsignedBigInteger('lib_user_id')->nullable();
             $table->timestamps();
             $table->boolean('featured')->default(false);
-            $table->foreign('client_id')->references('id')->on('clients')->onDelete('cascade');
+            $table->foreign('lib_user_id')->references('id')->on('users')->onDelete('cascade');
   
         });
     }

@@ -49,6 +49,7 @@ class RegisteredUserController extends Controller
     $logoPath = $request->logo->store('logos', 'public');
     
     $user->library()->create([
+        'owner_id' => $user->id,
         'name' => $libraryAttributes['library'],
         'logo' => $logoPath,
     ]);

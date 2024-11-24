@@ -19,25 +19,25 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-         User::factory(3)->create();
-
+        
         // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-
+            //     'name' => 'Test User',
+            //     'email' => 'test@example.com',
+            // ]);
+            
+        User::factory(1)->create();
+        Library::factory(3)->create();
         $tags = Tag::factory(3)->create();  // creatig collection of 3 tags
-        Book::factory(10)->hasAttached($tags)->create( new Sequence([
+        Book::factory(5)->hasAttached($tags)->create( new Sequence([
             'featured' => false,
 //            'schedule' => 'Full Time'
         ],[ 
             'featured' => true, 
   //          'schedule' => 'Part Time'
-        ])); // attaching tags to those 20 books
+        ])); // attaching tags to those 10 books
 
-        Library::factory(3)->create();
 
-        Client::factory(3)->create();
+//      Client::factory(3)->create();
 
 
     }

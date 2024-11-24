@@ -15,6 +15,8 @@ class Book extends Model
     use HasFactory;
     
     protected $fillable = [
+        'library_id',
+        'lib_book_id',
         'author_fname', // Add this line
         'author_lname', // Add this line
         'title',
@@ -37,9 +39,9 @@ class Book extends Model
     {
         return $this->belongsTo(Library::class);
     }
-    public function client()
+    public function user()  // user of the library that borrowes librarys book
     {
-        return $this->belongsTo('App\Models\Client');
+        return $this->belongsTo('App\Models\User');
     }
     public function loans()
     {

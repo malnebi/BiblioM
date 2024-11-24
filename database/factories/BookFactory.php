@@ -4,7 +4,7 @@ namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Book;
-use App\Models\Client;
+use App\Models\User;
 use App\Models\Library;
 
 /**
@@ -20,6 +20,7 @@ class BookFactory extends Factory
     public function definition(): array
     {
         return [
+            'lib_book_id' => fake()->numberBetween(1, 100),
             'author_fname' => fake()->name(),
             'author_lname' => fake()->name(),
             'title' => fake()->name(),
@@ -27,7 +28,7 @@ class BookFactory extends Factory
             'publisher_place' => fake()->name(),
             'year' => fake()->year(),
             'loan' => fake()->boolean(),
-            'client_id' => Client::factory(),
+            'lib_user_id' => User::factory(),
             'library_id' => Library::factory(),
             'featured' => fake()->boolean(),        
             //

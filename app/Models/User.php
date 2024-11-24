@@ -47,7 +47,26 @@ class User extends Authenticatable
     }
 
     public function library()
+    {    return $this->belongsTo(Library::class); }
+    
+
+    public function ownedLibrary()
+    {    return $this->hasOne(Library::class, 'owner_id'); }
+    
+    public function memberOfLibraries()
     {
-        return $this->hasOne(Library::class);
+        return $this->belongsToMany(Library::class, 'library_user', 'user_id', 'library_id');
     }
+
+    public function books()
+    {
+        return $this->hasMany('App\Models\Book');
+    }
+
+
+    public function loans()
+    {
+        return $this->hasMany('App\Models\Loan');
+    }
+
 }

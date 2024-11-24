@@ -42,7 +42,7 @@
             <!-- Right Side Of Navbar -->
             @auth
                 <div class="flex space-x-6 font-bold">
-                    <a href="/books/create">Add a Book</a>
+                    <x-nav-link href="/books/create" :active="request()->is('books/create')">Add a Book</x-nav-link>
                     <x-forms.form method="POST" action="/logout" enctype="multipart/form-data">
                         <button type="submit">Log Out</button>
                     </x-forms.form>

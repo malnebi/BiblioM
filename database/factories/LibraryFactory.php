@@ -20,7 +20,7 @@ class LibraryFactory extends Factory
         return [
             'name' => fake()->name(),
             'logo' => fake()->imageUrl(),
-            'user_id' => User::factory(),
+            'owner_id' => User::factory(),
 
             //
         ];

@@ -4,7 +4,9 @@
         <section class="text-center">
             <h1 class="font-bold text-4xl"> {{ $library->name }} Library collection.</h1>
             @if ($numOfBooks == 0)
-                <h4> Add some books to your library! </h4>
+            
+            <x-forms.divider/>
+            <x-nav-link href="/books/create" :active="request()->is('books/create')">Add some books to your library</x-nav-link> </h>
             @else
                 <x-forms.form action="/search" class="mt-6">
                     <x-forms.input :label="false" name="q" placeholder="Title, authors name, year..." />
