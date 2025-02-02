@@ -13,8 +13,10 @@
  
         <div class="row justify-content-center">
             <div class="col-md-8">
-                BOOK STATUS: {{ $book->loan == 1 ? 'On loan to ' . $book->client->first_name . '  ' . $book->client->last_name . '' : 'Free for loan' }}                   
-            </div>
+                
+                BOOK STATUS: {{ $book->loan == 1 ? 'On loan to ' . $book->lib_user_id . '  ' .$book->lib_user_id  . '' : 'Free for loan' }}                   
+            </div>                   $book->loan == 1 ? 'On loan to ' . $book->lib_user_id->name . '  ' .$book->lib_user_id->name  . '' : 'Free for loan'                   
+
       {{--
         <div class="col-md-8"> Number of loans: {{ $numberOfLoans }}</div>      
         <div class="row justify-content-center">

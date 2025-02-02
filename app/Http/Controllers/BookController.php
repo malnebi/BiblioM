@@ -41,7 +41,7 @@ class BookController extends Controller
     public function store(Request $request)
     {
 
-        $libraryId = Auth::user()->ownedLibrary->id;
+        $libraryId = Auth::user()->ownLibrary->id;
 
         $lastLibBookId = Book::where('library_id', $libraryId)->max('lib_book_id'); // 
         $libBookId = $lastLibBookId ? $lastLibBookId + 1 : 1; //
@@ -58,7 +58,7 @@ class BookController extends Controller
         ]);
 
         $book = new Book;
-        $book->library_id = Auth::user()->ownedLibrary->id;
+        $book->library_id = Auth::user()->ownLibrary->id;
         $book->lib_book_id = $libBookId; // id knjige jedne biblioteke u bazi 
         $book->author_fname = $request->author_fname;
         $book->author_lname = $request->author_lname;
@@ -71,7 +71,7 @@ class BookController extends Controller
         $attributes['featured'] = $request->has('featured');
         $attributes['lib_book_id'] = $libBookId;  
 
-        $book = Auth::user()->ownedLibrary->books()->create(Arr::except($attributes, 'tags'));
+        $book = Auth::user()->ownLibrary->books()->create(Arr::except($attributes, 'tags'));
 
         if ($attributes['tags']) {
             foreach (explode(',', $attributes['tags']) as $tag) {  // tag1, tag2, tag3  will be turned into array [ 'tag1','tag2','tag3']
@@ -138,13 +138,13 @@ class BookController extends Controller
     public function libBooks($lib)
     {
 
-        $library = Auth::user()->ownedLibrary->id;
+        $library = Auth::user()->ownLibrary->id;
         $books = Book::where('library_id', $library)->with(['library'])->get();
         $featuredBooks = $books->where('featured', 1);
 
 
         $data = [
-            'library' => Auth::user()->ownedlibrary,
+            'library' => Auth::user()->ownlibrary,
             'featuredBooks' => $featuredBooks,
             'numOfBooks' => $books->count(),
             'books' => $books,

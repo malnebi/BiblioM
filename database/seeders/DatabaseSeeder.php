@@ -25,19 +25,24 @@ class DatabaseSeeder extends Seeder
             //     'email' => 'test@example.com',
             // ]);
             
-        User::factory(1)->create();
-        Library::factory(3)->create();
-        $tags = Tag::factory(3)->create();  // creatig collection of 3 tags
-        Book::factory(5)->hasAttached($tags)->create( new Sequence([
-            'featured' => false,
-//            'schedule' => 'Full Time'
-        ],[ 
-            'featured' => true, 
-  //          'schedule' => 'Part Time'
-        ])); // attaching tags to those 10 books
+            
+            //  $member= User::factory(5)->create();
+            //Library::factory(5)->hasAttached($member)->create();
+
+            $tags = Tag::factory(3)->create();  // creatig collection of 3 tags
+            Book::factory(5)->hasAttached($tags)->create( new Sequence([
+                'featured' => false,
+                //            'schedule' => 'Full Time'
+            ],[ 
+                'featured' => true, 
+                //          'schedule' => 'Part Time'
+            ])); // attaching tags to those 5 books
+            
+            
+            $members = User::factory()->create();
+            Library::factory()->hasAttached($members)->create();
 
 
-//      Client::factory(3)->create();
 
 
     }

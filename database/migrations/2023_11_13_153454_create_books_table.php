@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('publisher_place', 100)->nullable();
             $table->string('year', 10)->nullable();
             $table->tinyInteger('loan')->default(0);
-            $table->unsignedBigInteger('lib_user_id')->nullable();
+            $table->unsignedBigInteger('lib_user_id')->nullable();  
             $table->timestamps();
             $table->boolean('featured')->default(false);
             $table->foreign('lib_user_id')->references('id')->on('users')->onDelete('cascade');

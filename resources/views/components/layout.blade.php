@@ -27,12 +27,12 @@
             <div class="space-x-6 font-bold">
                 @auth
                     <x-nav-link href="/home" :active="request()->is('home')"> Home</x-nav-link>
-                    <x-nav-link href="/homeLib/{lib}" :active="request()->is('homeLib')"> My Library</x-nav-link>
-                    
-                    <x-nav-link href="/books" :active="request()->is('books')"> Books</x-nav-link>
-                    <x-nav-link href="/clients" :active="request()->is('clients')"> Clients</x-nav-link>
+                    <x-nav-link href="/homeLib/{lib}" :active="request()->is('homeLib')"> My Lib Books</x-nav-link>
+                  
+                    <x-nav-link href="/clients" :active="request()->is('clients')"> My Lib Members</x-nav-link>
                     <x-nav-link href="/loans" :active="request()->is('loans')"> Loans</x-nav-link>
                     <a href="#">Libraries</a>
+                    <x-nav-link href="/books" :active="request()->is('books')"> Books</x-nav-link>
                 @endauth
 
                 <x-nav-link href="/privacy" :active="request()->is('privacy')"> Privacy </x-nav-link>

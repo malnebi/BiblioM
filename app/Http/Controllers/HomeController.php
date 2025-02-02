@@ -21,8 +21,8 @@ class HomeController extends Controller
         $books = Book::latest()->with(['library', 'tags'])->get()->groupBy('featured');  // use eager loading
 
         return view('home' , [
-            'featuredBooks' => $books[0],
-            'books' => $books[1],
+            'featuredBooks' => $books[1],
+            'books' => $books[0],
             'tags' => Tag::all(), 
         ]);
 

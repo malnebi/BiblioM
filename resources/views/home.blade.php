@@ -11,8 +11,6 @@
 
         </section>
 
-
-
         <section class="pt-6">
             <x-section-heading>Featured Books</x-section-heading>
 

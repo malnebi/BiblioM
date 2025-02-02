@@ -50,7 +50,7 @@ class User extends Authenticatable
     {    return $this->belongsTo(Library::class); }
     
 
-    public function ownedLibrary()
+    public function ownLibrary()
     {    return $this->hasOne(Library::class, 'owner_id'); }
     
     public function memberOfLibraries()

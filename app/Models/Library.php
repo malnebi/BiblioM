@@ -25,22 +25,33 @@ class Library extends Model
     }
     */
 
+    
+    
     public function books(): HasMany
     {
         return $this->hasMany(Book::class);
     }
-
+    
     public function loans(): HasMany
     {
         return $this->hasMany(Loan::class);
     }
-
+    
     public function owner()
     {
         return $this->belongsTo(User::class, 'owner_id');
     }
-    public function members()
+
+
+    public function user(string $name): void{
+
+        $member = User::firstOrCreate(['name' => $name]);
+
+     $this->users()->attach($member);
+    }
+    public function users()
     {
         return $this->belongsToMany(User::class, 'library_user', 'library_id', 'user_id');
     }
 }
+
