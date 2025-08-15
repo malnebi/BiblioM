@@ -6,6 +6,7 @@
 <x-.forms.divider/>
 
 @auth
+@if ($book->library->owner_id == Auth::id())
 <x-panel class="flex gap-x-6">
 
     <div class="container">
@@ -27,6 +28,7 @@
                     <tbody>
                         @foreach($clientName as $clientNames)
                         <tr> 
+
                             <td>Client ID: {{ $clientNames->client->id }},   {{ $clientNames->client->first_name }} {{ $clientNames->client->last_name}} </td> 
                             <td> {{ $clientNames->created_at}}</td>
                             <td> {{ $clientNames->updated_at}}</td>  
@@ -52,7 +54,10 @@
                 });
             </script>
         </form>
+
+    </div>
 </x-panel>
+@endif
 @endauth
         
 </x-layout>

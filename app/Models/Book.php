@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 use App\Models\Library;
+
 use App\Models\Tag;
 
 class Book extends Model
@@ -41,8 +42,9 @@ class Book extends Model
     }
     public function user()  // user of the library that borrowes librarys book
     {
-        return $this->belongsTo('App\Models\User');
+        return $this->belongsTo(User::class, 'owner_id');
     }
+
     public function loans()
     {
         return $this->hasMany('App\Models\Loan');
