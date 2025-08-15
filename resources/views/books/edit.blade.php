@@ -1,47 +1,39 @@
-@extends('layouts.app')
-@section('title') {{'Edit book'}} @endsection
+<x-layout>
 
-@section('content')
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <form method="POST" action="/books/{{$book->id}}">
-                    @csrf
-                    {{ method_field('PUT') }}
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">Autors first name</label>
-                        <input class="form-control" name="author_fname" value="{{$book->author_fname}}">
-                    </div>
-                        <div class="form-group">
-                        <label for="exampleInputEmail1">Last name</label>
-                        <input class="form-control" name="author_lname" value="{{$book->author_lname}}">
-                        </div>
-                    <div class="form-group">
-                            <label for="exampleInputEmail1">Title</label>
-                            <input  class="form-control" name="title" value="{{$book->title}}"  >
-                        </div>
-                    <div class="form-group">
-                            <label for="exampleInputEmail1">Publisher name</label>
-                            <input class="form-control" name="publisher_name" value="{{$book->publisher_name}}">
-                        </div>
-                    <div class="form-group">
-                            <label for="exampleInputEmail1">Publisher place</label>
-                            <input class="form-control" name="publisher_place" value="{{$book->publisher_place}}" >
-                        </div>
-                    <div class="form-group">
-                            <label for="exampleInputEmail1">year</label>
-                            <input class="form-control" name="year"  value="{{$book->year}}">
-                            @error('year')
-                            <div class="alert alert-danger">{{ $message }}</div>
-                            @enderror
-                    
-                        </div>
-                        <div class="form-group">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-@endsection
+    <x-page-heading>EDIT A BOOK</x-page-heading>
+
+    <form method="POST" action="/books/{{ $book->id }}" enctype="multipart/form-data">
+        @csrf
+        {{ method_field ('PUT')}}
+
+        <x-forms.input label="Authors first name" name="author_fname" value="{{ $book->author_fname }}"  />
+        <x-forms.input label="Authors last name" name="author_lname" value="{{ $book->author_lname }}" />
+        <x-forms.input label="Title" name="title"  value="{{ $book->title }}"/>
+        <x-forms.input label="Publisher name" name="publisher_name" value="{{ $book->publisher_name }}" />
+        <x-forms.input label="Publisher place" name="publisher_place" value="{{ $book->publisher_place }}" />
+        <x-forms.input label="Year" name="year" value="{{ $book->year }}"/>
+        <x-forms.select label="Loan" name="loan">
+            <option>Free for loan</option>
+            <option>Book is out </option>
+        </x-forms.select>
+
+       <!-- <x-forms.checkbox label="Feature (Costs Extra)" name="featured" />  -->
+
+        <x-forms.divider />
+
+        <x-forms.input label="Tags (comma separated)" name="tags" value="{{ $book->tags->implode(', ') }}" />
+
+        
+
+        <a href="/books/{{ $book->id}}" class="text-sm text-gray-100 hover:text-gray-600" >Cancel</a>
+        <x-forms.button>Update</x-forms.button>
+
+        <x-forms.divider />
+        <x-forms.divider />
+
+        </form>
+
+   
+
+
+</x-layout>

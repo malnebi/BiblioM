@@ -39,8 +39,8 @@ class DatabaseSeeder extends Seeder
             ])); // attaching tags to those 5 books
             
             
-            $members = User::factory()->create();
-            Library::factory()->hasAttached($members)->create();
+            $members = User::factory()->create();   //kreira korisnika aplikacije i korisnika biblioteke
+            Library::factory()->hasAttached($members)->create(); // kreaira biblioteke i spaja korisnike sa bibliotekama 
 
 
 

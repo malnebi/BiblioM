@@ -10,13 +10,14 @@
 
     <div class="container">
         <a href="/books/{{$book->id}}/edit" class="btn btn-info">EDIT BOOK DATA</a> 
- 
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                
-                BOOK STATUS: {{ $book->loan == 1 ? 'On loan to ' . $book->lib_user_id . '  ' .$book->lib_user_id  . '' : 'Free for loan' }}                   
-            </div>                   $book->loan == 1 ? 'On loan to ' . $book->lib_user_id->name . '  ' .$book->lib_user_id->name  . '' : 'Free for loan'                   
 
+       <button  form="delete-form" class="text-red-500 text-sm font-bold leading-6">  Delete book</button>  
+
+        <div class="row justify-content-center">
+            <div class="col-md-8">         
+                BOOK STATUS: {{ $book->loan == 1 ? 'On loan to ' . $book->lib_user_id . '  ' .$book->lib_user_id  . '' : 'Free for loan' }}                   
+            </div>                 
+          
       {{--
         <div class="col-md-8"> Number of loans: {{ $numberOfLoans }}</div>      
         <div class="row justify-content-center">
@@ -38,7 +39,20 @@
         --}}
         </div>  
 
+        <form method="POST" action="/books/{{ $book->id }}" id="delete-form" class="hidden" id="delete-form" >
+            @csrf
+            @method('DELETE')
+            
+            <script>
+                document.getElementById('delete-form').addEventListener('submit', function(event) {
+                    event.preventDefault();
+                    if (confirm('Are you sure you want to delete this book?')) {
+                        this.submit();
+                    }
+                });
+            </script>
+        </form>
 </x-panel>
 @endauth
-
+        
 </x-layout>

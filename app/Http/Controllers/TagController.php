@@ -11,11 +11,11 @@ class TagController extends Controller
 
     public function __invoke(Tag $tag){
 
-        //jobs for this tags 
+        //books for this tags 
 
         
         
-        return view('results', ['books' => $tag->books] );  // pass all jobs associated with this tag    }
+        return view('results', ['books' => $tag->books] );  // pass all books associated with this tag    
 
  }
 
@@ -38,9 +38,9 @@ class TagController extends Controller
      ->where('name', 'LIKE', '%'.request('q').'%')
      ->get();
 
-     // return $jobs; // view search results in JSON 
+  // return $books; for view search results in JSON 
 
-     return view('results-tag', ['tags' => $tags] );  // pass throught list of jobs
+     return view('results-tag', ['tags' => $tags] );  // pass throught list of books
 
  }
 

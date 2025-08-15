@@ -3,11 +3,14 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\BookController;
+use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\RegisteredUserController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\PageController;
+use App\Models\Library;
+use Termwind\Components\Li;
 
 Route::get('/', function () {
     return view('welcome');
@@ -23,18 +26,27 @@ Route::get('/privacy', [PageController::class, 'privacy'])->name('privacy');
 Route::get('/about-app', [PageController::class, 'aboutApp'])->name('about');
 
 
+
+Route::get('/members', [LibraryController::class,'libMembers']); // svi clanovi biblioteke
+Route::get('/members/{id}/member', [LibraryController::class, 'libMember']); // samo jedan clan biblioteke
+Route::get('/homeLib/{lib}', [LibraryController::class, 'libBooks'])->middleware('auth');
+
+
 Route::get('/books', [BookController::class, 'index'])->name('books');
 Route::resource('books', BookController::class);
-
 Route::get('/books/create', [BookController::class, 'create'])->middleware('auth');
 Route::post('/books', [BookController::class, 'store'])->middleware('auth');
-Route::get('/books/{id}/book', [BookController::class, 'show']); 
+Route::get('/books/{book}/book', [BookController::class, 'show']); 
+Route::get('/books/{book}/edit', [BookController::class, 'edit'])->middleware('auth');
+Route::put('/books/{book}', [BookController::class, 'update'])->middleware('auth');
+Route::delete('/books/{book}', [BookController::class, 'destroy'])->middleware('auth');
 
-Route::get('/homeLib/{lib}', [BookController::class, 'libBooks'])->middleware('auth');
 
 
 Route::get('/search', SearchController::class);
-Route::get('/tags/{tag:name}', TagController::class);  // tags/frontend
+Route::get('/tags/{tag:name}', TagController::class);  // tags/fantasy
+
+
 
 
 Route::middleware('guest')->group(function () {
@@ -42,7 +54,7 @@ Route::middleware('guest')->group(function () {
     Route::get('/register', [RegisteredUserController::class, 'create']);
     Route::post('/register', [RegisteredUserController::class, 'store']);
 
-    Route::get('/login', [SessionController::class, 'create']);
+    Route::get('/login', [SessionController::class, 'create'])->name('login');
     Route::post('/login', [SessionController::class, 'store']);
 });
 

@@ -4,9 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Tag;
-use App\Models\User;
-use App\Models\Loan;
-use App\Models\Library;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -87,10 +84,8 @@ class BookController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show(Book $book)
     {
-        $book = Book::find($id);
-
         //     $numberOfLoans = Loan::where('loans.book_id','=', $id )->count(); 
         //     $clientName=Loan::where([['book_id','=', $id]])->get(); // ime klienta koji je poyajmio knjigu
 
@@ -112,7 +107,9 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-        //
+        
+      return view('books.edit', ['book' => $book,]);
+
     }
 
     /**
@@ -120,7 +117,24 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
-        //
+                
+        $request->validate([         /**Validacija podataka */
+            'year' => ['required', 'string', 'max:4'],
+            'title' => ['required', 'string', 'max:200'],
+        ]);
+
+        $book->author_fname = $request->author_fname;
+        $book->author_lname = $request->author_lname;
+        $book->title = $request->title;
+        $book->publisher_name = $request->publisher_name;
+        $book->publisher_place = $request->publisher_place;
+        $book->year = $request->year;
+        $book->loan = 0;
+        
+        $book->save();
+
+        return redirect('books');
+
     }
 
     /**
@@ -128,28 +142,10 @@ class BookController extends Controller
      */
     public function destroy(Book $book)
     {
-        //
+        $book->delete();
+
+        return redirect('books');
+ 
     }
 
-    /**
-     * Display a listing of the resource for specified library.
-     */
-
-    public function libBooks($lib)
-    {
-
-        $library = Auth::user()->ownLibrary->id;
-        $books = Book::where('library_id', $library)->with(['library'])->get();
-        $featuredBooks = $books->where('featured', 1);
-
-
-        $data = [
-            'library' => Auth::user()->ownlibrary,
-            'featuredBooks' => $featuredBooks,
-            'numOfBooks' => $books->count(),
-            'books' => $books,
-        ];
-
-        return view('homeLib', $data);
-    }
 }

@@ -8,7 +8,7 @@ use App\Models\Book;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Client extends Model
+class Member extends Model
 {
     use HasFactory;
 
