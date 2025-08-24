@@ -1,6 +1,6 @@
 <x-layout>
 
-    <x-page-heading>EDIT A BOOK</x-page-heading>
+    <x-page-heading>Izmjena podataka knjige</x-page-heading>
 
     <form method="POST" action="/books/{{ $book->id }}" enctype="multipart/form-data">
         @csrf
@@ -13,8 +13,8 @@
         <x-forms.input label="Publisher place" name="publisher_place" value="{{ $book->publisher_place }}" />
         <x-forms.input label="Year" name="year" value="{{ $book->year }}"/>
         <x-forms.select label="Loan" name="loan">
-            <option>Free for loan</option>
-            <option>Book is out </option>
+            <option>Na polici</option>
+            <option>Na čitanju </option>
         </x-forms.select>
 
        <!-- <x-forms.checkbox label="Feature (Costs Extra)" name="featured" />  -->
@@ -25,8 +25,8 @@
 
         
 
-        <a href="/books/{{ $book->id}}" class="text-sm text-gray-100 hover:text-gray-600" >Cancel</a>
-        <x-forms.button>Update</x-forms.button>
+        <a href="/books/{{ $book->id}}" class="text-sm text-gray-100 hover:text-gray-600" >Otkaži</a>
+        <x-forms.button>Ažuriraj</x-forms.button>
 
         <x-forms.divider />
         <x-forms.divider />

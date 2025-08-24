@@ -9,10 +9,10 @@
                 <table class="table">
                     <thead>
 
-                        <tr> <h1 scope="col">App Users</h1></tr>
+                        <tr> <h1 scope="col">Korisnici aplikacije</h1></tr>
                         <tr>
                             <th scope="col">ID</th>
-                            <th scope="col">NAME  </th>
+                            <th scope="col">IME</th>
                             
                             
                         </tr>

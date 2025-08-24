@@ -16,12 +16,12 @@
         
         <div class="row justify-content-center">
             <div class="col-md-8">         
-                BOOK STATUS: {{ $book->loan == 1 ? 'On loan to ' . $book->userBorrows->name . '  ' : 'Free for loan' }}                   
+                STATUS KNJIGE: {{ $book->loan == 1 ? 'On loan to ' . $book->userBorrows->name . '  ' : 'Free for loan' }}                   
             </div>                 
         <x-forms.divider />
-            <a href="/books/{{$book->id}}/edit" class="btn btn-info">EDIT BOOK DATA</a> 
+            <a href="/books/{{$book->id}}/edit" class="btn btn-info">PROMJENA PODATAKA</a> 
         <x-forms.divider />
-            <button  form="delete-form" class="text-red-500 text-sm font-bold leading-6">  Delete book</button>  
+            <button  form="delete-form" class="text-red-500 text-sm font-bold leading-6">  BRISANJE KNJIGE    </button>  
       {{--
         <div class="col-md-8"> Number of loans: {{ $numberOfLoans }}</div>      
         <div class="row justify-content-center">

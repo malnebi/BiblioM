@@ -3,7 +3,7 @@
     <div class="space-y-10">
 
         <section class="text-center">
-            <h1 class="font-bold text-4xl"> PRONADJI</h1>
+            <h1 class="font-bold text-4xl"> PRONAĐI</h1>
             <x-forms.form action="/search" class="mt-6">
                 <x-forms.input :label="false" name="q" placeholder="Title, authors name, year..." />
                 {{-- <x-forms.button>Search</x-forms.button> --}}
@@ -46,12 +46,12 @@
                     <thead>
                     <tr>
                         <th scope="col">ID</th>
-                        <th scope="col">User</th>
+                        <th scope="col">Korisnik</th>
                         <th scope="col"></th>
-                        <th scope="col">Book</th>
-                        <th scope="col">Return deadline</th>
-                        <th scope="col">Library</th>  
-                        <th scope="col">Activ loan</th>                        
+                        <th scope="col">Knjiga</th>
+                        <th scope="col">Rok za vraćanje</th>
+                        <th scope="col">Biblioteka</th>  
+                        <th scope="col">Mjesto knjige - na polici <=> na čitanju</th>                        
                         
                     </tr>
                     </thead>
@@ -68,11 +68,11 @@
                             <td>{{ $loan->library->name }}</td>
                             
                             @if ($loan->active == 1  ) 
-                                <td> BOOK IS  </td>  <td> ON  LOAN! </td>
+                                <td> Knjiga je na čitanju!  </td>  <td> ON  LOAN! </td>
                             @endif
                             
                             @if ($loan->active == 0) 
-                                <td> Book is returned on</td> <td> {{$loan->updated_at}}</td>  
+                                <td> Knjiga je vraćena </td> <td> {{$loan->updated_at}}</td>  
   
                             @endif
                         </tr>

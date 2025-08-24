@@ -1,6 +1,6 @@
 <x-layout>
 
-    <x-page-heading>ADD A BOOK</x-page-heading>
+    <x-page-heading>DODAJ KNJIGU</x-page-heading>
 
     <x-forms.form method="POST" action="/books" enctype="multipart/form-data">
 
@@ -11,8 +11,8 @@
         <x-forms.input label="Publisher place" name="publisher_place" placeholder="Publisher place" />
         <x-forms.input label="Year" name="year" placeholder="year" />
         <x-forms.select label="Loan" name="loan">
-            <option>Free for loan</option>
-            <option>Book is out </option>
+            <option>Na polici</option>
+            <option>Na čitanju </option>
         </x-forms.select>
 
         <x-forms.checkbox label="Feature (Costs Extra)" name="featured" />
@@ -22,7 +22,7 @@
         <x-forms.input label="Tags (comma separated)" name="tags"
             placeholder="scientific, education, history, novel, poetry, fantasy, dystopia, romance" />
 
-        <x-forms.button>Publish</x-forms.button>
+        <x-forms.button>Sačuvaj knjigu</x-forms.button>
 
         <x-forms.divider />
         <x-forms.divider />
