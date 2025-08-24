@@ -7,18 +7,21 @@
 
 @auth
 @if ($book->library->owner_id == Auth::id())
+{{-- $book->library->owner_id   //direktno pristupa koloni owner_id u tabeli libraries  
+     $book->library->owner->id  //dobija vrijednost atributa id iz instance modela User koji je primarni ključ modela  --}}
 <x-panel class="flex gap-x-6">
 
     <div class="container">
-        <a href="/books/{{$book->id}}/edit" class="btn btn-info">EDIT BOOK DATA</a> 
-
-       <button  form="delete-form" class="text-red-500 text-sm font-bold leading-6">  Delete book</button>  
-
+        
+        
         <div class="row justify-content-center">
             <div class="col-md-8">         
-                BOOK STATUS: {{ $book->loan == 1 ? 'On loan to ' . $book->lib_user_id . '  ' .$book->lib_user_id  . '' : 'Free for loan' }}                   
+                BOOK STATUS: {{ $book->loan == 1 ? 'On loan to ' . $book->userBorrows->name . '  ' : 'Free for loan' }}                   
             </div>                 
-          
+        <x-forms.divider />
+            <a href="/books/{{$book->id}}/edit" class="btn btn-info">EDIT BOOK DATA</a> 
+        <x-forms.divider />
+            <button  form="delete-form" class="text-red-500 text-sm font-bold leading-6">  Delete book</button>  
       {{--
         <div class="col-md-8"> Number of loans: {{ $numberOfLoans }}</div>      
         <div class="row justify-content-center">

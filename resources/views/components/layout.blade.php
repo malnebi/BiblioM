@@ -26,34 +26,40 @@
             <!-- Center Side Of Navbar -->
             <div class="space-x-6 font-bold">
                 @auth
-                    <x-nav-link href="/home" :active="request()->is('home')"> Home</x-nav-link>
-                    <x-nav-link href="/homeLib/{lib}" :active="request()->is('homeLib')"> My Lib Books</x-nav-link>
+                    <x-nav-link href="/home" :active="request()->is('home')"> Početna</x-nav-link>
+                    
+                    <x-nav-link href="/books" :active="request()->is('books')"> Knjige</x-nav-link>
+                    
+                    <x-nav-link href="/homeLib/{lib}" :active="request()->is('homeLib')">  {{ Auth::user()->ownLibrary->name }} knjige</x-nav-link>
                   
-                    <x-nav-link href="/members" :active="request()->is('members')"> My Lib Members</x-nav-link>
-                    <x-nav-link href="/loans" :active="request()->is('loans')"> Loans</x-nav-link>
-                    <a href="#">Libraries</a>
-                    <x-nav-link href="/books" :active="request()->is('books')"> Books</x-nav-link>
-                @endauth
+                    <x-nav-link href="/users" :active="request()->is('users')"> Korisnici</x-nav-link>
+                    
+                    
+                    <a href="#">Biblioteke</a>
+                    
+                    <x-nav-link href="/loans" :active="request()->is('loans')"> Zaduženja</x-nav-link>
+                
+                    @endauth
 
-                <x-nav-link href="/privacy" :active="request()->is('privacy')"> Privacy </x-nav-link>
-                <x-nav-link href="/about-app" :active="request()->is('about-app')"> About app </x-nav-link>
+                <x-nav-link href="/privacy" :active="request()->is('privacy')"> Privatnost </x-nav-link>
+                <x-nav-link href="/about-app" :active="request()->is('about-app')"> O Aplikaciji </x-nav-link>
 
             </div>
             <!-- Right Side Of Navbar -->
             @auth
              <div class="flex space-x-6 font-bold" >
-                    <x-nav-link href="/books/create" :active="request()->is('books/create')">Add a Book</x-nav-link> 
+                    <x-nav-link href="/books/create" :active="request()->is('books/create')">Dodaj knjigu</x-nav-link> 
                   
                     <form method="POST" action="/logout">
                         @csrf
-                        <button type="submit">Log Out</button>
+                        <button type="submit">Odjava</button>
                     </form>
                 </div>
             @endauth
             @guest
                 <div>
-                    <x-nav-link href="/register"> Register</x-nav-link>
-                    <x-nav-link href="/login"> Log In</x-nav-link>
+                    <x-nav-link href="/register"> Registracija</x-nav-link>
+                    <x-nav-link href="/login"> Login</x-nav-link>
                 </div>
             @endguest
         </nav>

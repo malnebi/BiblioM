@@ -12,10 +12,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('loans', function (Blueprint $table) {
+
             $table->id();
-            $table->unsignedBigInteger('client_id');
-            $table->unsignedBigInteger('book_id');
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('book_id');
+            $table->unsignedBigInteger('library_id');
             $table->dateTime('return_deadline')->nullable();
             $table->string('description')->nullable();
             $table->tinyInteger('active')->default(1)->nullable();

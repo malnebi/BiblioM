@@ -1,34 +1,22 @@
-@extends('layouts.app')
-@section('title') {{'New loan'}} @endsection
+<x-layout>
 
-@section('content')
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <h3>Create loan for {{ $client->first_name }} {{ $client->last_name }}</h3>
-               
-               
+    <x-page-heading>LOAN A BOOK TO  {{ $users->name }}</x-page-heading>
 
-                <form method="POST" action="/loans">
-                    @csrf
-                    <input type="hidden" name="client_id" value="{{$client->id}}">
-                    
-                    <input type="hidden" name="user_id" value="{{$user = Auth::user()->id}}">
-                         
-                    <div class="form-group">
-                        <label >Book</label>
-                        <select class="form-control" name="book_id">
-                            @foreach($books as $book)
-                            <option value="{{ $book->id }}" selected>{{ $book->id }} {{$book->title}} <p>/</p> {{ $book->author_fname }} {{ $book->author_lname }}</option>
-                            @endforeach
-                        </select> 
-                    </div>
-                <button type="submit" class="btn btn-primary">Loan the book for 30 days</button>
-                </form>
-                <br><br><br>
-                <h>Loan by librarian {{ Auth::user()->name }}</h>
-                        
-            </div>
-        </div>
-    </div>
-@endsection
+    <x-forms.form method="POST" action="/loans" enctype="multipart/form-data">
+    
+        
+       <input type="hidden" name="user_id" value="{{$users->id}}">
+
+        <x-forms.select label="Book" name="book_id">
+            @foreach($books as $book)
+                <option value="{{ $book->id }}" selected> {{ $book->id }} {{ $book->title }} / {{ $book->author_fname }} {{ $book->author_lname}} </option>
+            @endforeach
+        </x-forms.select> 
+
+        <x-forms.divider />
+
+        <x-forms.button>Loan the book for 30 days</x-forms.button>
+
+    </x-forms.form>
+
+</x-layout>

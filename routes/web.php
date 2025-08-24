@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\RegisteredUserController;
@@ -9,6 +10,7 @@ use App\Http\Controllers\SessionController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\LoanController;
 use App\Models\Library;
 use Termwind\Components\Li;
 
@@ -30,6 +32,16 @@ Route::get('/about-app', [PageController::class, 'aboutApp'])->name('about');
 Route::get('/members', [LibraryController::class,'libMembers']); // svi clanovi biblioteke
 Route::get('/members/{id}/member', [LibraryController::class, 'libMember']); // samo jedan clan biblioteke
 Route::get('/homeLib/{lib}', [LibraryController::class, 'libBooks'])->middleware('auth');
+
+Route::get('/users', [UserController::class, 'index']);
+Route::get('/users/{id}', [UserController::class, 'show']); 
+Route::get('/users/{id}/edit', [UserController::class, 'edit'])->middleware('auth');
+Route::put('/users/{id}', [UserController::class, 'update'])->middleware('auth');
+Route::delete('/users/{id}', [UserController::class, 'destroy'])->middleware('auth');
+
+Route::get('/loans', [LoanController::class, 'index'])->middleware('auth');
+Route::get('/loans/create/{userId}', [LoanController::class, 'create'])->middleware('auth');
+Route::post('/loans', [LoanController::class, 'store'])->middleware('auth');
 
 
 Route::get('/books', [BookController::class, 'index'])->name('books');

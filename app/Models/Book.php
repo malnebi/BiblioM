@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 use App\Models\Library;
-
+use App\Models\Loan;
 use App\Models\Tag;
 
 class Book extends Model
@@ -47,8 +47,11 @@ class Book extends Model
 
     public function loans()
     {
-        return $this->hasMany('App\Models\Loan');
+        return $this->hasMany(Loan::class);
     }
 
-
+ public function userBorrows()
+    {
+        return $this->belongsTo(User::class, 'lib_user_id');
+    }
 }
