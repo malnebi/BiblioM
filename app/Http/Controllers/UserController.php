@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Library;
 use App\Models\Loan;
+use App\Models\Book;
+use App\Models\Tag;
 
 class UserController extends Controller
 {
@@ -44,11 +46,11 @@ class UserController extends Controller
      */
     public function show($id)
     {
-           $user = User::find($id);       
-      //  $numberOfAllLoans = Loan::where('user_id','=', $id) ->count();               
-        //$numberOfLoans = Loan::where([['user_id','=', $id], ['active', '=', '1']]) ->count(); 
-        //$bookName = Loan::where([['user_id','=', $id], ['active', '=', '1']])->get();
-         
+        $user = User::find($id);       
+        $allLoansNumber = Loan::where('user_id','=', $id) ->count();               
+        $loansNumber = Loan::where([['user_id','=', $id], ['active', '=', '1']]) ->count(); 
+        $loansBooks = Loan::where([['user_id','=', $id], ['active', '=', '1']])->get();
+     
     if (!$user) 
     {
     abort(404);
@@ -56,9 +58,9 @@ class UserController extends Controller
 
         $data = [
             'user' => $user,
-            //'numberOfAllLoans' => $numberOfAllLoans,  
-            //'numberOfLoans' => $numberOfLoans,  
-            //'bookName'=> $bookName,
+            'allLoansNumber' => $allLoansNumber,  
+            'loansNumber' => $loansNumber,  
+            'loansBooks' => $loansBooks,  
         ];
         //return $id;
         return view('users.user', $data);

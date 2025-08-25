@@ -61,7 +61,7 @@
                             <td>{{ $loan->id }}</td>
                             <td><a href="/users/{{ $loan->user->id }}" target="_blank">{{ $loan->user->name }}</a> </td>
                             <td></td>
-                            <td class="font-bold bg-red-700" > $loan->book->id NE RADI {{-- $loan->book->id}} {{ $loan->book->title }} / {{ $loan->book->author_fname }} {{ $loan->book->author_lname --}} </td>
+                            <td class="font-bold  text-red-200" > <a href="/books/{{ $loan->book->id }}" target="_blank"> {{ $loan->book->id}} {{ $loan->book->title }} / {{ $loan->book->author_fname }} {{ $loan->book->author_lname}} </a> </td>
                             <td></td>
                             <td>{{ $loan->return_deadline }}</td>
                             <td>{{ $loan->active }}</td>
