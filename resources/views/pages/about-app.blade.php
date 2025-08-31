@@ -3,7 +3,7 @@
     <div class="space-y-10">
 
         <section class="text-center">
-            <h1 class="font-bold text-4xl"> About app </h1>
+            <h1 class="font-bold text-4xl"> О Апликацији </h1>
 
         </section>
 

@@ -2,7 +2,7 @@
     <div class="space-y-10">
 
         <section class="text-center">
-            <h1 class="font-bold text-4xl"> Welcome to our library app! </h1>
+            <h1 class="font-bold text-4xl"> Добродошли! </h1>
         </section>
 
         <div class="max-w-7xl mx-auto p-6 lg:p-8">
@@ -30,10 +30,9 @@
                             </h2>
 
                             <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                Here you can search for books by title, author, year, or tag.
-                                Register or login to add your own books and exchange with others.
-                                Велики број корисника и њихових библиотека. Search books by title, author, year,
-                                tags and keywords.</p>
+                                Овдје можеш тражити књиге по аутору, наслову, години издавања, одредници или кључној ријечи. 
+                                Региструј се или пријави да додаш своје књиге које ћеш размјењимавти са другима
+                                Нађи књигу за себе међу великим бројем књига које су други спремни да дијеле са тобом.</p>
                         </div>
 
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -59,9 +58,10 @@
                             </h2>
 
                             <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                Библиб је Заједница корисника који желе да размјењују књиге са другима. Библиб нуди
-                                могућност регистрованим корисницима да направе своју библиотеку са својим књигама
-                                које ће размјењиваи са другима. Направите своју библиотеку и дајте име.</p>
+                                Библиб је заједница корисника који своје књиге желе да размјењују књиге са другима. 
+                                Регистровани корисници креирају своју библиотеку са књигама
+                                које ће размјењивати са другима. Буди дио наше заједнице, 
+                                региструј се и дај својој кућној библиотеци креативно име.</p>
                         </div>
 
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"

@@ -16,12 +16,16 @@
         
         <div class="row justify-content-center">
             <div class="col-md-8">         
-                STATUS KNJIGE: {{ $book->loan == 1 ? 'On loan to ' . $book->userBorrows->name . '  ' : 'Free for loan' }}                   
+                СТАТУС КЊИГЕ: {{ $book->loan == 1 ? 'Књига је код корисника' : 'На полици' }}                   
+                @if ($book->loan == 1)
+                <a href="/users/{{$book->lib_user_id}}" class="btn btn-info" target="_blank">{{ $book->userBorrows->name }}</a>    
+                @endif
             </div>                 
+        </div>
         <x-forms.divider />
-            <a href="/books/{{$book->id}}/edit" class="btn btn-info">PROMJENA PODATAKA</a> 
+            <a href="/books/{{$book->id}}/edit" class="btn btn-info">ПРОМЈЕНА ПОДАТАКА</a> 
         <x-forms.divider />
-            <button  form="delete-form" class="text-red-500 text-sm font-bold leading-6">  BRISANJE KNJIGE    </button>  
+            <button  form="delete-form" class="text-red-500 text-sm font-bold leading-6">  БРИСАЊЕ КЊИГЕ    </button>  
       {{--
         <div class="col-md-8"> Number of loans: {{ $numberOfLoans }}</div>      
         <div class="row justify-content-center">

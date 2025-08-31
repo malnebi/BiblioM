@@ -19,7 +19,7 @@ class LoanController extends Controller
     public function index()
     {
         $loans = Loan::where('library_id', Auth::user()->ownLibrary->id)
-                ->where('active', 1)
+                ->orderBy('created_at', 'asc')
                 ->with(['user', 'book', 'library'])
                 ->paginate(20);
                 
@@ -28,6 +28,7 @@ class LoanController extends Controller
             'loans' => $loans,
         ];
         return view('loans.index', $data);
+      //  return dd ($loans->toArray());
         
     }
 
@@ -94,22 +95,48 @@ class LoanController extends Controller
      */
     public function edit(string $id)
     {
+           
         //
     }
 
     /**
-     * Update the specified resource in storage.
+     * Update the specified resource in storage.  VRAĆANJE KNJIGE!
      */
-    public function update(Request $request, string $id)
+    public function update( string $id)
     {
-        //
+         {   
+
+        $loan = Loan::find($id);
+        $loan->active = 0; 
+        $loan->save();
+
+        $book = Book::find($loan->book_id);        // traži knjigu u tabeli book na osnovu broja knjige u tabeli zaduzanja
+        $book->loan = 0;                            // zaduženje je neaktivno  - knjiga je slobodna)
+        $book->save();
+            
+        return redirect()->action([UserController::class, 'show'], [$loan->user_id]);  
+
+         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
+      /**
+        * Update the specified resource in storage.    PRODUZAVA ROK ZA VRAĆANJE KNJIGE!!!
+        */
+   
+    public function updateReturnDate( $id)  // mijenja datum za 30 dana od danas
     {
-        //
-    }
+
+    $loan = Loan::find($id); 
+    $loan->return_deadline = Carbon::now()->addDays(60);   // rok za vraćanje knjige je 60 dana    
+    $loan->save();
+
+
+   return redirect()->action([UserController::class, 'show'], [$loan->user_id]);  
+
+ }
+
+
+
+
+  
 }

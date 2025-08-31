@@ -129,7 +129,6 @@ class BookController extends Controller
         $book->publisher_name = $request->publisher_name;
         $book->publisher_place = $request->publisher_place;
         $book->year = $request->year;
-        $book->loan = 0;
         
         $book->save();
 

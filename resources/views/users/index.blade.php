@@ -1,36 +1,38 @@
-
 <x-layout>
-    
+
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
-                
-                
+
+                <h1 class="font-bold text-4xl">Корисници апликације</h1>
+
+                <x-forms.divider />
+
                 <table class="table">
                     <thead>
 
-                        <tr> <h1 scope="col">Korisnici aplikacije</h1></tr>
                         <tr>
-                            <th scope="col">ID</th>
-                            <th scope="col">IME</th>
-                            
-                            
+                            <th scope="col">Бр. </th>
+                            <th scope="col">Име</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($users as $user)
-                        <tr><a href="/user/{{ $user->id }}">
-                            <td>{{ $user->id }}</td>
-                            <td><a href="/users/{{ $user->id }}" class="btn btn-success" target="_blank">{{ $user->name }}</a></td>                            
-                            
-                        </tr>
+                        @foreach ($users as $user)
+                            <tr>
+                                <td>{{ $user->id }}</td>
+                                <td>
+                                    <h2 class="hover:text-blue-600  font-bold ">
+                                        <a href="/users/{{ $user->id }}" class="btn btn-success" target="_blank">{{ $user->name }}</a>
+                                    </h2>
+                                </td>
+                            </tr>
                         @endforeach
 
-                    
-                 
+
+
                     </tbody>
                 </table>
             </div>
         </div>
-    </div>    
+    </div>
 </x-layout>

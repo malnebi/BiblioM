@@ -1,6 +1,6 @@
 <x-layout>
 
-    <x-page-heading>Pozajmi knjigu  {{ $users->name }}</x-page-heading>
+    <x-page-heading>Позајми књигу  {{ $users->name }}</x-page-heading>
 
     <x-forms.form method="POST" action="/loans" enctype="multipart/form-data">
     
@@ -15,7 +15,7 @@
 
         <x-forms.divider />
 
-        <x-forms.button>Pozajmi na 30 dana</x-forms.button>
+        <x-forms.button>Позајми на 30 дана</x-forms.button>
 
     </x-forms.form>
 

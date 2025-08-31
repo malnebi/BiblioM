@@ -28,20 +28,34 @@ Route::get('/privacy', [PageController::class, 'privacy'])->name('privacy');
 Route::get('/about-app', [PageController::class, 'aboutApp'])->name('about');
 
 
-
+/** LIBRARY */
+Route::get('/libraries', [LibraryController::class, 'index']);
 Route::get('/members', [LibraryController::class,'libMembers']); // svi clanovi biblioteke
 Route::get('/members/{id}/member', [LibraryController::class, 'libMember']); // samo jedan clan biblioteke
 Route::get('/homeLib/{lib}', [LibraryController::class, 'libBooks'])->middleware('auth');
 
+
+/** USER */
 Route::get('/users', [UserController::class, 'index']);
 Route::get('/users/{id}', [UserController::class, 'show']); 
 Route::get('/users/{id}/edit', [UserController::class, 'edit'])->middleware('auth');
 Route::put('/users/{id}', [UserController::class, 'update'])->middleware('auth');
 Route::delete('/users/{id}', [UserController::class, 'destroy'])->middleware('auth');
 
+
+
+/** LOAN */ 
 Route::get('/loans', [LoanController::class, 'index'])->middleware('auth');
 Route::get('/loans/create/{userId}', [LoanController::class, 'create'])->middleware('auth');
 Route::post('/loans', [LoanController::class, 'store'])->middleware('auth');
+
+
+Route::put('/loans/{loan}', [LoanController::class, 'update'])->middleware('auth');   //vraćanje knjige
+Route::put('/loans/extend/{loan}', [LoanController::class, 'updateReturnDate'])->middleware('auth');  // produžavanje roka za vraćanje knjige
+
+
+
+
 
 
 Route::get('/books', [BookController::class, 'index'])->name('books');

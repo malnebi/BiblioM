@@ -11,7 +11,7 @@
 
 
     <section>
-        <x-section-heading>Tags</x-section-heading>
+        <x-section-heading>Одреднице</x-section-heading>
 
         <div class="mt-6 space-x-1">
             @foreach ($tags as $tag)
