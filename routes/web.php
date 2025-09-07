@@ -30,9 +30,10 @@ Route::get('/about-app', [PageController::class, 'aboutApp'])->name('about');
 
 /** LIBRARY */
 Route::get('/libraries', [LibraryController::class, 'index']);
-Route::get('/members', [LibraryController::class,'libMembers']); // svi clanovi biblioteke
-Route::get('/members/{id}/member', [LibraryController::class, 'libMember']); // samo jedan clan biblioteke
-Route::get('/homeLib/{lib}', [LibraryController::class, 'libBooks'])->middleware('auth');
+Route::get('/homeLib/{lib}', [LibraryController::class, 'libBooks'])->middleware('auth'); // knjige jedne biblioteke
+//Route::get('/members', [LibraryController::class,'libMembers']); // svi clanovi biblioteke
+//Route::get('/members/{id}/member', [LibraryController::class, 'libMember']); // samo jedan clan biblioteke
+Route::get('/libraries/{id}', [LibraryController::class, 'show']);
 
 
 /** USER */

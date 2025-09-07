@@ -35,7 +35,7 @@
                     <x-nav-link href="/users" :active="request()->is('users')"> Корисници</x-nav-link>
                     
                     
-                    <a href="#">Библиотеке</a>
+                    <x-nav-link href="/libraries" :active="request()->is('libraries')">Библиотеке</x-nav-link>
                     
                     <x-nav-link href="/loans" :active="request()->is('loans')"> Задужења</x-nav-link>
                 

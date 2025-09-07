@@ -14,51 +14,39 @@ class LibraryController extends Controller
 {
     //library members 
 
-
-
+    
+    
     public function index()
     {
-        return view('libraries.index');
-    }
 
-
-    public function libMembers()
-    {
-  
-        $members = User::get();  // use eager loading
+        $library = Library::all();
 
         $data = [
-            'members' => $members,
+            'libraries' => $library,
         ];
 
-        return view('members.index', $data);   
-  
-    }   
-
-    public function libMember($id)
-    {
-
-        $member = User::find($id);       
-        //$numberOfAllLoans = Loan::where('member_id','=', $id) ->count();               
-//        $numberOfLoans = Loan::where([['member_id','=', $id], ['active', '=', '1']]) ->count(); 
-        //$bookName = Loan::where([['member_id','=', $id], ['active', '=', '1']])->get();
-         
-    if (!$member) 
-    {
-    abort(404);
+        return view('libraries.index', $data);
     }
+
+
+    public function show($id)
+    {
+
+        $library = Library::find($id);
+        $books = Book::where('library_id', $id)->with(['library'])->get();
+        $featuredBooks = $books->where('featured', 1);
 
         $data = [
-            'member' => $member,
-//            'numberOfAllLoans' => $numberOfAllLoans,  
-  //          'numberOfLoans' => $numberOfLoans,  
-    //        'bookName'=> $bookName,
+            'library' => $library,
+            'books' => $books,
+            'featuredBooks' => $featuredBooks,
         ];
 
-        return view('members.member', $data);
+        return view('libraries.library', $data);
     }
-
-
+    
+    
+    
     /**
      * Display a listing of the resource for specified library.
      */
@@ -80,5 +68,39 @@ class LibraryController extends Controller
 
         return view('homeLib', $data);
     }
-     
+    public function libMembers()
+    {
+
+        $members = User::get();  // use eager loading
+
+        $data = [
+            'members' => $members,
+        ];
+
+        return view('members.index', $data);
+    }
+
+    public function libMember($id)
+    {
+
+        $member = User::find($id);
+        //$numberOfAllLoans = Loan::where('member_id','=', $id) ->count();               
+        //        $numberOfLoans = Loan::where([['member_id','=', $id], ['active', '=', '1']]) ->count(); 
+        //$bookName = Loan::where([['member_id','=', $id], ['active', '=', '1']])->get();
+
+        if (!$member) {
+            abort(404);
+        }
+
+        $data = [
+            'member' => $member,
+            //            'numberOfAllLoans' => $numberOfAllLoans,  
+            //          'numberOfLoans' => $numberOfLoans,  
+            //        'bookName'=> $bookName,
+        ];
+
+        return view('members.member', $data);
+    }
+
+
 }
