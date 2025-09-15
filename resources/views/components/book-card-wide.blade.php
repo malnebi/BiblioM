@@ -14,7 +14,7 @@
            </a>
       </h3>
         
-        <a href="#" class="self-start text-sm text-gray-400 transition-colors duration:300">Library {{ $book->library->name}}</a">
+        <a href="#" class="self-start text-sm text-gray-400 transition-colors duration:300">Библиотека {{ $book->library->name}}</a">
     </div>
 
     <div> 

@@ -1,10 +1,10 @@
 <x-layout>
-    <x-page-heading>Log In</x-page-heading>
+    <x-page-heading>Пријављивање</x-page-heading>
 
     <x-forms.form method="POST" action="/login">
-        <x-forms.input label="Email" name="email" type="email" />
-        <x-forms.input label="Password" name="password" type="password" />
+        <x-forms.input label="Мејл адреса" name="email" type="email" />
+        <x-forms.input label="Лозинка" name="password" type="password" />
 
-        <x-forms.button>Log In</x-forms.button>
+        <x-forms.button>Пријава</x-forms.button>
     </x-forms.form>
 </x-layout>

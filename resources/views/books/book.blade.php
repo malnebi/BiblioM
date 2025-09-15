@@ -66,5 +66,17 @@
 </x-panel>
 @endif
 @endauth
+
+@if ($book->library->owner_id != Auth::id())
+    
+    @if ($book->loan == 0)
+    <h1 class="font-bold text-4xl">Књига је слободна. Резервиши!</h1>
+    @endif
+
+    @if ($book->loan == 1)
+    <h1 class="font-bold text-4xl">Књига је код корисника. Резервиши за касније!</h1>
+    @endif
+    
+@endif
         
 </x-layout>

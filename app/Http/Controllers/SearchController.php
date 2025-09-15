@@ -17,9 +17,16 @@ class SearchController extends Controller
         ->where('title', 'LIKE', '%'.request('q').'%')
         ->get();
 
+
+
+        $data = [
+            'books' => $books,
+            
+        ];
+
         // return $jobs; // view search results in JSON 
 
-        return view('results', ['books' => $books] );  // pass throught list of jobs
+        return view('results', $data );  // pass throught list of jobs
 
     }
 

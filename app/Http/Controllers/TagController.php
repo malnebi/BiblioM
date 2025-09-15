@@ -12,10 +12,13 @@ class TagController extends Controller
     public function __invoke(Tag $tag){
 
         //books for this tags 
+      $data = [
 
-        
-        
-        return view('results', ['books' => $tag->books] );  // pass all books associated with this tag    
+         'books' => $tag->books,  //proslijedi sve knjige povezane sa ovim tagom
+
+      ];
+                
+        return view('results', $data );  // pass all books associated with this tag    
 
  }
 
@@ -38,10 +41,12 @@ class TagController extends Controller
      ->where('name', 'LIKE', '%'.request('q').'%')
      ->get();
 
-  // return $books; for view search results in JSON 
+     
 
+     
      return view('results-tag', ['tags' => $tags] );  // pass throught list of books
-
+     
+     // return $books; for view search results in JSON 
  }
 
 }

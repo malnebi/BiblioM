@@ -9,7 +9,7 @@
                 {{ $book->title }}
             </a>
         </h3>
-        <p class="text-sm mt-4">{{ $book->author_fname }}</p>
+        <p class="text-sm mt-4">{{ $book->author_lname }}, {{ $book->author_fname }}</p>
     </div>
 
     <div class="flex justify-between items-center mt-auto">

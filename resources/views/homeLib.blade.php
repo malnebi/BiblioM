@@ -9,7 +9,7 @@
             @else
                 <x-forms.form action="/search" class="mt-6">
                     <x-forms.input :label="false" name="q" placeholder="Наслов, аутор, година ..." />
-                    {{-- <x-forms.button>Search</x-forms.button> --}}
+                    <x-forms.button>Пронађи</x-forms.button> 
                 </x-forms.form>
         </section>
 

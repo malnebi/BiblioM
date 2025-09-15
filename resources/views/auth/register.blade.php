@@ -1,19 +1,19 @@
 <x-layout>
 
-    <x-page-heading>Register</x-page-heading>
+    <x-page-heading>Регистрација</x-page-heading>
 
     <x-forms.form method="POST" action="/register" enctype="multipart/form-data">
-        <x-forms.input label="Name" name="name" />
-        <x-forms.input label="Email" name="email" type="email" />
-        <x-forms.input label="Password" name="password" type="password" />
-        <x-forms.input label="Password Confirmation" name="password_confirmation" type="password" />
+        <x-forms.input label="Име" name="name" />
+        <x-forms.input label="мејл" name="email" type="email" />
+        <x-forms.input label="Лозинка" name="password" type="password" />
+        <x-forms.input label="Потврда лозинке" name="password_confirmation" type="password" />
 
         <x-forms.divider />
 
-        <x-forms.input label="Library Name" name="library" />
-        <x-forms.input label="Library Logo" name="logo" type="file" />
+        <x-forms.input label="Име библиотеке" name="library" />
+        <x-forms.input label="Лого библиотеке" name="logo" type="file" />
 
-        <x-forms.button> Create Account</x-forms.button>
+        <x-forms.button> Креирај налог</x-forms.button>
     </x-forms.form>
 
 </x-layout>
