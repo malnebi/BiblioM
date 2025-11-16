@@ -14,9 +14,9 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="bg-black text-white font-hanken-grotesk pb-30">
+<body class="bg-green-900 text-white font-hanken-grotesk pb-30">
     <div class="px-10">
-        <nav class="flex justify-between items-center py-4 border-b border-white/10">
+        <nav class="flex justify-between items-center py-4 border-b bg-green-mint border-white/10">
             <div>
                 <a href="/">
                     <img src="{{ Vite::asset('resources/images/logo.svg') }}" alt="">
@@ -32,7 +32,7 @@
                     
                     <x-nav-link href="/homeLib/{lib}" :active="request()->is('homeLib')">  {{ Auth::user()->ownLibrary->name }} књиге</x-nav-link>
                   
-                    <x-nav-link href="/users" :active="request()->is('users')"> Корисници</x-nav-link>
+                    <x-nav-link href="/users" :active="request()->is('users')"> Чланови</x-nav-link>
                     
                     
                     <x-nav-link href="/libraries" :active="request()->is('libraries')">Библиотеке</x-nav-link>
@@ -52,8 +52,11 @@
                   
                     <form method="POST" action="/logout">
                         @csrf
-                        <button type="submit">Одјава</button>
+                        <button class="rounded-md px-3 py-2 text-md font-semibold hover:text-blue-800 border border-transparent hover:border-blue-800 group transition-colors duration-300 mr-3" 
+                        type="submit">Одјава</button>
                     </form>
+
+                    <x-nav-link href="/users/{{ Auth::user()->id }}" :active="request()->is('users/'.Auth::user()->id)">{{ Auth::user()->name }}</x-nav-link>
                 </div>
             @endauth
             @guest

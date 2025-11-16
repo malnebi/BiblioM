@@ -7,7 +7,7 @@
             <div class="space-y-10">
 
                 <section class="text-center">
-                    <h1 class="font-bold text-4xl"> {{ $library->name }} библиотечка колекција.</h1>
+                    <h1 class="font-bold text-4xl"> Колекција књига члана {{ $user->name }}.</h1>
 
                     <x-forms.form action="/search" class="mt-6">
                         <x-forms.input :label="false" name="q" placeholder="Наслов, аутор, година ..." />

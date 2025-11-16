@@ -65,7 +65,7 @@
                             </td> 
                             
                             <td class="font-bold  text-red-200" > 
-                                $loan->book->id ne radi {{-- $loan->book->id }} {{-- $loan->book->title --}} / {{-- $loan->book->author_fname --}} 
+                                {{ $loan->book->id }} {{ $loan->book->title }} / {{ $loan->book->author_fname }} 
                             </td> 
                             
                                 <td>{{  ($loan->updated_at)->format('d. m. Y. ') }}</td>

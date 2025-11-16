@@ -4,7 +4,7 @@
         <div class="row justify-content-center">
             <div class="col-md-8">
 
-                <h1 class="font-bold text-4xl">Корисници апликације</h1>
+                <h1 class="font-bold text-4xl">Чланови БибЛиб заједнице</h1>
 
                 <x-forms.divider />
 

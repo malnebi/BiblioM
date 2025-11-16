@@ -1,7 +1,7 @@
 <x-layout>
     <div class="space-y-10">
         <section class="text-center">
-            <h1 class="font-bold text-4xl">КОРИСНИК {{ $user->name }}</h1>
+            <h1 class="font-bold text-4xl">ЧЛАН {{ $user->name }}</h1>
 
             <div class="grid lg:grid-cols-2 gap-8 mt-6">
                 <h1 class="font-bold text-xl text-left"> Укупан број позајмљених књига је {{ $allLoansNumber }}. </h1>

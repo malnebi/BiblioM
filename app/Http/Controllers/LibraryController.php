@@ -33,11 +33,13 @@ class LibraryController extends Controller
     {
 
         $library = Library::find($id);
+        $user = User::find($library->owner_id);      
         $books = Book::where('library_id', $id)->with(['library'])->get();
         $featuredBooks = $books->where('featured', 1);
 
         $data = [
             'library' => $library,
+            'user' => $user,
             'books' => $books,
             'featuredBooks' => $featuredBooks,
         ];
