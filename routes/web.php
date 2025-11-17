@@ -27,17 +27,15 @@ Route::get('/home', [HomeController::class, 'index'])->middleware('auth')->name(
 Route::get('/privacy', [PageController::class, 'privacy'])->name('privacy');
 Route::get('/about-app', [PageController::class, 'aboutApp'])->name('about');
 
-
-/** LIBRARY */
-Route::get('/libraries', [LibraryController::class, 'index']);
+/** Библиотеке */
 Route::get('/homeLib/{lib}', [LibraryController::class, 'libBooks'])->middleware('auth'); // knjige jedne biblioteke
 //Route::get('/members', [LibraryController::class,'libMembers']); // svi clanovi biblioteke
 //Route::get('/members/{id}/member', [LibraryController::class, 'libMember']); // samo jedan clan biblioteke
 Route::get('/libraries/{id}', [LibraryController::class, 'show']);
 
 
-/** USER */
-Route::get('/users', [UserController::class, 'index']);
+/** Члан */
+Route::get('/users', [UserController::class, 'index']); // Навигацијски линк за приказ странице са члановима и њиховим библиотекама
 Route::get('/users/{id}', [UserController::class, 'show']); 
 Route::get('/users/{id}/edit', [UserController::class, 'edit'])->middleware('auth');
 Route::put('/users/{id}', [UserController::class, 'update'])->middleware('auth');
@@ -45,7 +43,7 @@ Route::delete('/users/{id}', [UserController::class, 'destroy'])->middleware('au
 
 
 
-/** LOAN */ 
+/** Позајмица */ 
 Route::get('/loans', [LoanController::class, 'index'])->middleware('auth');
 Route::get('/loans/create/{userId}', [LoanController::class, 'create'])->middleware('auth');
 Route::post('/loans', [LoanController::class, 'store'])->middleware('auth');
@@ -57,7 +55,7 @@ Route::put('/loans/extend/{loan}', [LoanController::class, 'updateReturnDate'])-
 
 
 
-
+/** BOOK */
 
 Route::get('/books', [BookController::class, 'index'])->name('books');
 Route::resource('books', BookController::class);

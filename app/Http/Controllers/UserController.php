@@ -9,6 +9,7 @@ use App\Models\Loan;
 use App\Models\Book;
 use App\Models\Tag;
 
+
 class UserController extends Controller
 {
     /**
@@ -17,12 +18,12 @@ class UserController extends Controller
     public function index()
     {
          $user = User::all();  
+         $library = Library::all();
 
         return view('users.index', [
             'users' => $user,
-        ]);
-
-    
+            'libraries' => $library,
+                ]);    
     }
 
     /**

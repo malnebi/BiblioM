@@ -28,16 +28,13 @@
                 @auth
                     <x-nav-link href="/home" :active="request()->is('home')"> Почетна</x-nav-link>
                     
-                    <x-nav-link href="/books" :active="request()->is('books')"> Књиге</x-nav-link>
+                    <x-nav-link href="/users" :active="request()->is('users')"> БибЛиб заједница</x-nav-link>
                     
-                    <x-nav-link href="/homeLib/{lib}" :active="request()->is('homeLib')">  {{ Auth::user()->ownLibrary->name }} књиге</x-nav-link>
-                  
-                    <x-nav-link href="/users" :active="request()->is('users')"> Чланови</x-nav-link>
+                    <x-nav-link href="/books" :active="request()->is('books')"> Књиге заједнице</x-nav-link>
                     
+                    <x-nav-link href="/homeLib/{lib}" :active="request()->is('homeLib')">  {{ Auth::user()->ownLibrary->name }} Књиге</x-nav-link>
                     
-                    <x-nav-link href="/libraries" :active="request()->is('libraries')">Библиотеке</x-nav-link>
-                    
-                    <x-nav-link href="/loans" :active="request()->is('loans')"> Задужења</x-nav-link>
+                    <x-nav-link href="/loans" :active="request()->is('loans')"> {{ Auth::user()->ownLibrary->name }} Позајмице</x-nav-link>
                 
                     @endauth
 
