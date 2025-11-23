@@ -48,8 +48,7 @@
                         <th scope="col">КОРИСНИК</th>
                         <th scope="col">Наслов књиге / Аутор </th>
                         <th scope="col">Рок за враћање</th>
-                        <th scope="col">Библиотека</th>  
-                        <th scope="col">Књига се налази </th> 
+                        <th scope="col">Књига је </th> 
                         <th scope="col">Датум враћања</th>                       
                         
                     </tr>
@@ -69,13 +68,17 @@
                             </td> 
                             
                                 <td>{{  ($loan->updated_at)->format('d. m. Y. ') }}</td>
-                            <td>{{ $loan->library->name }}</td>
-                            
-                                @if ($loan->active == 1  ) 
+                          
+                                @if (($loan->active == 1 && $loan->description == null) || ($loan->active == 0 && $loan->description == 'potpisano'))  
+                            <td> резервисана   </td> 
+                                @endif
+                
+
+                                @if ($loan->active == 1 && $loan->description == 'potpisano') 
                             <td> на читању   </td> 
                                 @endif
                             
-                                @if ($loan->active == 0) 
+                                @if ($loan->active == 0 && $loan->description == null) 
                             <td> на полици  </td> <td> {{$loan->updated_at}}</td>  
                                 @endif
                         </tr>

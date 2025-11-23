@@ -53,7 +53,7 @@
                         type="submit">Одјава</button>
                     </form>
 
-                    <x-nav-link href="/users/{{ Auth::user()->id }}" :active="request()->is('users/'.Auth::user()->id)">{{ Auth::user()->name }}</x-nav-link>
+                    <x-nav-link href="/user/{{ Auth::user()->id }}" :active="request()->is('user/'.Auth::user()->id)">{{ Auth::user()->name }}</x-nav-link>
                 </div>
             @endauth
             @guest

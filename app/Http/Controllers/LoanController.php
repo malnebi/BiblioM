@@ -52,7 +52,10 @@ class LoanController extends Controller
         }
     }
     /**
-     * Store a newly created resource in storage.
+     * 
+     * ПОЗАЈМИЦА
+     * 
+     * Унос записа о позајмици.
      */
     public function store(Request $request)
     {
@@ -80,8 +83,28 @@ class LoanController extends Controller
 
         return redirect()->action([UserController::class, 'show'], [$loan->user_id]);  
     }
+ 
+    /**
+     * Потврда члана о позајмици.
+     */
+  public function loanMemberConfirm($id)
+  {
+        
+      $loan = Loan::find($id);
+      $loan->description = 'potpisano'; 
+      $loan->save();
     
 
+        /** upis u tabelu book */
+
+        if ($loan->loan == 1) {
+            $book = Book::find($loan->book_id);        // traži knjigu u tabeli book na osnovu broja klijent u loan
+            $book->loan = 1;                              // zaduženje knjige je aktivno 
+            $book->save();
+        }
+
+        return redirect()->action([UserController::class, 'showLogedUser'], [$loan->user_id]);
+    }
     /**
      * Display the specified resource.
      */
@@ -102,7 +125,7 @@ class LoanController extends Controller
     /**
      * Update the specified resource in storage.  VRAĆANJE KNJIGE!
      */
-    public function update( string $id)
+    public function update($id)
     {
          {   
 
@@ -110,12 +133,13 @@ class LoanController extends Controller
         $loan->active = 0; 
         $loan->save();
 
+        if ($loan->description == null) {
         $book = Book::find($loan->book_id);        // traži knjigu u tabeli book na osnovu broja knjige u tabeli zaduzanja
         $book->loan = 0;                            // zaduženje je neaktivno  - knjiga je slobodna)
         $book->save();
             
         return redirect()->action([UserController::class, 'show'], [$loan->user_id]);  
-
+        }
          }
     }
 

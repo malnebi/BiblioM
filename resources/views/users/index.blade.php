@@ -22,9 +22,17 @@
                             <tr>
                                 <td>{{ $user->id }}</td>
                                 <td>
+                                    @if ($user == Auth::user())
+                                    <h2 class="hover:text-blue-600  font-bold ">
+                                        <a href="/user/{{ $user->id }}" class="btn btn-success" target="_blank">{{ $user->name }}</a>
+                                    </h2> 
+                                    @endif
+                                    @if ($user != Auth::user())
                                     <h2 class="hover:text-blue-600  font-bold ">
                                         <a href="/users/{{ $user->id }}" class="btn btn-success" target="_blank">{{ $user->name }}</a>
                                     </h2>
+                                    @endif
+
                                 </td>
                                 <td class="col-span-2">
                                     @foreach ($libraries as $library)

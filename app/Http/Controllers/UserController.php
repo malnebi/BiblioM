@@ -67,6 +67,32 @@ class UserController extends Controller
         return view('users.user', $data);
     }
 
+
+        /**
+     * Display the specified resource.
+     */
+    public function showLogedUser($id)
+    {
+        $user = User::find($id);       
+        $allLoansNumber = Loan::where('user_id','=', $id) ->count();               
+        $loansNumber = Loan::where([['user_id','=', $id], ['active', '=', '1']]) ->count(); 
+        $loansBooks = Loan::where([['user_id','=', $id], ['active', '=', '1']])->get();
+     
+    if (!$user) 
+    {
+    abort(404);
+    }
+
+        $data = [
+            'user' => $user,
+            'allLoansNumber' => $allLoansNumber,  
+            'loansNumber' => $loansNumber,  
+            'loansBooks' => $loansBooks,  
+        ];
+        //return $id;
+        return view('users.logedUser', $data);
+    }
+
     /**
      * Show the form for editing the specified resource.
      */
