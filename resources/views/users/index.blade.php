@@ -3,51 +3,30 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
+                
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
+   <h1 class="font-bold text-4xl col-span-3 text-center mb-3">
+       <x-nav-link href="/users">ЧЛАНОВИ</x-nav-link>
+       <x-nav-link href="/users">БИБЛИОТЕКЕ</x-nav-link>
+       <x-nav-link href="/books">КЊИГЕ</x-nav-link>
+    </h1>
+</div>               <x-forms.divider />
+                
+                <section class="pt-6">
+                <div class="grid lg:grid-cols-3 gap-8 mt-3">
 
-                <h1 class="font-bold text-4xl">БибЛиб заједницa</h1>
+                    @foreach ($users as $user)
+                        @if ($user->ownLibrary)
+                        @endif
 
-                <x-forms.divider />
-
-                <table class="table">
-                    <thead>
-
-                        <tr>
-                            <th scope="col">Бр. </th>
-                            <th scope="col">Име</th>
-                            <th scope="col">Библиотека</th>
-                        </tr>
-                    </thead>
-                      <tbody>
-                        @foreach ($users as $user)
-                            <tr>
-                                <td>{{ $user->id }}</td>
-                                <td>
-                                    @if ($user == Auth::user())
-                                    <h2 class="hover:text-blue-600  font-bold ">
-                                        <a href="/user/{{ $user->id }}" class="btn btn-success" target="_blank">{{ $user->name }}</a>
-                                    </h2> 
-                                    @endif
-                                    @if ($user != Auth::user())
-                                    <h2 class="hover:text-blue-600  font-bold ">
-                                        <a href="/users/{{ $user->id }}" class="btn btn-success" target="_blank">{{ $user->name }}</a>
-                                    </h2>
-                                    @endif
-
-                                </td>
-                                <td class="col-span-2">
-                                    @foreach ($libraries as $library)
-                                        @if ($library->owner_id === $user->id)
-                                            <h2 class="hover:text-blue-600  font-bold ">
-                                                <a href="/libraries/{{ $library->id }}" class="btn btn-success" target="_blank">{{ $library->name }}</a>
-                                            </h2>
-                                        @endif
-                                    @endforeach
-                                </td>
-                            </tr>
+                        @foreach ($libraries as $library)
+                            @if ($library->owner_id === $user->id)
+                                <x-userlib-card :user="$user" :library="$library" />
+                            @endif
                         @endforeach
+                    @endforeach
 
-                    </tbody>
-                </table>
+                </div>
             </div>
         </div>
     </div>

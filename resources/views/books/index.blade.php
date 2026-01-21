@@ -22,7 +22,7 @@
         </section>
 
         <section>
-            <x-section-heading>Одреднице</x-section-heading>
+            <x-section-heading>Опсне ознаке</x-section-heading>
 
             <div class="mt-6 space-x-1">
                 @foreach ($tags as $tag)
@@ -32,7 +32,7 @@
         </section>
 
         <section>
-            <x-section-heading>Најновије у библиотеци</x-section-heading>
+            <x-section-heading>Најновије у апликацији</x-section-heading>
             <div class="mt-6 space-y-6">
                 @foreach ($books as $book)
                     <x-book-card-wide :$book />

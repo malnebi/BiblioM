@@ -36,8 +36,8 @@ Route::get('/libraries/{id}', [LibraryController::class, 'show']);
 
 /** Члан */
 Route::get('/users', [UserController::class, 'index']); // Навигацијски линк за приказ странице са члановима и њиховим библиотекама
-Route::get('/users/{id}', [UserController::class, 'show']); 
-Route::get('/user/{id}', [UserController::class, 'showLogedUser']);        
+Route::get('/users/{id}', [UserController::class, 'show']);   // профил корисника - члана 
+Route::get('/userLog/{id}', [UserController::class, 'showLogUser'])->middleware('auth'); // профил улогованог корисника    
 Route::get('/users/{id}/edit', [UserController::class, 'edit'])->middleware('auth');
 Route::put('/users/{id}', [UserController::class, 'update'])->middleware('auth');
 Route::delete('/users/{id}', [UserController::class, 'destroy'])->middleware('auth');
@@ -47,9 +47,10 @@ Route::delete('/users/{id}', [UserController::class, 'destroy'])->middleware('au
 /** Позајмица */ 
 Route::get('/loans', [LoanController::class, 'index'])->middleware('auth');
 Route::get('/loans/create/{userId}', [LoanController::class, 'create'])->middleware('auth');
-Route::post('/loans', [LoanController::class, 'store'])->middleware('auth');
+Route::post('/loans', [LoanController::class, 'store'])->middleware('auth'); // креирање позајмице - библиотека додјељује позајмицу члану
 
-Route::put('/loanMemberConfirm/{loan}', [LoanController::class, 'loanMemberConfirm'])->middleware('auth'); // потврда члана о позајмици
+Route::put('/loans/loanMemberConfirm/{loan}', [LoanController::class, 'loanMemberConfirm'])->middleware('auth'); // члан потврђује позајмицу
+Route::put('/loans/loanLibraryConfirm/{loan}', [LoanController::class, 'loanLibraryConfirm'])->middleware('auth'); // библиотека потврђује позајмицу
 
 Route::put('/loans/{loan}', [LoanController::class, 'update'])->middleware('auth');   //vraćanje knjige
 Route::put('/loans/extend/{loan}', [LoanController::class, 'updateReturnDate'])->middleware('auth');  // produžavanje roka za vraćanje knjige
@@ -59,7 +60,7 @@ Route::put('/loans/extend/{loan}', [LoanController::class, 'updateReturnDate'])-
 
 /** BOOK */
 
-Route::get('/books', [BookController::class, 'index'])->name('books');
+//Route::get('/books', [BookController::class, 'index'])->name('books');
 Route::resource('books', BookController::class);
 Route::get('/books/create', [BookController::class, 'create'])->middleware('auth');
 Route::post('/books', [BookController::class, 'store'])->middleware('auth');
@@ -68,6 +69,7 @@ Route::get('/books/{book}/edit', [BookController::class, 'edit'])->middleware('a
 Route::put('/books/{book}', [BookController::class, 'update'])->middleware('auth');
 Route::delete('/books/{book}', [BookController::class, 'destroy'])->middleware('auth');
 
+Route::post('/bookReservation/{book}', [BookController::class, 'bookReservation'])->middleware('auth'); // креирање позајмице - члан резервише књигу 
 
 
 Route::get('/search', SearchController::class);

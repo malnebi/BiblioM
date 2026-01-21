@@ -36,4 +36,59 @@
 
         </section>
     </div>
+
+    <x-forms.divider/>
+
+    <x-section-heading>ПОЗАЈМИЦЕ БИБЛИОТЕКЕ {{ Auth::user()->ownLibrary->name }} члану {{ $user->name }}</x-section-heading>
+                    <table class="table">
+                    <thead>
+                    <tr>
+                        <th scope="col">Број књиге</th>                        
+                        <th scope="col">Наслов књиге / Аутор </th>
+                        <th scope="col">Статус </th> 
+                        <th scope="col">Позајмљена</th>
+                        <th scope="col">Враћена</th>                       
+                        
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($loans as $loan)
+                        @if ($loan->user->id == $user->id)
+                    <tr class="text-center">
+                            <td> {{ $loan->book->id }} </td>
+                            
+                            <td class="font-bold  text-red-200" > 
+                                 {{ $loan->book->title }} / {{ $loan->book->author_fname }} {{ $loan->book->author_lname}} 
+                            </td>                             
+                            
+                            @if (($loan->active == 1 && $loan->description == null) || ($loan->active == 0 && $loan->description == 'potpisano'))  
+                            <td> резервисана   </td> 
+                            @endif
+                            
+                            @if ($loan->active == 1 && $loan->description == 'potpisano') 
+                            <td> на читању   </td> 
+                            @endif
+                            
+                            @if ($loan->active == 0 && $loan->description == null) 
+                            <td> на полици  </td> 
+                            @endif
+                            
+                            @if ($loan->active == 0 && $loan->description == null) 
+                            <td>{{  ($loan->created_at)->format('d. m. Y. ') }}</td>
+                            <td>{{  ($loan->updated_at)->format('d. m. Y. ') }}</td>
+                            @endif
+
+                            @if (($loan->active == 0 && $loan->description == 'potpisano') || ($loan->active == 1 && $loan->description == 'potpisano' ))                           
+                            <td>{{  ($loan->created_at)->format('d. m. Y. ') }}</td>
+                            @endif
+                        </tr>
+                        @endif
+                    @endforeach
+                    </tbody>
+                </table>
+                <div> 
+                    {{$loans->links()}}</div> 
+            </div>
+
+
 </x-layout>

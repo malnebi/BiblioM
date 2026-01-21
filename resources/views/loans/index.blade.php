@@ -1,91 +1,140 @@
-
 <x-layout>
-    <div class="space-y-10">
-   
-        {{-- 
-        <section class="text-center">
-            <h1 class="font-bold text-4xl"> ПРОНАЂИ</h1>
-            <x-forms.form action="/search" class="mt-6">
-                <x-forms.input :label="false" name="q" placeholder="Title, authors name, year..." />
-                {{-- <x-forms.button>Search</x-forms.button> --}}
 
-        
-        {{-- 
-        <section class="pt-6">
-            <div class="grid lg:grid-cols-3 gap-8 mt-6">
-                @foreach ($featuredBooks as $book)
-                <x-book-card :$book />
-                @endforeach
-            </div>
-        </section>
-        
-        <section>
-            <x-section-heading>Tags</x-section-heading>
-            
-            <div class="mt-6 space-x-1">
-                @foreach ($tags as $tag)
-                <x-tag :$tag />
-                @endforeach
-            </div>
-        </section>
-        
-        <section>
-            <x-section-heading>Recent Books</x-section-heading>
+    <x-section-heading>ПОЗАЈМИЦЕ БИБЛИОТЕКЕ {{ Auth::user()->ownLibrary->name }} </x-section-heading>
+    <x-forms.divider />
+
+    <div class="space-y-10">
+
+            <section class="text-center"> РЕЗЕРВАЦИЈЕ</section>
             <div class="mt-6 space-y-6">
-                @foreach ($books as $book)
-                <x-book-card-wide :$book />
-                @endforeach
-            </div>
-        </section>
-    </div>    
-    --}} 
-    <x-section-heading>СВА ЗАДУЖЕЊА КЊИГА БИБЛИОТЕКЕ {{ Auth::user()->ownLibrary->name }} </x-section-heading>
-<x-forms.divider/>
-                    <table class="table">
+                <table class="table">
                     <thead>
-                    <tr>
-                        <th scope="col">Број задужења</th>                        
-                        <th scope="col">КОРИСНИК</th>
-                        <th scope="col">Наслов књиге / Аутор </th>
-                        <th scope="col">Рок за враћање</th>
-                        <th scope="col">Књига је </th> 
-                        <th scope="col">Датум враћања</th>                       
-                        
-                    </tr>
+                        <tr class="text-left">
+                            <th scope="col">Члан---</th>
+                            <th scope="col">Књига</th>
+                            <th scope="col">Датум резервације</th>
+
+                        </tr>
                     </thead>
                     <tbody>
-                    @foreach($loans as $loan)
-                        <tr class="text-center">
-                            <td>{{ $loan->id }}</td>
-                            <td>
-                             <h3 class="hover:text-blue-600  font-bold ">   
-                                <a href="/users/{{ $loan->user->id }}" target="_blank">{{ $loan->user->name }}</a> 
-                             </h3>
-                            </td> 
-                            
-                            <td class="font-bold  text-red-200" > 
-                                {{ $loan->book->id }} {{ $loan->book->title }} / {{ $loan->book->author_fname }} 
-                            </td> 
-                            
-                                <td>{{  ($loan->updated_at)->format('d. m. Y. ') }}</td>
-                          
-                                @if (($loan->active == 1 && $loan->description == null) || ($loan->active == 0 && $loan->description == 'potpisano'))  
-                            <td> резервисана   </td> 
-                                @endif
-                
+                        @foreach ($loans as $loan)
+                            @if ($loan->active == null && $loan->description == 'rezervisano')
+                                <tr class="text-left">
+                                    <td>
+                                        <h3 class="hover:text-blue-600  font-bold ">
+                                            <a href="/users/{{ $loan->user->id }}"
+                                                target="_blank">{{ $loan->user->name }}</a>
+                                        </h3>
+                                    </td>
+                                    <td class="font-bold  text-red-200">
+                                        {{ $loan->book->id }} {{ $loan->book->title }} / {{ $loan->book->author_fname }}
+                                    </td>
+                                    <td>{{ $loan->created_at->format('d. m. Y. ') }}</td>
+                                    <td>
+                                        <form method="POST" action="/loans/loanLibraryConfirm/{{ $loan->id }}">
+                                            @csrf
+                                            {{ method_field('PUT') }}
+                                            <div class="col-md-8">
 
-                                @if ($loan->active == 1 && $loan->description == 'potpisano') 
-                            <td> на читању   </td> 
-                                @endif
-                            
-                                @if ($loan->active == 0 && $loan->description == null) 
-                            <td> на полици  </td> <td> {{$loan->updated_at}}</td>  
-                                @endif
-                        </tr>
-                    @endforeach
+                                                <h3 class="hover:text-blue-600  font-bold ">
+                                                    <button type="submit" class="btn btn-primary">Одобри позајмицу
+                                                        (само уколико корисник добио књигу)
+                                                    </button>
+                                                </h3>
+                                            </div>
+                                        </form>
+                                    </td>
+
+                                </tr>
+                            @endif
+                        @endforeach
                     </tbody>
                 </table>
-                <div> 
-                    {{$loans->links()}}</div> 
             </div>
+
+        <div class="space-y-10">
+            <section class="text-center"> КЊИГЕ НА ЧИТАЊУ</section>
+            <div class="mt-6 space-y-6">
+                <table class="table">
+                    <thead>
+                        <tr class="text-center">
+                            <th scope="col">Број позајмице ---</th>
+                            <th scope="col">Члан</th>
+                            <th scope="col">Књига </th>
+                            <th scope="col">Рок за враћање</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($loans as $loan)
+                            @if ($loan->active == 1 && $loan->description == 'potpisano')
+                                <tr class="text-left">
+                                    <td>{{ $loan->id }}</td>
+                                    <td>
+                                        <h3 class="hover:text-blue-600  font-bold ">
+                                            <a href="/users/{{ $loan->user->id }}"
+                                                target="_blank">{{ $loan->user->name }}</a>
+                                        </h3>
+                                    </td>
+                                    <td class="font-bold  text-red-200">
+                                        {{ $loan->book->id }} {{ $loan->book->title }} /
+                                        {{ $loan->book->author_fname }}
+                                    </td>
+                                    <td>{{ $loan->updated_at->format('d. m. Y. ') }}</td>
+                                </tr>
+                            @endif
+                            @if ($loan->active == 1 && $loan->description != 'potpisano')
+                                <td> Чека се потврда корисника {{ $loan->user->name }} о преузимању ваше књиге
+                                    {{ $loan->book->title }} /
+                                    {{ $loan->book->author_fname }}, број {{ $loan->book->id }}</td>
+                            @endif
+                        @endforeach
+                    </tbody>
+                </table>
+
+                <div>{{ $loans->links() }}</div>
+            </div>
+        </div>
+
+        <div class="space-y-10">
+            <section class="text-center"> ЗАВРШЕНЕ ПОЗАЈМИЦЕ</section>
+            <div class="mt-6 space-y-6">
+                <table class="table">
+                    <thead>
+                        <tr class="text-left">
+                            <th scope="col">Број позајмице ---</th>
+                            <th scope="col">Члан --- </th>
+                            <th scope="col">Књига </th>
+                            <th scope="col">Датум </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($loans as $loan)
+                            @if ($loan->active == 0)
+                                <tr class="text-left">
+                                    <td>{{ $loan->id }}</td>
+                                    <td>
+                                        <h3 class="hover:text-blue-600  font-bold ">
+                                            <a href="/users/{{ $loan->user->id }}"
+                                                target="_blank">{{ $loan->user->name }}</a>
+                                        </h3>
+                                    </td>
+                                    <td class="font-bold  text-red-200">
+                                        {{ $loan->book->id }} {{ $loan->book->title }} /
+                                        {{ $loan->book->author_fname }}
+                                    </td>
+                                    <td>{{ $loan->created_at->format('d. m. Y. ') }} -
+                                        {{ $loan->updated_at->format('d. m. Y. ') }}</td>
+                                </tr>
+                            @endif
+                        @endforeach
+                    </tbody>
+                </table>
+                <div>{{ $loans->links() }}</div>
+            </div>
+        </div>
+
+
+    </div>
+
+
 </x-layout>

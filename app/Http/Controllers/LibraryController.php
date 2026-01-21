@@ -29,19 +29,23 @@ class LibraryController extends Controller
     }
 
 
-    public function show($id)
+    public function show($id) // prikaži biblioteku člana sa svim knjigama njegove biblioteke i zaduženjima biblioteke ulogovanog člana 
     {
-
         $library = Library::find($id);
         $user = User::find($library->owner_id);      
         $books = Book::where('library_id', $id)->with(['library'])->get();
         $featuredBooks = $books->where('featured', 1);
-
-        $data = [
-            'library' => $library,
-            'user' => $user,
-            'books' => $books,
-            'featuredBooks' => $featuredBooks,
+        $loans = Loan::where('library_id', Auth::user()->ownLibrary->id)
+                ->orderBy('created_at', 'asc')
+                ->with(['user', 'book', 'library'])
+                ->paginate(20);                             
+                
+                $data = [
+                    'library' => $library,
+                    'user' => $user,
+                    'books' => $books,
+                    'featuredBooks' => $featuredBooks,
+                    'loans' => $loans,
         ];
 
         return view('libraries.library', $data);
@@ -59,13 +63,18 @@ class LibraryController extends Controller
         $library = Auth::user()->ownLibrary->id;
         $books = Book::where('library_id', $library)->with(['library'])->get();
         $featuredBooks = $books->where('featured', 1);
-
-
-        $data = [
-            'library' => Auth::user()->ownlibrary,
-            'featuredBooks' => $featuredBooks,
-            'numOfBooks' => $books->count(),
-            'books' => $books,
+                $loans = Loan::where('library_id', Auth::user()->ownLibrary->id)
+                ->orderBy('created_at', 'asc')
+                ->with(['user', 'book', 'library'])
+                ->paginate(20);
+            
+            
+            $data = [
+                'library' => Auth::user()->ownlibrary,
+                'featuredBooks' => $featuredBooks,
+                'numOfBooks' => $books->count(),
+                'books' => $books,
+                'loans' => $loans,
         ];
 
         return view('homeLib', $data);

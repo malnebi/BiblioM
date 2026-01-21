@@ -69,14 +69,19 @@
 
 @if ($book->library->owner_id != Auth::id())
     
-    @if ($book->loan == 0)
-    <h1 class="font-bold text-4xl">Књига је слободна. Резервиши!</h1>
-    @endif
-
-    @if ($book->loan == 1)
-    <h1 class="font-bold text-4xl">Књига је код корисника. Резервиши за касније!</h1>
-    @endif
     
+
+          СТАТУС КЊИГЕ: {{ $book->loan == 1 ? 'Књига је код корисника' : 'На полици' }}                   
+          
+                @if ($book->loan == 0  || $book->lib_user_id  == null)
+                {{-- Ako je knjiga na polici ili nije dodijeljena nikom  --}}
+               <form method="POST" action="/bookReservation/{{ $book->id }}"  enctype="multipart/form-data">
+                @csrf
+                <div class="col-md-8">
+                   <button type="submit" class="btn btn-primary">РЕЗЕРВИШИ!</button>
+                @endif
+
+
 @endif
         
 </x-layout>

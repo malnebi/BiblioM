@@ -19,7 +19,7 @@
 
         <x-forms.divider />
 
-        <x-forms.input label="Ознаке (раздвоји запетом)" name="tags"
+        <x-forms.input label="Описне ознаке (раздвоји запетом)" name="tags"
             placeholder="популарна наука, образовање, историја, књижевност, белетристика, роман, поезија, драма, фантазија, дистопија" />
 
         <x-forms.button>Сачувај књигу</x-forms.button>

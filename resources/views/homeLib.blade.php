@@ -1,17 +1,32 @@
 <x-layout>
     <div class="space-y-10">
+        
+        <div>
+        <x-library-logo :library="$library ?? 'No library'"  width="100"/>
+        </div>
+   
+        <h1 class="font-bold text-4xl"> БИБЛИОТЕКА {{ $library->name }} </h1>
+
+        <section class="pt-6 text-center">
+            <x-nav-link href="/books/create">ДОДАЈ КЊИГУ</x-nav-link>
+
+            
+            @if ($numOfBooks != 0)
+                <x-nav-link href="/books/create">ПРЕТРАЖИ БИБЛИОТЕКУ</x-nav-link>
+
+                <x-nav-link href="/loans">ПОГЛЕДАЈ ПОЗАЈМИЦЕ</x-nav-link>
+            @endif
+        </section>
+
+        
 
         <section class="text-center">
-            <h1 class="font-bold text-4xl"> {{ $library->name }} библиотечка колекција.</h1>
-            @if ($numOfBooks == 0)
-                <x-forms.divider />
-                <x-nav-link href="/books/create" :active="request()->is('books/create')">Додај књиге у своју библиотеку</x-nav-link> </h>
-            @else
-                <x-forms.form action="/search" class="mt-6">
-                    <x-forms.input :label="false" name="q" placeholder="Наслов, аутор, година ..." />
-                    <x-forms.button>Пронађи</x-forms.button> 
-                </x-forms.form>
+            <x-forms.form action="/search" class="mt-6">
+                <x-forms.input :label="false" name="q" placeholder="Наслов, аутор, година ..." />
+                <x-forms.button>Пронађи</x-forms.button>
+            </x-forms.form>
         </section>
+
 
         <section class="pt-6">
             <x-section-heading>Истакнуто</x-section-heading>
@@ -30,6 +45,9 @@
                 @endforeach
             </div>
         </section>
-        @endif
+
     </div>
+
+    <x-forms.divider />
+
 </x-layout>

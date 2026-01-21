@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Book;
 use App\Models\Tag;
+use App\Models\Loan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +14,7 @@ class BookController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index()   //  stranica sa svim knjigama u navigaciji je pod Zajednica
     {
         $books = Book::latest()->with(['library', 'tags'])->get()->groupBy('featured');  // use eager loading
 
@@ -135,6 +136,23 @@ class BookController extends Controller
         return redirect('books');
 
     }
+
+     public function bookReservation(Request $request, Book $book)
+  {    
+
+      $loan = new Loan;
+        
+        $loan->user_id = Auth::user()->id;
+        $loan->book_id = $book->id; 
+        $loan->library_id = $book->library_id;  
+        $loan->description = 'rezervisano';  
+        $loan->active = $request->active;
+        $loan->save();
+
+        
+        return redirect()->action([UserController::class, 'showLogUser'], [$loan->user_id]);
+    }
+ 
 
     /**
      * Remove the specified resource from storage.

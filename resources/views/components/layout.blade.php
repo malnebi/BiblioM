@@ -18,44 +18,41 @@
     <div class="px-10">
         <nav class="flex justify-between items-center py-4 border-b bg-green-mint border-white/10">
             <div>
-                <a href="/">
+                <a href="/about-app">
                     <img src="{{ Vite::asset('resources/images/logo.svg') }}" alt="">
                 </a>
+                <ul>
+                    <li><a href="/about-app">Падајући мени О апликацији</a></li>
+                    <li><a href="/privacy"> Услови приватности</a></li>
+                </ul>
             </div>
+
 
             <!-- Center Side Of Navbar -->
             <div class="space-x-6 font-bold">
                 @auth
                     <x-nav-link href="/home" :active="request()->is('home')"> Почетна</x-nav-link>
+
                     
-                    <x-nav-link href="/users" :active="request()->is('users')"> БибЛиб заједница</x-nav-link>
-                    
-                    <x-nav-link href="/books" :active="request()->is('books')"> Књиге заједнице</x-nav-link>
-                    
-                    <x-nav-link href="/homeLib/{lib}" :active="request()->is('homeLib')">  {{ Auth::user()->ownLibrary->name }} Књиге</x-nav-link>
-                    
-                    <x-nav-link href="/loans" :active="request()->is('loans')"> {{ Auth::user()->ownLibrary->name }} Позајмице</x-nav-link>
+                    <x-nav-link href="/users" :active="request()->is('users')"> Заједница</x-nav-link>
+                                        
                 
                     @endauth
-
-                <x-nav-link href="/privacy" :active="request()->is('privacy')"> Услови коришћења </x-nav-link>
-                <x-nav-link href="/about-app" :active="request()->is('about-app')"> О Апликацији </x-nav-link>
-
+                
             </div>
             <!-- Right Side Of Navbar -->
             @auth
-             <div class="flex space-x-6 font-bold" >
-                    <x-nav-link href="/books/create" :active="request()->is('books/create')">Додај књигу</x-nav-link> 
-                  
-                    <form method="POST" action="/logout">
-                        @csrf
-                        <button class="rounded-md px-3 py-2 text-md font-semibold hover:text-blue-800 border border-transparent hover:border-blue-800 group transition-colors duration-300 mr-3" 
-                        type="submit">Одјава</button>
-                    </form>
-
-                    <x-nav-link href="/user/{{ Auth::user()->id }}" :active="request()->is('user/'.Auth::user()->id)">{{ Auth::user()->name }}</x-nav-link>
+             <div class="flex space-x-6 font-bold" >                  
+                 <x-nav-link href="/homeLib/{lib}" :active="request()->is('homeLib')"> Моја библиотека</x-nav-link>                 
+                 <x-nav-link href="/userLog/{{ Auth::user()->id }}" :active="request()->is('userLog/'.Auth::user()->id)">{{ Auth::user()->name }}</x-nav-link>
+                 <form method="POST" action="/logout">
+                     @csrf
+                     <button class="rounded-md px-3 py-2 text-md font-semibold hover:text-blue-800 border border-transparent hover:border-blue-800 group transition-colors duration-300 mr-3" 
+                     type="submit">Одјава</button>
+                 </form>
+                 
                 </div>
-            @endauth
+                @endauth
             @guest
                 <div>
                     <x-nav-link href="/register"> Регистрација</x-nav-link>

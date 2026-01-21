@@ -18,7 +18,7 @@
 
         <x-forms.divider />
 
-        <x-forms.input label="Предметне одреднице (одвоји запетом)" name="tags" value="{{ $book->tags->implode(', ') }}" />
+        <x-forms.input label="Описна ознака (одвоји запетом)" name="tags" value="{{ $book->tags->implode(', ') }}" />
 
         
 
