@@ -13,7 +13,6 @@
                             <th scope="col">Члан---</th>
                             <th scope="col">Књига</th>
                             <th scope="col">Датум резервације</th>
-
                         </tr>
                     </thead>
                     <tbody>
@@ -37,14 +36,13 @@
                                             <div class="col-md-8">
 
                                                 <h3 class="hover:text-blue-600  font-bold ">
-                                                    <button type="submit" class="btn btn-primary">Одобри позајмицу
+                                                    <button type="submit" class="btn btn-primary">Одобри позајмицу koриснику {{ $loan->user->name }}
                                                         (само уколико корисник добио књигу)
                                                     </button>
                                                 </h3>
                                             </div>
                                         </form>
                                     </td>
-
                                 </tr>
                             @endif
                         @endforeach
@@ -119,8 +117,8 @@
                                         </h3>
                                     </td>
                                     <td class="font-bold  text-red-200">
-                                        {{ $loan->book->id }} {{ $loan->book->title }} /
-                                        {{ $loan->book->author_fname }}
+                                        {{-- $loan->book->id }} {{ $loan->book->title }} /
+                                        {{ $loan->book->author_fname --}}
                                     </td>
                                     <td>{{ $loan->created_at->format('d. m. Y. ') }} -
                                         {{ $loan->updated_at->format('d. m. Y. ') }}</td>
