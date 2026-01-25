@@ -9,7 +9,6 @@
             <div class="grid lg:grid-cols-1 gap-8 mt-6">
                 <h1 class="font-bold text-xl text-left text-blue-500">ПРЕУЗИМАЊЕ У ТОКУ </h1>
             </div>
-
             <table class="table">
                 <thead>
                     <tr class="text-justify">
@@ -28,31 +27,25 @@
                                         target="_blank">{{ $loansBook->library->name }}</a>
                                 </h3>
                             </td>
-
                             <td class="font-bold text-green-500"> {{ $loansBook->book->id }} </td>
-
                             <td> {{ $loansBook->book->title }} / {{ $loansBook->book->author_fname }}
                                 {{ $loansBook->book->author_lname }}</td>
                             <td>
-                                @if ($loansBook->active == 1)
-                                    <form method="POST" action="/loans/loanMemberConfirm/{{ $loansBook->id }}">
-                                        @csrf
-                                        {{ method_field('PUT') }}
-                                        <div class="col-md-8">
-                                            <h3 class="hover:text-blue-600  font-bold ">
-                                                <button type="submit" class="btn btn-primary">Потврди
-                                                    позајмицу!</button>
-                                            </h3>
-                                        </div>
-                                    </form>
-                                @endif
+                                <form method="POST" action="/loans/loanMemberConfirm/{{ $loansBook->id }}">
+                                    @csrf
+                                    {{ method_field('PUT') }}
+                                    <div class="col-md-8">
+                                        <h3 class="hover:text-blue-600  font-bold ">
+                                            <button type="submit" class="btn btn-primary">Потврди позајмицу!</button>
+                                        </h3>
+                                    </div>
+                                </form>
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
         @endif
-
 
         @if ($reservedLoans->isNotEmpty())
             <div class="grid lg:grid-cols-1 gap-8 mt-6">
@@ -67,7 +60,6 @@
                         <th scope="col"></th>
                     </tr>
                 </thead>
-
                 <tbody>
                     @foreach ($reservedLoans as $loansBook)
                         <tr class="text-justify">
@@ -77,27 +69,9 @@
                                         target="_blank">{{ $loansBook->library->name }}</a>
                                 </h3>
                             </td>
-
                             <td class="font-bold text-green-500"> {{ $loansBook->book->id }} </td>
-
-                            <td> {{ $loansBook->book->title }} / {{ $loansBook->book->author_fname }}
-                                {{ $loansBook->book->author_lname }}</td>
-                            <td>
-                                @if ($loansBook->active == 1)
-                                    <form method="POST" action="/loans/loanMemberConfirm/{{ $loansBook->id }}">
-                                        @csrf
-                                        {{ method_field('PUT') }}
-                                        <div class="col-md-8">
-                                            <h3 class="hover:text-blue-600  font-bold ">
-                                                <button type="submit" class="btn btn-primary">Потврди
-                                                    позајмицу!</button>
-                                            </h3>
-                                        </div>
-                                    </form>
-                                @else
-                                    Захтјев за позајмицу прослијеђен библиотеци {{ $loansBook->library->name }}
-                                @endif
-                            </td>
+                            <td> {{ $loansBook->book->title }} /
+                                {{ $loansBook->book->author_fname }}{{ $loansBook->book->author_lname }}</td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -111,7 +85,6 @@
             <div class="grid lg:grid-cols-1 gap-8 mt-6">
                 <h1 class="font-bold text-xl text-left text-blue-500"> КЊИГЕ НА ЧИТАЊУ ({{ $loansNumber }})</h1>
             </div>
-
             <x-forms.divider />
             <table class="table">
                 <thead class="text-justify">
@@ -123,41 +96,10 @@
                 <tbody>
                     @foreach ($activeLoans as $loansBook)
                         <tr class="text-justify">
-
                             <td> {{ $loansBook->book->title }} / {{ $loansBook->book->author_fname }}
                                 {{ $loansBook->book->author_lname }} / {{ $loansBook->book->id }}</td>
                             <td class="font-bold text-red-500">
                                 {{ \Carbon\Carbon::parse($loansBook->return_deadline)->format('d. m. Y.') }}-</td>
-                            <td>
-                                @if ($loansBook->active == 0)
-                                    Чека се потврда библиотеке о враћању књиге!
-                                @endif
-                                @if ($loansBook->active == 1 && $loansBook->description == 'potpisano')
-                                    <form method="POST" action="/loans/{{ $loansBook->id }}">
-                                        @csrf
-                                        {{ method_field('PUT') }}
-                                        <div class="col-md-8">
-                                            <h3 class="hover:text-blue-600  font-bold ">
-                                                <button type="submit" class="btn btn-primary"> Врати
-                                                    књигу библиотеци {{ $loansBook->library->name }}!</button>
-                                            </h3>
-                                        </div>
-                                    </form>
-                                @endif
-
-                                @if ($loansBook->active == 1 && $loansBook->description == null)
-                                    <form method="POST" action="/loanMemberConfirm/{{ $loansBook->id }}">
-                                        @csrf
-                                        {{ method_field('PUT') }}
-                                        <div class="col-md-8">
-                                            <h3 class="hover:text-blue-600  font-bold ">
-                                                <button type="submit" class="btn btn-primary">Потврди
-                                                    позајмицу библиотеци {{ $loansBook->library->name }}!</button>
-                                            </h3>
-                                        </div>
-                                    </form>
-                                @endif
-                            </td>
                         </tr>
                     @endforeach
                 </tbody>
@@ -166,6 +108,7 @@
             <h1 class="font-bold text-xl text-left text-blue-500"> Немате књига на читању! </h1>
         @endif
         <x-forms.divider />
+
 
         @if ($overLoansCount > 0)
             <div class="grid lg:grid-cols-1 gap-8 mt-6">
@@ -185,7 +128,8 @@
                     @foreach ($overLoans as $loansBooks)
                         <tr class="text-justify">
                             <td class="font-bold  text-red-200">
-                                {{ $loansBooks->book->title }} / {{ $loansBooks->book->author_fname }} {{ $loansBooks->book->author_lname }}
+                                {{ $loansBooks->book->title }} / {{ $loansBooks->book->author_fname }}
+                                {{ $loansBooks->book->author_lname }}
                             </td>
                             <td class="font-bold text-green-500"> {{ $loansBooks->book->id }} </td>
                             <td>
@@ -195,7 +139,7 @@
                                 </h3>
                             </td>
                             <td>{{ $loansBooks->created_at->format('d. m. Y. ') }} - </td>
-                            
+
                             <td> {{ $loansBooks->updated_at->format('d. m. Y. ') }}</td>
                         </tr>
                     @endforeach

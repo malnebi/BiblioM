@@ -35,7 +35,8 @@
                                     {{ $loansBook->book->author_lname }}</td>
                                 <td>
                                     @if ($loansBook->active == 1)
-                                        Чека се потврда корисника о преузимању (потврду корисника и предају књиге вршите истовремено).
+                                        Чека се потврда корисника о преузимању (потврду корисника и предају књиге вршите
+                                        истовремено).
                                     @endif
                                 </td>
                             </tr>
@@ -113,7 +114,7 @@
                                     {{ \Carbon\Carbon::parse($loansBook->return_deadline)->format('d. m. Y.') }}-
                                 </td>
                                 <td>
-                                    <form method="POST" action="/loans/{{ $loansBook->id }}">
+                                    <form method="POST" action="/loans/returnBookConfirm/{{ $loansBook->id }}">
                                         @csrf
                                         {{ method_field('PUT') }}
                                         <div class="col-md-8">
@@ -125,7 +126,6 @@
                                     </form>
                                 </td>
                                 <td>
-
                                     <form method="POST" action="/loans/extend/{{ $loansBook->id }}">
                                         @csrf
                                         {{ method_field('PUT') }}
@@ -159,8 +159,6 @@
                 </x-forms.form>
             @endif
         </section>
-
-
 
         @if ($overLoansCount > 0)
             <div class="grid lg:grid-cols-1 gap-8 mt-6">

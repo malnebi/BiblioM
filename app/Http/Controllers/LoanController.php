@@ -121,6 +121,28 @@ class LoanController extends Controller
         }
         return redirect()->action([UserController::class, 'showLogUser'], [$loan->user_id]);
     }
+
+    /**
+     * Библиотека потврђује враћање књиге.
+     */
+
+    public function returnBookConfirm($loan)
+    {
+        $loan = Loan::find($loan);
+        $loan->active = 0;
+        $loan->description = null;
+        $loan->updated_at = Carbon::now();   // datum vraćanja knjige 
+        $loan->save();
+
+        /** upis u tabelu book */
+        $book = Book::find($loan->book_id);        // traži knjigu u tabeli book na osnovu broja klijent u loan
+        $book->loan = 0;                              // kwiga je slobodna
+        $book->save();
+
+        return redirect()->action([UserController::class, 'show'], [$loan->user_id]);
+    }
+
+    
     /**
      * Display the specified resource.
      */

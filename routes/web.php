@@ -53,6 +53,8 @@ Route::put('/loans/loanMemberConfirm/{loan}', [LoanController::class, 'loanMembe
 Route::put('/loans/loanLibraryConfirm/{loan}', [LoanController::class, 'loanLibraryConfirm'])->middleware('auth'); // библиотека потврђује позајмицу
 
 Route::put('/loans/{loan}', [LoanController::class, 'update'])->middleware('auth');   //vraćanje knjige
+Route::put('/loans/returnBookConfirm/{loan}', [LoanController::class, 'returnBookConfirm'])->middleware('auth'); // библиотека потврђује враћање књиге
+
 Route::put('/loans/extend/{loan}', [LoanController::class, 'updateReturnDate'])->middleware('auth');  // produžavanje roka za vraćanje knjige
 
 
