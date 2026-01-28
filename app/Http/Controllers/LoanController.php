@@ -32,6 +32,52 @@ class LoanController extends Controller
 
     }
 
+
+    public function myLibraryLoans($id) //
+    {
+
+        $library = Library::find($id);
+        $reservedLoans = Loan::where([['library_id', '=', $id], ['active', '=', null], ['description', '=', 'rezervisano']])->get();
+
+        $inProgressLoans = Loan::where([['library_id', '=', $id], ['active', '=', '1']])
+            ->where(function ($query) {
+                $query->where('description', '=', null)->orWhere('description', '=', 'rezervisano');
+            })->get();
+
+        $returnInProgress = Loan::where('library_id', '=', $id)
+            ->where(function ($query) {
+                $query->where([['description', '=', null], ['active', '=', '1']])
+                    ->orWhere([['description', '=', 'potpisano'], ['active', '=', '0']]);
+            })->get();
+
+        $activeLoans = Loan::where([['library_id', '=', $id], ['active', '=', '1'], ['description', '=', 'potpisano']])->get();
+        $overLoans = Loan::where([['library_id', '=', $id], ['active', '=', '0'], ['description', '=', null]])->get();
+
+        $loans = Loan::where('library_id', Auth::user()->ownLibrary->id)
+            ->orderBy('created_at', 'asc')
+            ->with(['user', 'book', 'library'])
+            ->paginate(20);
+
+        $overLoansCount = $overLoans->count();
+        $loansNumber = $activeLoans->count();
+
+
+        $data = [
+            'library' => $library,
+            'reservedLoans' => $reservedLoans,
+            'inProgressLoans' => $inProgressLoans,
+            'returnInProgress' => $returnInProgress,
+            'activeLoans' => $activeLoans,
+            'overLoans' => $overLoans,
+            'loansNumber' => $loansNumber,
+            'overLoansCount' => $overLoansCount,
+            'loans' => $loans,
+        ];
+        return view('loans.myLibraryLoans', $data);
+        //  return dd ($loans->toArray());
+    }
+
+
     /**
      * Show the form for creating a new resource.
      */
@@ -119,7 +165,7 @@ class LoanController extends Controller
             $book->loan = 1;                              // zaduženje knjige je aktivno 
             $book->save();
         }
-        return redirect()->action([UserController::class, 'showLogUser'], [$loan->user_id]);
+        return redirect()->action([UserController::class, 'showLoggedUser'], [$loan->user_id]);
     }
 
     /**
@@ -142,7 +188,7 @@ class LoanController extends Controller
         return redirect()->action([UserController::class, 'show'], [$loan->user_id]);
     }
 
-    
+
     /**
      * Display the specified resource.
      */

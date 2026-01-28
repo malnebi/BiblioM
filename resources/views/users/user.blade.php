@@ -1,11 +1,8 @@
 <x-layout>
     <div class="space-y-10">
-        <section class="text-center">
+        <section class="text-left">
             <h1 class="font-bold text-4xl"> {{ $user->name }}</h1>
 
-            <div class="grid lg:grid-cols-2 gap-8 mt-6">
-                <h1 class="font-bold text-xl text-left"> Укупан број позајмљених књига је {{ $allLoansCount }}. </h1>
-            </div>
             <x-forms.divider />
 
 
@@ -201,7 +198,7 @@
 
         <div>{{ $loans->links() }}</div>
     </div>
-    </div>
+<x-forms.divider />
 
 
 </x-layout>

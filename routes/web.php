@@ -28,16 +28,15 @@ Route::get('/privacy', [PageController::class, 'privacy'])->name('privacy');
 Route::get('/about-app', [PageController::class, 'aboutApp'])->name('about');
 
 /** Библиотеке */
-Route::get('/homeLib/{lib}', [LibraryController::class, 'libBooks'])->middleware('auth'); // knjige jedne biblioteke
-//Route::get('/members', [LibraryController::class,'libMembers']); // svi clanovi biblioteke
-//Route::get('/members/{id}/member', [LibraryController::class, 'libMember']); // samo jedan clan biblioteke
+Route::get('/homeLib/{lib}', [LibraryController::class, 'libBooks'])->middleware('auth'); // biblioteka ulogovanog korisnika
 Route::get('/libraries/{id}', [LibraryController::class, 'show']);
+Route::get('/library/libraryBooks/{id}', [LibraryController::class, 'libraryBooks'])->middleware('auth'); // sve knjige jedne biblioteke
 
 
 /** Члан */
 Route::get('/users', [UserController::class, 'index']); // Навигацијски линк за приказ странице са члановима и њиховим библиотекама
 Route::get('/users/{id}', [UserController::class, 'show']);   // профил корисника - члана 
-Route::get('/userLog/{id}', [UserController::class, 'showLogUser'])->middleware('auth'); // профил улогованог корисника    
+Route::get('/loggedUser/{id}', [UserController::class, 'showLoggedUser'])->middleware('auth'); // профил улогованог корисника    
 Route::get('/users/{id}/edit', [UserController::class, 'edit'])->middleware('auth');
 Route::put('/users/{id}', [UserController::class, 'update'])->middleware('auth');
 Route::delete('/users/{id}', [UserController::class, 'destroy'])->middleware('auth');
@@ -46,6 +45,7 @@ Route::delete('/users/{id}', [UserController::class, 'destroy'])->middleware('au
 
 /** Позајмица */ 
 Route::get('/loans', [LoanController::class, 'index'])->middleware('auth');
+Route::get('/loans/myLibraryLoans/{id}', [LoanController::class, 'myLibraryLoans'])->middleware('auth'); // приказ позајмица библиотеке улогованог корисника
 Route::get('/loans/create/{userId}', [LoanController::class, 'create'])->middleware('auth');
 Route::post('/loans', [LoanController::class, 'store'])->middleware('auth'); // креирање позајмице - библиотека додјељује позајмицу члану
 

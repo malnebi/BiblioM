@@ -111,7 +111,7 @@ class UserController extends Controller
     /**
      * Display the specified resource. Приказ улогованог корисника
      */
-    public function showLogUser($id)
+    public function showLoggedUser($id)
     {
         $user = User::find($id);
         $reservedLoans = Loan::where([['user_id', '=', $id], ['active', '=', null], ['description', '=', 'rezervisano']])->get();
@@ -126,8 +126,8 @@ class UserController extends Controller
                     ->orWhere([['description', '=', 'potpisano'], ['active', '=', '0']]);
             })->get();
 
-        $activeLoans = Loan::where([['user_id', '=', $id], ['active', '=', '1'], ['description', '=', 'potpisano']])->get();
-        $overLoans = Loan::where([['user_id', '=', $id], ['active', '=', '0'], ['description', '=', null]])->get();
+        $activeLoans = Loan::where([['library_id', '=', $id], ['active', '=', '1'], ['description', '=', 'potpisano']])->get();
+        $overLoans = Loan::where([['library_id', '=', $id], ['active', '=', '0'], ['description', '=', null]])->get();
 
         $loans = Loan::where('library_id', Auth::user()->ownLibrary->id)
             ->orderBy('created_at', 'asc')
@@ -154,7 +154,7 @@ class UserController extends Controller
 
         ];
         //return $id;
-        return view('users.logUser', $data);
+        return view('users.loggedUser', $data);
     }
 
     /**

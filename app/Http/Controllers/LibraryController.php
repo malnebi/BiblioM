@@ -14,8 +14,8 @@ class LibraryController extends Controller
 {
     //library members 
 
-    
-    
+
+
     public function index()
     {
 
@@ -29,30 +29,23 @@ class LibraryController extends Controller
     }
 
 
-    public function show($id) // prikaži biblioteku člana sa svim knjigama njegove biblioteke i zaduženjima biblioteke ulogovanog člana 
+    public function show($id) // prikaži biblioteku člana sa svim knjigama njegove biblioteke 
     {
         $library = Library::find($id);
-        $user = User::find($library->owner_id);      
         $books = Book::where('library_id', $id)->with(['library'])->get();
         $featuredBooks = $books->where('featured', 1);
-        $loans = Loan::where('library_id', Auth::user()->ownLibrary->id)
-                ->orderBy('created_at', 'asc')
-                ->with(['user', 'book', 'library'])
-                ->paginate(20);                             
-                
-                $data = [
-                    'library' => $library,
-                    'user' => $user,
-                    'books' => $books,
-                    'featuredBooks' => $featuredBooks,
-                    'loans' => $loans,
+
+        $data = [
+            'library' => $library,
+            'books' => $books,
+            'featuredBooks' => $featuredBooks,
         ];
 
         return view('libraries.library', $data);
     }
-    
-    
-    
+
+
+
     /**
      * Display a listing of the resource for specified library.
      */
@@ -63,22 +56,47 @@ class LibraryController extends Controller
         $library = Auth::user()->ownLibrary->id;
         $books = Book::where('library_id', $library)->with(['library'])->get();
         $featuredBooks = $books->where('featured', 1);
-                $loans = Loan::where('library_id', Auth::user()->ownLibrary->id)
-                ->orderBy('created_at', 'asc')
-                ->with(['user', 'book', 'library'])
-                ->paginate(20);
-            
-            
-            $data = [
-                'library' => Auth::user()->ownlibrary,
-                'featuredBooks' => $featuredBooks,
-                'numOfBooks' => $books->count(),
-                'books' => $books,
-                'loans' => $loans,
+        $loans = Loan::where('library_id', Auth::user()->ownLibrary->id)
+            ->orderBy('created_at', 'asc')
+            ->with(['user', 'book', 'library'])
+            ->paginate(20);
+
+
+        $data = [
+            'library' => Auth::user()->ownlibrary,
+            'featuredBooks' => $featuredBooks,
+            'numOfBooks' => $books->count(),
+            'books' => $books,
+            'loans' => $loans,
         ];
 
         return view('homeLib', $data);
     }
+
+
+    /** 
+     * prikaz svih knjiga biblioteke ulogovanog člana
+     *  */
+    public function libraryBooks($id)
+    {
+
+        $library = Library::find($id);
+        $user = User::find($library->owner_id);
+        $books = Book::where('library_id', $id)->with(['library'])->get();
+        $featuredBooks = $books->where('featured', 1);
+
+        $data = [
+            'library' => $library,
+            'user' => $user,
+            'books' => $books,
+            'featuredBooks' => $featuredBooks,
+        ];
+
+        return view('libraries.libraryBooks', $data);
+    }
+
+
+
     public function libMembers()
     {
 
@@ -112,6 +130,4 @@ class LibraryController extends Controller
 
         return view('members.member', $data);
     }
-
-
 }

@@ -8,14 +8,16 @@
             <div class="space-y-10">
 
                 <section class="text-center">
+
                     <x-forms.form action="/search" class="mt-6">
                         <x-forms.input :label="false" name="q" placeholder="Наслов, аутор, година ..." />
-                        <x-forms.button>ПРЕТРАЖИ</x-forms.button>
+                        <x-forms.button>ПРЕТРАЖИ</x-forms.button> 
                     </x-forms.form>
                 </section>
 
                 <section class="pt-6">
                     <x-section-heading>Истакнуто</x-section-heading>
+
                     <div class="grid lg:grid-cols-3 gap-8 mt-6">
                         @foreach ($featuredBooks as $book)
                             <x-book-card :$book />

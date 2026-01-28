@@ -150,7 +150,7 @@ class BookController extends Controller
         $loan->save();
 
         
-        return redirect()->action([UserController::class, 'showLogUser'], [$loan->user_id]);
+        return redirect()->action([UserController::class, 'showLoggedUser'], [$loan->user_id]);
     }
  
 

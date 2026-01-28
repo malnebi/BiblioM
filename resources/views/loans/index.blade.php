@@ -1,54 +1,59 @@
 <x-layout>
 
-    <x-section-heading>ПОЗАЈМИЦЕ БИБЛИОТЕКЕ {{ Auth::user()->ownLibrary->name }} </x-section-heading>
+    <h1 class="font-bold text-4xl"> БИБЛИОТЕКА {{ Auth::user()->ownLibrary->name }}</h1>
+
     <x-forms.divider />
+
+
 
     <div class="space-y-10">
 
-            <section class="text-center"> РЕЗЕРВАЦИЈЕ</section>
-            <div class="mt-6 space-y-6">
-                <table class="table">
-                    <thead>
-                        <tr class="text-left">
-                            <th scope="col">Члан---</th>
-                            <th scope="col">Књига</th>
-                            <th scope="col">Датум резервације</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($loans as $loan)
-                            @if ($loan->active == null && $loan->description == 'rezervisano')
-                                <tr class="text-left">
-                                    <td>
-                                        <h3 class="hover:text-blue-600  font-bold ">
-                                            <a href="/users/{{ $loan->user->id }}"
-                                                target="_blank">{{ $loan->user->name }}</a>
-                                        </h3>
-                                    </td>
-                                    <td class="font-bold  text-red-200">
-                                        {{ $loan->book->id }} {{ $loan->book->title }} / {{ $loan->book->author_fname }}
-                                    </td>
-                                    <td>{{ $loan->created_at->format('d. m. Y. ') }}</td>
-                                    <td>
-                                        <form method="POST" action="/loans/loanLibraryConfirm/{{ $loan->id }}">
-                                            @csrf
-                                            {{ method_field('PUT') }}
-                                            <div class="col-md-8">
+        
+        <section class="text-center"> РЕЗЕРВАЦИЈЕ</section>
+        <div class="mt-6 space-y-6">
+            <table class="table">
+                <thead>
+                    <tr class="text-left">
+                        <th scope="col">Члан---</th>
+                        <th scope="col">Књига</th>
+                        <th scope="col">Датум резервације</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($loans as $loan)
+                        @if ($loan->active == null && $loan->description == 'rezervisano')
+                            <tr class="text-left">
+                                <td>
+                                    <h3 class="hover:text-blue-600  font-bold ">
+                                        <a href="/users/{{ $loan->user->id }}"
+                                            target="_blank">{{ $loan->user->name }}</a>
+                                    </h3>
+                                </td>
+                                <td class="font-bold  text-red-200">
+                                    {{ $loan->book->id }} {{ $loan->book->title }} / {{ $loan->book->author_fname }}
+                                </td>
+                                <td>{{ $loan->created_at->format('d. m. Y. ') }}</td>
+                                <td>
+                                    <form method="POST" action="/loans/loanLibraryConfirm/{{ $loan->id }}">
+                                        @csrf
+                                        {{ method_field('PUT') }}
+                                        <div class="col-md-8">
 
-                                                <h3 class="hover:text-blue-600  font-bold ">
-                                                    <button type="submit" class="btn btn-primary">Одобри позајмицу koриснику {{ $loan->user->name }}
-                                                        (само уколико корисник добио књигу)
-                                                    </button>
-                                                </h3>
-                                            </div>
-                                        </form>
-                                    </td>
-                                </tr>
-                            @endif
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
+                                            <h3 class="hover:text-blue-600  font-bold ">
+                                                <button type="submit" class="btn btn-primary">Одобри позајмицу
+                                                    koриснику {{ $loan->user->name }}
+                                                    (само уколико корисник добио књигу)
+                                                </button>
+                                            </h3>
+                                        </div>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endif
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
 
         <div class="space-y-10">
             <section class="text-center"> КЊИГЕ НА ЧИТАЊУ</section>

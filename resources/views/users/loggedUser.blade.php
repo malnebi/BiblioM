@@ -89,17 +89,25 @@
             <table class="table">
                 <thead class="text-justify">
                     <tr>
-                        <th scope="col">Наслов / Аутор / Број књиге</th>
+                        <th scope="col">Broj pozajmice</th>
+                        <th scope="col">Наслов / Ауторsss / Број књиге</th>
                         <th scope="col">Рок за враћање</th>
+                        <th scope="col">description</th>
+                        <th scope="col">active</th>
+                        
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($activeLoans as $loansBook)
                         <tr class="text-justify">
+                            <td> {{$loansBook->id}}
                             <td> {{ $loansBook->book->title }} / {{ $loansBook->book->author_fname }}
                                 {{ $loansBook->book->author_lname }} / {{ $loansBook->book->id }}</td>
                             <td class="font-bold text-red-500">
                                 {{ \Carbon\Carbon::parse($loansBook->return_deadline)->format('d. m. Y.') }}-</td>
+                            <td> {{$loansBook->description}}</td>
+                            <td> {{$loansBook->active}}</td>
+                                  
                         </tr>
                     @endforeach
                 </tbody>
@@ -145,10 +153,10 @@
                     @endforeach
                 </tbody>
             </table>
+            <div>{{ $loans->links() }}</div>
         @else
             <h1 class="font-bold text-xl text-left text-blue-500"> НЕМАТЕ ПРОЧИТАНИХ КЊИГA </h1>
         @endif
 
-        <div>{{ $loans->links() }}</div>
     </div>
 </x-layout>
