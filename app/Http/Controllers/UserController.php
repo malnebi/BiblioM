@@ -126,10 +126,10 @@ class UserController extends Controller
                     ->orWhere([['description', '=', 'potpisano'], ['active', '=', '0']]);
             })->get();
 
-        $activeLoans = Loan::where([['library_id', '=', $id], ['active', '=', '1'], ['description', '=', 'potpisano']])->get();
-        $overLoans = Loan::where([['library_id', '=', $id], ['active', '=', '0'], ['description', '=', null]])->get();
+        $activeLoans = Loan::where([['user_id', '=', $id], ['active', '=', '1'], ['description', '=', 'potpisano']])->get();
+        $overLoans = Loan::where([['user_id', '=', $id], ['active', '=', '0'], ['description', '=', null]])->get();
 
-        $loans = Loan::where('library_id', Auth::user()->ownLibrary->id)
+        $loans = Loan::where('user_id', $id)
             ->orderBy('created_at', 'asc')
             ->with(['user', 'book', 'library'])
             ->paginate(20);

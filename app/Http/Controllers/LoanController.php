@@ -61,6 +61,16 @@ class LoanController extends Controller
         $overLoansCount = $overLoans->count();
         $loansNumber = $activeLoans->count();
 
+        $groupedOverLoans = Loan::with(['book', 'user'])
+            ->where('library_id', $id)
+            ->where('description', null)
+            ->where('active', '0')
+            ->get()
+            ->groupBy('book_id');
+
+        $groupedActiveLoans = $activeLoans->groupBy('book_id');
+        $groupedReservedLoans = $reservedLoans->groupBy('book_id');
+        $groupedProgressLoans = $inProgressLoans->groupBy('book_id');
 
         $data = [
             'library' => $library,
@@ -72,6 +82,10 @@ class LoanController extends Controller
             'loansNumber' => $loansNumber,
             'overLoansCount' => $overLoansCount,
             'loans' => $loans,
+            'groupedOverLoans' => $groupedOverLoans,
+            'groupedActiveLoans' => $groupedActiveLoans,
+            'groupedReservedLoans' => $groupedReservedLoans,
+            'groupedProgressLoans' => $groupedProgressLoans,
         ];
         return view('loans.myLibraryLoans', $data);
         //  return dd ($loans->toArray());
