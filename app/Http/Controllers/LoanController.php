@@ -165,7 +165,7 @@ class LoanController extends Controller
     /**
      * Члан потврђује позајмицу.
      */
-    public function loanMemberConfirm($loan)
+    public function loanBookMemberConfirm($loan)
     {
 
         $loan = Loan::find($loan);
@@ -176,7 +176,8 @@ class LoanController extends Controller
         /** upis u tabelu book */
         if ($loan->loan == 1) {
             $book = Book::find($loan->book_id);        // traži knjigu u tabeli book na osnovu broja klijent u loan
-            $book->loan = 1;                              // zaduženje knjige je aktivno 
+            $book->loan = 1;  
+            $book->lib_user_id = $loan->user_id;                            // zaduženje knjige je aktivno 
             $book->save();
         }
         return redirect()->action([UserController::class, 'showLoggedUser'], [$loan->user_id]);
@@ -186,7 +187,7 @@ class LoanController extends Controller
      * Библиотека потврђује враћање књиге.
      */
 
-    public function returnBookConfirm($loan)
+    public function returnBookLibraryConfirm($loan)
     {
         $loan = Loan::find($loan);
         $loan->active = 0;
@@ -196,7 +197,8 @@ class LoanController extends Controller
 
         /** upis u tabelu book */
         $book = Book::find($loan->book_id);        // traži knjigu u tabeli book na osnovu broja klijent u loan
-        $book->loan = 0;                              // kwiga je slobodna
+        $book->loan = 0;                    // zaduženje je neaktivno  - knjiga je slobodna)
+        $book->lib_user_id = null;                              
         $book->save();
 
         return redirect()->action([UserController::class, 'show'], [$loan->user_id]);

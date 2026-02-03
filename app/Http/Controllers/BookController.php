@@ -67,7 +67,7 @@ class BookController extends Controller
         $book->loan = 0;
 
         $attributes['featured'] = $request->has('featured');
-        $attributes['lib_book_id'] = $libBookId;  
+        $attributes['lib_book_id'] = $libBookId;
 
         $book = Auth::user()->ownLibrary->books()->create(Arr::except($attributes, 'tags'));
 
@@ -78,7 +78,7 @@ class BookController extends Controller
 
             $book->save();
 
-//            return dd($libraryId, $lastLibBookId, $libBookId, $attributes, $book);
+            //            return dd($libraryId, $lastLibBookId, $libBookId, $attributes, $book);
             return redirect('books');
         }
     }
@@ -108,9 +108,8 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-        
-      return view('books.edit', ['book' => $book,]);
 
+        return view('books.edit', ['book' => $book,]);
     }
 
     /**
@@ -118,8 +117,9 @@ class BookController extends Controller
      */
     public function update(Request $request, Book $book)
     {
-                
-        $request->validate([         /**Validacija podataka */
+
+        $request->validate([
+            /**Validacija podataka */
             'year' => ['required', 'string', 'max:4'],
             'title' => ['required', 'string', 'max:200'],
         ]);
@@ -130,29 +130,39 @@ class BookController extends Controller
         $book->publisher_name = $request->publisher_name;
         $book->publisher_place = $request->publisher_place;
         $book->year = $request->year;
-        
+
         $book->save();
 
         return redirect('books');
-
     }
 
-     public function bookReservation(Request $request, Book $book)
-  {    
+    public function bookReservation(Request $request, Book $book)
+    {
 
-      $loan = new Loan;
-        
-        $loan->user_id = Auth::user()->id;
-        $loan->book_id = $book->id; 
-        $loan->library_id = $book->library_id;  
-        $loan->description = 'rezervisano';  
-        $loan->active = $request->active;
-        $loan->save();
+        $loans = Loan::where([
+            ['user_id', '=', Auth::user()->id],
+            ['book_id', '=', $book->id],
+            ['library_id', '=', $book->library_id],
+            ['description', '=', 'rezervisano']
+        ])->first();
 
+
+        if ($loans) {
         
-        return redirect()->action([UserController::class, 'showLoggedUser'], [$loan->user_id]);
-    }
- 
+        return redirect()->action([BookController::class, 'show'], [$book->id])->with('error', 'Knjiga je već rezervisana ili pozajmljena.');
+        } 
+            $loan = new Loan;
+            $loan->user_id = Auth::user()->id;
+            $loan->book_id = $book->id;
+            $loan->library_id = $book->library_id;
+            $loan->description = 'rezervisano';
+            $loan->active = $request->active;
+            $loan->save();
+
+
+            return redirect()->action([UserController::class, 'showLoggedUser'], [$loan->user_id]);
+        }
+
 
     /**
      * Remove the specified resource from storage.
@@ -162,7 +172,5 @@ class BookController extends Controller
         $book->delete();
 
         return redirect('books');
- 
     }
-
 }

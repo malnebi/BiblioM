@@ -111,7 +111,7 @@
                                     {{ \Carbon\Carbon::parse($loansBook->return_deadline)->format('d. m. Y.') }}-
                                 </td>
                                 <td>
-                                    <form method="POST" action="/loans/returnBookConfirm/{{ $loansBook->id }}">
+                                    <form method="POST" action="/loans/returnBookLibraryConfirm/{{ $loansBook->id }}">
                                         @csrf
                                         {{ method_field('PUT') }}
                                         <div class="col-md-8">

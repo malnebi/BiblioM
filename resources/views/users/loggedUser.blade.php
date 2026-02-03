@@ -23,7 +23,7 @@
                         <tr class="text-justify">
                             <td>
                                 <h3 class="hover:text-blue-600  font-bold ">
-                                    <a href="/users/{{ $loansBook->library->id }}"
+                                    <a href="/libraries/{{ $loansBook->library->id }}"
                                         target="_blank">{{ $loansBook->library->name }}</a>
                                 </h3>
                             </td>
@@ -31,7 +31,7 @@
                             <td> {{ $loansBook->book->title }} / {{ $loansBook->book->author_fname }}
                                 {{ $loansBook->book->author_lname }}</td>
                             <td>
-                                <form method="POST" action="/loans/loanMemberConfirm/{{ $loansBook->id }}">
+                                <form method="POST" action="/loans/loanBookMemberConfirm/{{ $loansBook->id }}">
                                     @csrf
                                     {{ method_field('PUT') }}
                                     <div class="col-md-8">
@@ -65,7 +65,7 @@
                         <tr class="text-justify">
                             <td>
                                 <h3 class="hover:text-blue-600  font-bold ">
-                                    <a href="/users/{{ $loansBook->library->id }}"
+                                    <a href="/libraries/{{ $loansBook->library->id }}"
                                         target="_blank">{{ $loansBook->library->name }}</a>
                                 </h3>
                             </td>
@@ -94,20 +94,20 @@
                         <th scope="col">Рок за враћање</th>
                         <th scope="col">description</th>
                         <th scope="col">active</th>
-                        
+
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($activeLoans as $loansBook)
                         <tr class="text-justify">
-                            <td> {{$loansBook->id}}
+                            <td> {{ $loansBook->id }}
                             <td> {{ $loansBook->book->title }} / {{ $loansBook->book->author_fname }}
                                 {{ $loansBook->book->author_lname }} / {{ $loansBook->book->id }}</td>
                             <td class="font-bold text-red-500">
                                 {{ \Carbon\Carbon::parse($loansBook->return_deadline)->format('d. m. Y.') }}-</td>
-                            <td> {{$loansBook->description}}</td>
-                            <td> {{$loansBook->active}}</td>
-                                  
+                            <td> {{ $loansBook->description }}</td>
+                            <td> {{ $loansBook->active }}</td>
+
                         </tr>
                     @endforeach
                 </tbody>
