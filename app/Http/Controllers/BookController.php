@@ -94,9 +94,13 @@ class BookController extends Controller
             abort(404);
         }
 
+        $isReservedByMe = $book->isReservedBy(Auth::id());
+        $isBorrowedByMe = $book->isBorrowedByMe(Auth::id());
         $data = [
 
             'book' => $book,
+            'isReservedByMe' => $isReservedByMe,
+            'isBorrowedByMe' => $isBorrowedByMe,
             //            'numberOfLoans' => $numberOfLoans,
             //            'clientName' => $clientName,  
         ];
@@ -148,20 +152,20 @@ class BookController extends Controller
 
 
         if ($loans) {
-        
-        return redirect()->action([BookController::class, 'show'], [$book->id])->with('error', 'Knjiga je već rezervisana ili pozajmljena.');
-        } 
-            $loan = new Loan;
-            $loan->user_id = Auth::user()->id;
-            $loan->book_id = $book->id;
-            $loan->library_id = $book->library_id;
-            $loan->description = 'rezervisano';
-            $loan->active = $request->active;
-            $loan->save();
 
-
-            return redirect()->action([UserController::class, 'showLoggedUser'], [$loan->user_id]);
+            return redirect()->action([BookController::class, 'show'], [$book->id])->with('error', 'Knjiga je već rezervisana ili pozajmljena.');
         }
+        $loan = new Loan;
+        $loan->user_id = Auth::user()->id;
+        $loan->book_id = $book->id;
+        $loan->library_id = $book->library_id;
+        $loan->description = 'rezervisano';
+        $loan->active = $request->active;
+        $loan->save();
+
+
+        return redirect()->action([UserController::class, 'showLoggedUser'], [$loan->user_id]);
+    }
 
 
     /**

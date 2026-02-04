@@ -48,24 +48,26 @@
     @endauth
 
 
-    <div class="space-y-2">
-        <div class="border border-blue-300 rounded-lg bg-[#fdfaf5] px-6 py-2 text-sm text-black">
-            <div class="grid grid-cols-3 font-semibold pb-1 mb-1 text-xs">
-                @if ($book->library->owner_id != Auth::id())
-
-                    @if ($book->loans->where('description', 'rezervisano')->where('user_id', Auth::id())->first())
-                        <div class="text-orange-500 font-bold"> Ово је ваша резервација. </div>
+    @if ($book->library->owner_id != Auth::id())
+        <div class="space-y-2">
+            <div class="border border-blue-300 rounded-lg bg-[#fdfaf5] px-6 py-2 text-sm text-black">
+                <div class="grid grid-cols-3 font-semibold pb-1 mb-1 text-xs">
+                    @if ($isBorrowedByMe)
+                        <div class="text-green-900 font-bold">МОЈА ПОЗАЈМИЦА</div>
+                    @elseif ($isReservedByMe)
+                        <div class="text-orange-500 font-bold"> МОЈА РЕЗЕРВАЦИЈА. </div>
                     @else
                         <form method="POST" action="/bookReservation/{{ $book->id }}"
                             enctype="multipart/form-data">
                             @csrf
                             <div class="col-md-8">
-                                <button type="submit" class="btn btn-primary text-green-950 hover:text-blue-600">РЕЗЕРВИШИ</button>
+                                <button type="submit"
+                                    class="btn btn-primary text-green-950 hover:text-blue-600">РЕЗЕРВИШИ</button>
                             </div>
                         </form>
                     @endif
-                @endif
+                </div>
             </div>
         </div>
-    </div>
+    @endif
 </x-layout>

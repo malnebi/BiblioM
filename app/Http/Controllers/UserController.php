@@ -82,7 +82,18 @@ class UserController extends Controller
             ->with(['user', 'book', 'library'])
             ->paginate(20);
 
-        $books = Book::where('library_id', Auth::user()->ownLibrary->id)->where('loan', 0)->get(); // добавља све слободне књиге из библиотеке улогованог корисника    
+
+        // ИД корисника на чијој смо страници 
+        $targetUserId = $user->id;
+
+        $books = Book::where('library_id', Auth::user()->ownLibrary->id)
+            ->where('loan', 0) // Слободне књиге
+            ->whereDoesntHave('loans', function ($query) use ($targetUserId) {
+                $query->where('description', 'rezervisano')
+                    ->where('user_id', $targetUserId);
+            })
+            ->get();
+
 
         if (!$user) {
             abort(404);
@@ -115,6 +126,7 @@ class UserController extends Controller
     {
         $user = User::find($id);
         $reservedLoans = Loan::where([['user_id', '=', $id], ['active', '=', null], ['description', '=', 'rezervisano']])->get();
+
         $inProgressLoans = Loan::where([['user_id', '=', $id], ['active', '=', '1']])
             ->where(function ($query) {
                 $query->where('description', '=', null)->orWhere('description', '=', 'rezervisano');

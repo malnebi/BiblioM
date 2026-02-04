@@ -54,7 +54,7 @@
                                 </svg>
                             </div>
 
-                            <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Библиб заједница
+                            <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Заједница
                             </h2>
 
                             <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
@@ -81,12 +81,12 @@
                                 </svg>
                             </div>
 
-                            <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Библиб новости</h2>
+                            <h2 class="mt-6 text-xl font-semibold text-gray-900 dark:text-white">Новости</h2>
 
                             <p class="mt-4 text-gray-500 dark:text-gray-400 text-sm leading-relaxed">
-                                Библиб је апликација која подржава заједницу корисника који желе да размјењују књиге са
-                                другима.
-                                Сазнај шта је ново у нашој апликацији. </p>
+                                Моја библиотека је апликација која подржава заједницу корисника који желе да размјењују
+                                књиге са
+                                другима. Новости ускоро стижу! </p>
                         </div>
 
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
@@ -113,13 +113,7 @@
                             </div>
                         </div>
                     </div>
-
-
                 </div>
-
-
                 </section>
-
-
             </div>
 </x-layout>

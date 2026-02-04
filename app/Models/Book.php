@@ -14,21 +14,22 @@ use App\Models\Tag;
 class Book extends Model
 {
     use HasFactory;
-    
+
     protected $fillable = [
         'library_id',
         'lib_book_id',
         'author_fname', // Add this line
         'author_lname', // Add this line
         'title',
-        'year', 
+        'year',
     ];
 
-    public function tag(string $name): void{
+    public function tag(string $name): void
+    {
 
         $tag = Tag::firstOrCreate(['name' => $name]);
 
-     $this->tags()->attach($tag);
+        $this->tags()->attach($tag);
     }
 
     public function tags(): BelongsToMany
@@ -50,8 +51,25 @@ class Book extends Model
         return $this->hasMany(Loan::class);
     }
 
- public function userBorrows()
+    public function userBorrows()
     {
         return $this->belongsTo(User::class, 'lib_user_id');
+    }
+
+    public function isReservedBy(int $userId): bool
+    {
+        return $this->loans()
+            ->where('description', 'rezervisano')
+            ->where('user_id', $userId)
+            ->exists();
+    }
+
+    public function isBorrowedByMe(int $userId): bool
+    {
+        return $this->loans()
+            ->where('active', '1')
+            ->where('description', 'potpisano')
+            ->where('user_id', $userId)
+            ->exists();
     }
 }

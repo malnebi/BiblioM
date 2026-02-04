@@ -22,17 +22,22 @@
                     {{-- 🔵 ЈЕДИНСТВЕН КОНТЕЈНЕР --}}
                     <div class="border border-gray-300 rounded-lg bg-[#fdfaf5] px-4 py-2 text-sm text-black">
                         @foreach ($loans as $loan)
+                        @if ($loan->active == 1)
+                            <div class="mt-1">
+                                Чека се потпис члана {{ $loan->user->name }} - потврда о преузимању.
+                            </div>
+                            @else
                             <form method="POST" action="/loans/loanLibraryConfirm/{{ $loan->id }}">
                                 @csrf
                                 @method('PUT')
 
                                 {{-- ❌ УКЛОЊЕНО: непотребни wrapper-и --}}
                                 {{-- 🔵 ИЗМИЈЕЊЕНО --}}
-                                <button
-                                    class="font-bold hover:text-blue-700">
+                                <button class="font-bold hover:text-blue-700">
                                     Потврди позајмицу члану {{ $loan->user->name }}
                                 </button>
                             </form>
+                            @endif
                         @endforeach
                     </div>
                 @endforeach
@@ -84,13 +89,13 @@
                                 од {{ $loan->created_at->format('d. m. Y.') }}.
                             </div>
 
-                            <form method="POST" action="/loans/returnBookConfirm/{{ $loan->id }}">
+                            <form method="POST" action="/loans/returnBookLibraryConfirm/{{ $loan->id }}">
                                 @csrf
                                 @method('PUT')
 
                                 {{-- 🔵 ИЗМИЈЕЊЕНО --}}
                                 <button class="font-bold hover:text-green-600 mt-1">
-                                    Врати књигу
+                                    Врати књигу на полицу! 
                                 </button>
                             </form>
                         @endforeach
@@ -99,9 +104,9 @@
             </div>
         @endif
 
-        {{-- ================== ПРОЧИТАНЕ КЊИГЕ ================== --}}
+        {{-- ================== ВРАЋЕНЕ КЊИГЕ ================== --}}
         @if ($overLoans->isNotEmpty())
-            <h1 class="font-bold text-xl text-left text-blue-500">ПРОЧИТАНЕ КЊИГЕ</h1>
+            <h1 class="font-bold text-xl text-left text-blue-500">ВРАЋЕНЕ КЊИГЕ</h1>
 
             <div class="space-y-2">
                 @foreach ($groupedOverLoans as $bookId => $loans)

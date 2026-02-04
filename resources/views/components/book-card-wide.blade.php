@@ -5,10 +5,8 @@
     {{-- ЛИЈЕВО: ЛОГО + ИНВЕНТАР + СТАТУС --}}
     <div class="flex flex-col items-center shrink-0">
 
-        <x-library-logo :library="$book->library ?? 'No library'" />
-
-       
-
+        <x-library-logo :library="$book->library ?? 'No library'" /> 
+            
         @if ($book->loan == 1)
             <div class="text-red-500 text-xs font-bold mt-1">На читању</div>
         @elseif ($book->loans->where('description', 'rezervisano')->where('user_id', Auth::id())->first())
@@ -31,8 +29,7 @@
             class="font-bold text-md mt-2
                    group-hover:text-blue-800
                    active:text-blue-800
-                   focus-visible:text-blue-800"
-        >
+                   focus-visible:text-blue-800">
             <a href="/books/{{ $book->id }}/book" target="_blank">
                 {{ $book->title }}
             </a>
@@ -40,41 +37,31 @@
 
         {{-- БИБЛИОГРАФИЈА + ⋯ --}}
         <details class="mt-1">
-
             {{-- ЈЕДАН РЕД (СКРАЋЕН) --}}
             <summary
                 class="flex items-center gap-2 cursor-pointer
-                       text-sm text-gray-200 list-none"
-            >
+                       text-sm text-gray-200 list-none">
                 <span class="truncate">
                     {{ $book->publisher_place }}:
                     {{ $book->publisher_name }},
                     {{ $book->year }}
                 </span>
 
-                <span
-                    class="text-lg text-gray-300
-                           hover:text-blue-700 active:text-blue-700"
-                >
+                <span class="text-lg text-gray-300
+                           hover:text-blue-700 active:text-blue-700">
                     ⋯
                 </span>
             </summary>
 
             {{-- ПРОШИРЕНИ ОПИС – ИСПОД --}}
             <div class="mt-2 text-sm text-gray-400 space-y-1">
-             
-
-                <div>
-                    <strong>Библиотека:</strong>
+                <div><strong>Библиотека:</strong>
                     {{ $book->library->name }}
                 </div>
-
-                <div>
-                    <strong>Инвентарни број:</strong>
+                <div><strong>Инвентарни број:</strong>
                     #{{ $book->id }}
                 </div>
             </div>
-
         </details>
 
         {{-- 📱 МОБИЛНИ ТАГОВИ --}}
