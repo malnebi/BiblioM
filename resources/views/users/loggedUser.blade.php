@@ -7,7 +7,23 @@
         {{-- ================== ПРЕУЗИМАЊЕ У ТОКУ ================== --}}
         @if ($inProgressLoans->isNotEmpty())
             <x-collapsible-section title="МОЈЕ ПРЕУЗИМАЊЕ КЊИГЕ" :count="count($inProgressLoans)">
-                @foreach ($inProgressLoans as $loansBook)
+                <x-slot name="visible">
+                    @foreach ($inProgressLoans->take(2) as $loansBook)
+                        <x-book-card-wide :book="$loansBook->book" />
+                        <div class="border border-gray-300 rounded-lg bg-[#fdfaf5] px-4 py-2 text-sm text-black">
+                            <form method="POST" action="/loans/loanBookMemberConfirm/{{ $loansBook->id }}">
+                                @csrf
+                                {{ method_field('PUT') }}
+                                <div class="col-md-8">
+                                    <h3 class="hover:text-blue-600  font-bold ">
+                                        <button type="submit" class="btn btn-primary">Потврди позајмицу и преузми књигу!</button>
+                                    </h3>
+                                </div>
+                            </form>
+                        </div>
+                    @endforeach
+                </x-slot>
+                @foreach ($inProgressLoans->skip(2) as $loansBook)
                     <x-book-card-wide :book="$loansBook->book" />
                     <div class="border border-gray-300 rounded-lg bg-[#fdfaf5] px-4 py-2 text-sm text-black">
                         <form method="POST" action="/loans/loanBookMemberConfirm/{{ $loansBook->id }}">
@@ -15,7 +31,7 @@
                             {{ method_field('PUT') }}
                             <div class="col-md-8">
                                 <h3 class="hover:text-blue-600  font-bold ">
-                                    <button type="submit" class="btn btn-primary">Потврди позајмицу!</button>
+                                    <button type="submit" class="btn btn-primary">Потврди позајмицу и преузми књигу!</button>
                                 </h3>
                             </div>
                         </form>
@@ -27,7 +43,7 @@
         {{-- ================== РЕЗЕРВАЦИЈЕ ================== --}}
         @if ($reservedLoans->isNotEmpty())
             <x-collapsible-section title="МОЈЕ РЕЗЕРВАЦИЈЕ" :count="count($reservedLoans)">
-               
+
                 <x-slot name="visible">
                     @foreach ($reservedLoans->take(2) as $loansBook)
                         <x-book-card-wide :book="$loansBook->book" />
@@ -42,7 +58,7 @@
                     @endforeach
                 </x-slot>
                 {{-- Све испод овога аутоматски иде у главни $slot --}}
-                @foreach ($reservedLoans as $loansBook)
+                @foreach ($reservedLoans->skip(2) as $loansBook)
                     <x-book-card-wide :book="$loansBook->book" />
                     <div class="border border-gray-300 rounded-lg bg-[#fdfaf5] px-4 py-2 text-sm text-black">
                         @if ($loansBook->book->loans->where('description', 'rezervisano')->where('user_id', Auth::id())->first())
@@ -108,7 +124,7 @@
                 @endforeach
             </x-collapsible-section>
         @else
-            <x-section-heading> {{ $user->name }} НЕМА ПРОЧИТАНИХ КЊИГA </x-section-heading>
+            <x-section-heading> {{ $user->name }} НЕМАТЕ ПРОЧИТАНИХ КЊИГA </x-section-heading>
         @endif
         <x-forms.divider />
         <x-forms.divider />

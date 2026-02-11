@@ -22,7 +22,7 @@
         </section>
 
         <section>
-            <x-section-heading>Опсне ознаке</x-section-heading>
+            <x-section-heading>Опсине ознаке</x-section-heading>
 
             <div class="mt-6 space-x-1">
                 @foreach ($tags as $tag)

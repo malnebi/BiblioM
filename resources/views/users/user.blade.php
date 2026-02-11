@@ -21,7 +21,7 @@
 
             {{-- ================== ПРЕУЗИМАЊЕ У ТОКУ  ================== --}}
             @if ($inProgressLoans->isNotEmpty())
-                <x-collapsible-section id="sekcija-preuzimanje" title="МОЈЕ ПРЕУЗИМАЊЕ КЊИГЕ" :count="count($inProgressLoans)">
+                <x-collapsible-section id="sekcija-preuzimanje" title="ПРЕУЗИМАЊЕ КЊИГЕ" :count="count($inProgressLoans)">
                     <x-slot name="visible">
                         @foreach ($inProgressLoans->take(2) as $loansBook)
                             <x-book-card-wide :book="$loansBook->book" />
