@@ -6,7 +6,7 @@
 
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
                     <h1 class="font-bold text-4xl col-span-3 text-center mb-3">
-                        ЧЛАНОВИ и БИБЛИОТЕКЕ
+                        ЗАЈЕДНИЦА
                     </h1>
                 </div> <x-forms.divider />
 

@@ -201,7 +201,9 @@ class LoanController extends Controller
         $book->lib_user_id = null;                              
         $book->save();
 
-        return redirect()->action([UserController::class, 'show'], [$loan->user_id]);
+       // return redirect()->action([UserController::class, 'show'], [$loan->user_id]);
+        return redirect()->action([LoanController::class, 'myLibraryLoans'], [$loan->library_id]);
+        
     }
 
 

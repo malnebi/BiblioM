@@ -28,7 +28,6 @@ Route::get('/privacy', [PageController::class, 'privacy'])->name('privacy');
 Route::get('/about-app', [PageController::class, 'aboutApp'])->name('about');
 
 /** Библиотеке */
-Route::get('/homeLib/{lib}', [LibraryController::class, 'libBooks'])->middleware('auth'); // biblioteka ulogovanog korisnika
 Route::get('/libraries/{id}', [LibraryController::class, 'show']);
 Route::get('/library/libraryBooks/{id}', [LibraryController::class, 'libraryBooks'])->middleware('auth'); // sve knjige jedne biblioteke
 

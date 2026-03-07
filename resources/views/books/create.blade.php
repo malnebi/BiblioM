@@ -24,6 +24,24 @@
 
         <x-forms.button>Сачувај књигу</x-forms.button>
 
+        <x-forms.select label="Описнa ознакa " name="tags">
+            @foreach ($tags as $tag)
+                <option> <x-tag :tag="$tag" size="small" /> </option>
+            @endforeach
+        </x-forms.select>
+        <x-forms.select label="Описне ознаке " name="tags">
+            @foreach ($tags as $tag)
+                <option> <x-tag :tag="$tag" size="small" /> </option>
+            @endforeach
+        </x-forms.select>
+        <x-forms.select label="Описне ознаке " name="tags">
+            @foreach ($tags as $tag)
+                <option> <x-tag :tag="$tag" size="small" /> </option>
+            @endforeach
+        </x-forms.select>
+
+
+
         <x-forms.divider />
         <x-forms.divider />
 

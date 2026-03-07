@@ -95,26 +95,29 @@
                                         role="menu" aria-orientation="vertical" aria-labelledby="library-menu-button"
                                         tabindex="-1">
 
-                                        <div class="px-4 py-2 border-b border-gray-100">Библиотека
-                                            <p class="text-sm text-gray-900 font-bold truncate">
+                                        <div class="px-4 py-2 border-b border-gray-100">
+                                            <p class="text-sm text-gray-700 font-bold truncate">
                                                 {{ Auth::user()->ownLibrary->name }}</p>
+                                            <p class="text-sm text-gray-700 truncate">Библиотека
+                                            </p>
                                         </div>
-                                        <a href="/homeLib/{{ Auth::user()->ownLibrary->id ?? '' }}"
-                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200"
-                                            role="menuitem">Моја библиотека</a>
-                                        <a href="/books/create"
-                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200"
-                                            role="menuitem">Додај нову књигу</a>
                                         <a href="/library/libraryBooks/{{ Auth::user()->ownLibrary->id ?? '' }}"
                                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200"
                                             role="menuitem">Књиге</a>
+                                        <a href="/books/create"
+                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200"
+                                            role="menuitem"> + Додај нову књигу</a>
                                         <a href="/loans/myLibraryLoans/{{ Auth::user()->ownLibrary->id ?? '' }}"
                                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200"
-                                            role="menuitem">Позајмице</a>
+                                            role="menuitem">ЦИРКУЛАЦИЈА
+                                            <p class="text-xs text-gray-500">- Резервације </p>
+                                            <p class="text-xs text-gray-500">- Књиге на читању </p>
+                                            <p class="text-xs text-gray-500">- Враћене књиге </p>
+                                        </a>
+
                                     </div>
                                 </div>
 
-                                {{-- ОВАЈ ДИВ МОРА ИМАТИ x-data АКО ГА ВЕЋ НЕМА ИЗНАД --}}
                                 <div class="relative ml-3" x-data="{ userMenu: false }" @click.away="userMenu = false">
                                     <div>
                                         <button @click="userMenu = !userMenu" type="button"
@@ -131,7 +134,7 @@
                                         </button>
                                     </div>
 
-                                    {{-- Dropdown мени --}}
+                                    {{-- Падајући мени --}}
                                     <div x-show="userMenu" x-cloak x-transition:enter="transition ease-out duration-100"
                                         x-transition:enter-start="transform opacity-0 scale-95"
                                         x-transition:enter-end="transform opacity-100 scale-100"
@@ -212,9 +215,6 @@
                             </div>
                         </div>
                         <div class="mt-3 space-y-1 px-2">
-                            <a href="/homeLib/{{ Auth::user()->ownLibrary->id ?? '' }}"
-                                class="block rounded-md px-3 py-2 text-base font-medium text-white/70 hover:bg-white/10"
-                                role="menuitem">Моја библиотека</a>
                             <a href="/books/create"
                                 class="block rounded-md px-3 py-2 text-base font-medium text-white/70 hover:bg-white/10"
                                 role="menuitem">Додај нову књигу</a>
@@ -223,7 +223,7 @@
                                 role="menuitem">Књиге</a>
                             <a href="/loans/myLibraryLoans/{{ Auth::user()->ownLibrary->id ?? '' }}"
                                 class="block rounded-md px-3 py-2 text-base font-medium text-white/70 hover:bg-white/10"
-                                role="menuitem">Позајмице</a>
+                                role="menuitem">ЦИРКУЛАЦИЈА</a>
                         </div>
                     </div>
                     <div class="border-t border-white/10 pb-3 pt-4">
