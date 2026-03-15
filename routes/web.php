@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\BookController;
@@ -13,6 +14,20 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\LoanController;
 use App\Models\Library;
 use Termwind\Components\Li;
+
+
+// Ове руте могу користити само улоговани корисници који су администратори
+Route::middleware(['auth', 'admin'])->group(function () {
+    
+    // Страница са листом корисника на чекању
+    Route::get('/admin/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
+
+    // Акција одобравања корисника
+    Route::patch('/admin/users/{user}/approve', [AdminController::class, 'approve'])->name('admin.users.approve');
+
+    // Акција одбијања (брисања) корисника
+    Route::delete('/admin/users/{user}/reject', [AdminController::class, 'reject'])->name('admin.users.reject');
+});
 
 Route::get('/', function () {
     return view('welcome');
@@ -42,7 +57,7 @@ Route::delete('/users/{id}', [UserController::class, 'destroy'])->middleware('au
 
 
 
-/** Позајмица */ 
+/** Позајмица */
 Route::get('/loans', [LoanController::class, 'index'])->middleware('auth');
 Route::get('/loans/myLibraryLoans/{id}', [LoanController::class, 'myLibraryLoans'])->middleware('auth'); // приказ позајмица библиотеке улогованог корисника
 Route::get('/loans/create/{userId}', [LoanController::class, 'create'])->middleware('auth');
@@ -62,19 +77,21 @@ Route::put('/loans/extend/{loan}', [LoanController::class, 'updateReturnDate'])-
 /** BOOK */
 
 //Route::get('/books', [BookController::class, 'index'])->name('books');
-Route::resource('books', BookController::class);
-Route::get('/books/create', [BookController::class, 'create'])->middleware('auth');
-Route::post('/books', [BookController::class, 'store'])->middleware('auth');
-Route::get('/books/{book}/book', [BookController::class, 'show']); 
-Route::get('/books/{book}/edit', [BookController::class, 'edit'])->middleware('auth');
-Route::put('/books/{book}', [BookController::class, 'update'])->middleware('auth');
-Route::delete('/books/{book}', [BookController::class, 'destroy'])->middleware('auth');
+//Route::resource('books', BookController::class);
+Route::middleware('auth')->group(function () {
+    Route::get('/books', [BookController::class, 'index'])->name('books');
+    Route::get('/books/create', [BookController::class, 'create']);
+    Route::post('/books', [BookController::class, 'store']);
+    Route::get('/books/{book}/book', [BookController::class, 'show']); // prikaz pojedinačne knjige
+    Route::get('/books/{book}/edit', [BookController::class, 'edit']);
+    Route::put('/books/{book}', [BookController::class, 'update']);
+    Route::delete('/books/{book}', [BookController::class, 'destroy']);
 
-Route::post('/bookReservation/{book}', [BookController::class, 'bookReservation'])->middleware('auth'); // креирање позајмице - члан резервише књигу 
+    Route::post('/bookReservation/{book}', [BookController::class, 'bookReservation']); // креирање позајмице - члан резервише књигу 
+});
 
-
-Route::get('/search', SearchController::class);
-Route::get('/tags/{tag:name}', TagController::class);  // tags/fantasy
+Route::get('/search', SearchController::class)->middleware('auth')->name('search');  // pretraga knjiga po naslovu, autoru, žanru, tagu
+Route::get('/tags/{tag:name}', TagController::class)->middleware('auth');  // tags/fantasy
 
 
 
@@ -89,3 +106,5 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::post('/logout', [SessionController::class, 'destroy'])->middleware('auth')->name('logout');
+
+

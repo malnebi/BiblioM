@@ -3,6 +3,9 @@
         <section class="text-center">
             <h1 class="font-bold text-4xl"> Мој профил</h1>
         </section>
+        @if (Auth::user()->role == 'admin')
+            <a class ="text-blue-600 hover:text-blue-800" href="/admin/dashboard">Kонтролна табла</a>
+        @endif
 
         {{-- ================== ПРЕУЗИМАЊЕ У ТОКУ ================== --}}
         @if ($inProgressLoans->isNotEmpty())
@@ -16,7 +19,8 @@
                                 {{ method_field('PUT') }}
                                 <div class="col-md-8">
                                     <h3 class="hover:text-blue-600  font-bold ">
-                                        <button type="submit" class="btn btn-primary">Потврди позајмицу и преузми књигу!</button>
+                                        <button type="submit" class="btn btn-primary">Потврди позајмицу и преузми
+                                            књигу!</button>
                                     </h3>
                                 </div>
                             </form>
@@ -31,7 +35,8 @@
                             {{ method_field('PUT') }}
                             <div class="col-md-8">
                                 <h3 class="hover:text-blue-600  font-bold ">
-                                    <button type="submit" class="btn btn-primary">Потврди позајмицу и преузми књигу!</button>
+                                    <button type="submit" class="btn btn-primary">Потврди позајмицу и преузми
+                                        књигу!</button>
                                 </h3>
                             </div>
                         </form>
