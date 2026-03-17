@@ -19,11 +19,22 @@ class SessionController extends Controller
             'password' => ['required'],
         ]);
 
+        if (! Auth::attempt(['email' => $attributes['email'], 'password' => $attributes['password'], 'approved' => 1])) {
+
+            $user = \App\Models\User::where('email', $attributes['email'])->first();
+
+            if ($user && ! $user->approved) {
+                throw ValidationException::withMessages([
+                    'email' => 'Чека се на одобрење администратора.',
+                ]);
+            }
+        }
         if (! Auth::attempt($attributes)) {
             throw ValidationException::withMessages([
-                'email' => 'Sorry, those credentials do not match.',
+                'email' => 'Погрешан унос, попробајте поново.',
             ]);
         }
+
 
         request()->session()->regenerate();
 

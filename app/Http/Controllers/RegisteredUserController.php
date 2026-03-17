@@ -55,9 +55,10 @@ class RegisteredUserController extends Controller
     ]);
 
 
-    Auth::login($user);
+   // Auth::login($user);
 
-    return redirect('/');
+   // return redirect('/');
+    return redirect('/login')->with('message', 'Хвала за регистрацију! Сачекајте одобрење администратора.');
 
     }
 

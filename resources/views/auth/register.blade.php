@@ -13,7 +13,7 @@
         <x-forms.input label="Име библиотеке" name="library" />
         <x-forms.input label="Лого библиотеке" name="logo" type="file" />
 
-        <x-forms.button> Креирај налог</x-forms.button>
+        <x-forms.button> Региструј се</x-forms.button>
     </x-forms.form>
 
 </x-layout>
