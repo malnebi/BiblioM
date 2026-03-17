@@ -18,7 +18,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $user = User::all();
+        $user = User::all()->where('approved', 1);
         $library = Library::all();
 
         $books = Book::latest()->with(['library', 'tags'])->get()->groupBy('featured');  // use eager loading

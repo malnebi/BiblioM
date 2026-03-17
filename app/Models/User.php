@@ -21,6 +21,9 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role_type',
+        'role_details',
+        'approved',
     ];
 
     /**
@@ -38,6 +41,29 @@ class User extends Authenticatable
      *
      * @return array<string, string>
      */
+    public static array $schoolRoles = [
+        'Ученик' => [
+            'I-1',
+            'I-2',
+            'I-3',
+            'I-4',
+            'II-1',
+            'II-2',
+            'II-3',
+            'II-4',
+            'III-1',
+            'III-2',
+            'III-3',
+            'III-4',
+            'IV-1',
+            'IV-2',
+            'IV-3',
+            'IV-4'
+        ],
+        'Професор' => [],
+        'Стручни сарадник' => [],
+        'Родитељ' => []
+    ];
     protected function casts(): array
     {
         return [
@@ -46,13 +72,18 @@ class User extends Authenticatable
         ];
     }
 
+
     public function library()
-    {    return $this->belongsTo(Library::class); }
-    
+    {
+        return $this->belongsTo(Library::class);
+    }
+
 
     public function ownLibrary()
-    {    return $this->hasOne(Library::class, 'owner_id'); }
-    
+    {
+        return $this->hasOne(Library::class, 'owner_id');
+    }
+
     public function memberOfLibraries()
     {
         return $this->belongsToMany(Library::class, 'library_user', 'user_id', 'library_id');
@@ -68,5 +99,4 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Models\Loan');
     }
-
 }
