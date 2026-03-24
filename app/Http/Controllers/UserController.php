@@ -54,7 +54,6 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::find($id);
-        $logedUser = User::find(Auth::user()->id);
 
         $reservedLoans = Loan::where([['user_id', '=', $id], ['library_id', '=', Auth::user()->ownLibrary->id], ['active', '=', null], ['description', '=', 'rezervisano']])->get();
         $inProgressLoans = Loan::where([['user_id', '=', $id], ['active', '=', '1']])
@@ -100,7 +99,6 @@ class UserController extends Controller
         }
         $data = [
             'user' => $user,
-            'logedUser' => $logedUser,
             'reservedLoans' => $reservedLoans,
             'inProgressLoans' => $inProgressLoans,
             'returnInProgress' => $returnInProgress,
@@ -113,10 +111,7 @@ class UserController extends Controller
             'books' => $books,
         ];
 
-        if (!$logedUser)
-            return view('users.logUser', $data);
-        else
-            return view('users.user', $data);
+        return view('users.user', $data);
     }
 
     /**
@@ -124,32 +119,34 @@ class UserController extends Controller
      */
     public function showLoggedUser($id)
     {
-        $user = User::find($id);
-        $reservedLoans = Loan::where([['user_id', '=', $id], ['active', '=', null], ['description', '=', 'rezervisano']])->get();
 
-        $inProgressLoans = Loan::where([['user_id', '=', $id], ['active', '=', '1']])
-            ->where(function ($query) {
-                $query->where('description', '=', null)->orWhere('description', '=', 'rezervisano');
-            })->get();
+        if ($id == Auth::user()->id) {
+            $user = User::find($id);
 
-        $returnInProgress = Loan::where('user_id', '=', $id)
-            ->where(function ($query) {
-                $query->where([['description', '=', null], ['active', '=', '1']])
-                    ->orWhere([['description', '=', 'potpisano'], ['active', '=', '0']]);
-            })->get();
+            $reservedLoans = Loan::where([['user_id', '=', $id], ['active', '=', null], ['description', '=', 'rezervisano']])->get();
 
-        $activeLoans = Loan::where([['user_id', '=', $id], ['active', '=', '1'], ['description', '=', 'potpisano']])->get();
-        $overLoans = Loan::where([['user_id', '=', $id], ['active', '=', '0'], ['description', '=', null]])->get();
+            $inProgressLoans = Loan::where([['user_id', '=', $id], ['active', '=', '1']])
+                ->where(function ($query) {
+                    $query->where('description', '=', null)->orWhere('description', '=', 'rezervisano');
+                })->get();
 
-        $loans = Loan::where('user_id', $id)
-            ->orderBy('created_at', 'asc')
-            ->with(['user', 'book', 'library'])
-            ->paginate(20);
+            $returnInProgress = Loan::where('user_id', '=', $id)
+                ->where(function ($query) {
+                    $query->where([['description', '=', null], ['active', '=', '1']])
+                        ->orWhere([['description', '=', 'potpisano'], ['active', '=', '0']]);
+                })->get();
 
-        $overLoansCount = $overLoans->count();
-        $loansNumber = $activeLoans->count();
+            $activeLoans = Loan::where([['user_id', '=', $id], ['active', '=', '1'], ['description', '=', 'potpisano']])->get();
+            $overLoans = Loan::where([['user_id', '=', $id], ['active', '=', '0'], ['description', '=', null]])->get();
 
-        if (!$user) {
+            $loans = Loan::where('user_id', $id)
+                ->orderBy('created_at', 'asc')
+                ->with(['user', 'book', 'library'])
+                ->paginate(20);
+
+            $overLoansCount = $overLoans->count();
+            $loansNumber = $activeLoans->count();
+            } else {
             abort(404);
         }
 
@@ -164,8 +161,8 @@ class UserController extends Controller
             'overLoansCount' => $overLoansCount,
             'loans' => $loans,
 
+
         ];
-        //return $id;
         return view('users.loggedUser', $data);
     }
 

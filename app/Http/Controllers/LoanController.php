@@ -33,62 +33,68 @@ class LoanController extends Controller
     }
 
 
-    public function myLibraryLoans($id) //
+    public function myLibraryLoans($id)
     {
 
-        $library = Library::find($id);
-        $reservedLoans = Loan::where([['library_id', '=', $id], ['active', '=', null], ['description', '=', 'rezervisano']])->get();
+        if (Auth::user()->ownLibrary->id == $id) {
+            $library = Library::find($id);
 
-        $inProgressLoans = Loan::where([['library_id', '=', $id], ['active', '=', '1']])
-            ->where(function ($query) {
-                $query->where('description', '=', null)->orWhere('description', '=', 'rezervisano');
-            })->get();
+            // Помоћна функција да не бисмо понављали исти код
+            $baseQuery = Loan::where('library_id', $id)->whereHas('book')->whereHas('user');
 
-        $returnInProgress = Loan::where('library_id', '=', $id)
-            ->where(function ($query) {
+            // 1. Резервисано
+            $reservedLoans = (clone $baseQuery)->where([['active', '=', null], ['description', '=', 'rezervisano']])->get();
+
+            // 2. У току (издавање)
+            $inProgressLoans = (clone $baseQuery)->where('active', '1')
+                ->where(function ($query) {
+                    $query->where('description', '=', null)->orWhere('description', '=', 'rezervisano');
+                })->get();
+
+            // 3. У току (враћање)
+            $returnInProgress = (clone $baseQuery)->where(function ($query) {
                 $query->where([['description', '=', null], ['active', '=', '1']])
                     ->orWhere([['description', '=', 'potpisano'], ['active', '=', '0']]);
             })->get();
 
-        $activeLoans = Loan::where([['library_id', '=', $id], ['active', '=', '1'], ['description', '=', 'potpisano']])->get();
-        $overLoans = Loan::where([['library_id', '=', $id], ['active', '=', '0'], ['description', '=', null]])->get();
+            // 4. Активна задужења
+            $activeLoans = (clone $baseQuery)->where([['active', '=', '1'], ['description', '=', 'potpisano']])->get();
 
-        $loans = Loan::where('library_id', Auth::user()->ownLibrary->id)
-            ->orderBy('created_at', 'asc')
-            ->with(['user', 'book', 'library'])
-            ->paginate(20);
+            // 5. Завршена задужења
+            $overLoans = (clone $baseQuery)->where([['active', '=', '0'], ['description', '=', null]])->get();
 
-        $overLoansCount = $overLoans->count();
-        $loansNumber = $activeLoans->count();
+            // 6. Главна листа са пагинацијом
+            $loans = (clone $baseQuery)->orderBy('created_at', 'asc')
+                ->with(['user', 'book', 'library'])
+                ->paginate(20);
 
-        $groupedOverLoans = Loan::with(['book', 'user'])
-            ->where('library_id', $id)
-            ->where('description', null)
-            ->where('active', '0')
-            ->get()
-            ->groupBy('book_id');
+            $loansNumber = $activeLoans->count();
+            $overLoansCount = $overLoans->count();
 
-        $groupedActiveLoans = $activeLoans->groupBy('book_id');
-        $groupedReservedLoans = $reservedLoans->groupBy('book_id');
-        $groupedProgressLoans = $inProgressLoans->groupBy('book_id');
+            // Груписање (сада је сигурно јер baseQuery филтрира дух-књиге)
+            $groupedOverLoans = $overLoans->groupBy('book_id');
+            $groupedActiveLoans = $activeLoans->groupBy('book_id');
+            $groupedReservedLoans = $reservedLoans->groupBy('book_id');
+            $groupedProgressLoans = $inProgressLoans->groupBy('book_id');
 
-        $data = [
-            'library' => $library,
-            'reservedLoans' => $reservedLoans,
-            'inProgressLoans' => $inProgressLoans,
-            'returnInProgress' => $returnInProgress,
-            'activeLoans' => $activeLoans,
-            'overLoans' => $overLoans,
-            'loansNumber' => $loansNumber,
-            'overLoansCount' => $overLoansCount,
-            'loans' => $loans,
-            'groupedOverLoans' => $groupedOverLoans,
-            'groupedActiveLoans' => $groupedActiveLoans,
-            'groupedReservedLoans' => $groupedReservedLoans,
-            'groupedProgressLoans' => $groupedProgressLoans,
-        ];
-        return view('loans.myLibraryLoans', $data);
-        //  return dd ($loans->toArray());
+            return view('loans.myLibraryLoans', compact(
+                'library',
+                'reservedLoans',
+                'inProgressLoans',
+                'returnInProgress',
+                'activeLoans',
+                'overLoans',
+                'loansNumber',
+                'overLoansCount',
+                'loans',
+                'groupedOverLoans',
+                'groupedActiveLoans',
+                'groupedReservedLoans',
+                'groupedProgressLoans'
+            ));
+        } else {
+            abort(404);
+        }
     }
 
 
@@ -176,7 +182,7 @@ class LoanController extends Controller
         /** upis u tabelu book */
         if ($loan->loan == 1) {
             $book = Book::find($loan->book_id);        // traži knjigu u tabeli book na osnovu broja klijent u loan
-            $book->loan = 1;  
+            $book->loan = 1;
             $book->lib_user_id = $loan->user_id;                            // zaduženje knjige je aktivno 
             $book->save();
         }
@@ -198,12 +204,11 @@ class LoanController extends Controller
         /** upis u tabelu book */
         $book = Book::find($loan->book_id);        // traži knjigu u tabeli book na osnovu broja klijent u loan
         $book->loan = 0;                    // zaduženje je neaktivno  - knjiga je slobodna)
-        $book->lib_user_id = null;                              
+        $book->lib_user_id = null;
         $book->save();
 
-       // return redirect()->action([UserController::class, 'show'], [$loan->user_id]);
+        // return redirect()->action([UserController::class, 'show'], [$loan->user_id]);
         return redirect()->action([LoanController::class, 'myLibraryLoans'], [$loan->library_id]);
-        
     }
 
 

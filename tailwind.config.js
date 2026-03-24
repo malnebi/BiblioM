@@ -8,31 +8,24 @@ export default {
     extend: {
       colors: {
         "black": "#060606",
-        //tema solar
-        "green-100": "#93a1a1", // svijetlo zelena 
+        "green-100": "#93a1a1",
         "green-mint": "#2aa198",
         "green-700": "#859900",
         "green-mint-light" : "#78c2ad",
-        "gray-700": "#495057",  // зелена
+        "gray-700": "#495057",
         "green-800": "#073642",
         "green-900": "#002b36",
-          "primary": "#b58900", // oker
-        "warning": "#cb4b16", // narandžasta
-        "info": "#268bd2"  // svijetlo plava
-
-
+        "primary": "#b58900",
+        "warning": "#cb4b16",
+        "info": "#268bd2"
       },
       fontFamily: {
         "hanken-grotesk": ["Hanken Grotesk", "sans-serif"]
       },
       fontSize: {
-        "2xs": "0.625rem" // 10px 
+        "2xs": "0.625rem"
       },
-},
+    },
+  },
   plugins: [],
-  navbar: {
-   
-    "navbar-width": "calc(100% - 2rem)"
-  }
-}
-}
+};

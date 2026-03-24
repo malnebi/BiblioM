@@ -1,3 +1,24 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+/* resources/css/app.css */
+
+@layer components {
+    .custom-select {
+        @apply bg-[#1e293b] text-white border border-slate-700 rounded-lg px-4 py-[0.6rem] outline-none appearance-none;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 0.75rem center;
+        background-size: 1.2em;
+    }
+
+    .custom-select option {
+        background-color: #0f172a;
+        color: white;
+    }
+
+    /* Стилизујемо сва input поља да буду конзистентна */
+    input:not([type="file"]) {
+        @apply bg-[#1e293b] text-white border border-slate-700 rounded-lg h-[42px] px-4;
+    }
+}
