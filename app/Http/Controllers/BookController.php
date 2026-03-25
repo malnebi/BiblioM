@@ -38,52 +38,62 @@ class BookController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
+  public function store(Request $request)
+{
+    // 1. Валидација (пази на имена поља из наше компоненте)
+    $attributes = $request->validate([
+        'author_fname' => ['required', 'string', 'max:50'],
+        'author_lname' => ['required', 'string', 'max:50'],
+        'title' => ['required', 'string', 'max:200'],
+        'publisher_name' => ['required', 'string', 'max:100'],
+        'publisher_place' => ['required', 'string', 'max:100'],
+        'year' => ['required', 'integer', 'min:1000', 'max:' . (date('Y') + 1)],
+      //  'book_image' => ['nullable', 'image', 'max:2048'],
+        // Овде валидирамо ID-еве за падајуће меније
+        'tag1' => ['nullable', 'exists:tags,id'],
+        'tag2' => ['nullable', 'exists:tags,id'],
+        'tag3' => ['nullable', 'exists:tags,id'],
+        // Овде валидирамо текст за нову ознаку
+        'suggested_tag' => ['nullable', 'string', 'max:30'],
+    ]);
 
-        $libraryId = Auth::user()->ownLibrary->id;
+    $library = Auth::user()->ownLibrary;
+    $lastLibBookId = $library->books()->max('lib_book_id') ?? 0;
 
-        $lastLibBookId = Book::where('library_id', $libraryId)->max('lib_book_id'); // 
-        $libBookId = $lastLibBookId ? $lastLibBookId + 1 : 1; //
+    // Снимање слике
+    $imagePath = $request->hasFile('book_image') 
+        ? $request->file('book_image')->store('book_covers', 'public') 
+        : null;
 
-        $attributes = $request->validate([
-            /**Validacija podataka */
-            'author_fname' => ['required', 'string', 'max:50'],
-            'author_lname' => ['required', 'string', 'max:50'],
-            'title' => ['required', 'string', 'max:200'],
-            'publisher_name' => ['required', 'string', 'max:100'],
-            'publisher_place' => ['required', 'string', 'max:100'],
-            'year' => ['required', 'string', 'max:4'],
-            'tags' => ['nullable'],
-        ]);
+    // 2. Креирање књиге
+    $book = $library->books()->create([
+        'lib_book_id' => $lastLibBookId + 1,
+        'author_fname' => $attributes['author_fname'],
+        'author_lname' => $attributes['author_lname'],
+        'title' => $attributes['title'],
+        'publisher_name' => $attributes['publisher_name'],
+        'publisher_place' => $attributes['publisher_place'],
+        'year' => $attributes['year'],
+      //  'book_image' => $imagePath,
+        'loan' => 0,
+    ]);
 
-        $book = new Book;
-        $book->library_id = Auth::user()->ownLibrary->id;
-        $book->lib_book_id = $libBookId; // id knjige jedne biblioteke u bazi 
-        $book->author_fname = $request->author_fname;
-        $book->author_lname = $request->author_lname;
-        $book->title = $request->title;
-        $book->publisher_name = $request->publisher_name;
-        $book->publisher_place = $request->publisher_place;
-        $book->year = $request->year;
-        $book->loan = 0;
+    // 3. ПОВЕЗИВАЊЕ ОЗНАКА (Pivot логика)
 
-        $attributes['featured'] = $request->has('featured');
-        $attributes['lib_book_id'] = $libBookId;
-
-        $book = Auth::user()->ownLibrary->books()->create(Arr::except($attributes, 'tags'));
-
-        if ($attributes['tags']) {
-            foreach (explode(',', $attributes['tags']) as $tag) {  // tag1, tag2, tag3  will be turned into array [ 'tag1','tag2','tag3']
-                $book->tag($tag);
-            }
-
-            $book->save();
-
-            //            return dd($libraryId, $lastLibBookId, $libBookId, $attributes, $book);
-            return redirect('books');
-        }
+    // А) Повезивање изабраних ознака преко ID-а (attach)
+    $selectedTags = collect([$request->tag1, $request->tag2, $request->tag3])->filter();
+    
+    if ($selectedTags->isNotEmpty()) {
+        $book->tags()->attach($selectedTags);
     }
+
+    // Б) Креирање и повезивање нове ознаке преко твоје методе tag()
+    if ($request->filled('suggested_tag')) {
+        $book->tag($request->suggested_tag);
+    }
+
+    return redirect('/books')->with('success', 'Књига је успешно додата у библиотеку!');
+}
     /**
      * Display the specified resource.
      */

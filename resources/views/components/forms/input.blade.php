@@ -5,7 +5,7 @@
         'type' => 'text',
         'id' => $name,
         'name' => $name,
-        'class' => 'rounded-xl bg-white/10 border border-white/10 px-5 py-4 w-full',
+        'class' => 'bg-[#1e293b] text-white border border-slate-00 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-grey-900',
         'value' => $value ?? old($name)
     ];
 @endphp
@@ -13,4 +13,5 @@
 <x-forms.field :$label :$name>
     <input {{ $attributes($defaults) }}>
 </x-forms.field>
+
 

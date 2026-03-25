@@ -13,4 +13,3 @@
         {{ $slot }}
     </select>
 </x-forms.field>
-

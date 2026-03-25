@@ -21,15 +21,20 @@ class Book extends Model
         'author_fname', // Add this line
         'author_lname', // Add this line
         'title',
+        'publisher_name',
+        'publisher_place',
         'year',
     ];
 
+ 
     public function tag(string $name): void
     {
 
         $tag = Tag::firstOrCreate(['name' => $name]);
 
         $this->tags()->attach($tag);
+        // syncWithoutDetaching спречава грешку ако је веза већ успостављена
+        $this->tags()->syncWithoutDetaching([$tag->id]);
     }
 
     public function tags(): BelongsToMany
