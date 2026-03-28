@@ -17,12 +17,24 @@ class BookController extends Controller
      */
     public function index()   //  stranica sa svim knjigama u navigaciji je pod Zajednica
     {
-        $books = Book::latest()->with(['library', 'tags'])->get()->groupBy('featured');  // use eager loading
+        $books = Book::latest()->with(['library', 'tags'])->get();  // use eager loading
 
-        return view('books.index', [
-            'featuredBooks' => $books[1],
-            'books' => $books[0],
-            'tags' => Tag::all(),
+
+        $tags = Tag::whereNotNull('name') // Избацујемо потпуно празне
+            ->where('name', '!=', '')     // Избацујемо празне стрингове
+            ->get()
+            ->map(function ($tag) {
+                $tag->name = trim($tag->name); // Склањамо невидљиве размаке са почетка/краја
+                return $tag;
+            })
+            ->unique('name') // Склањамо дупле тагове ако имају исто име
+            ->sortBy('name', SORT_LOCALE_STRING) // Сортирамо азбучно (Ћирилица/Латиница)
+            ->values(); // ПРЕСУДНО: Ресетујемо индексе на 0, 1, 2, 3...
+
+        return view('home', [
+            'books' => $books,
+            'tags' => $tags,
+            'limit' => 5
         ]);
     }
 
@@ -32,9 +44,21 @@ class BookController extends Controller
     public function create()
     {
 
+            $tags = Tag::whereNotNull('name') // Избацујемо потпуно празне
+            ->where('name', '!=', '')     // Избацујемо празне стрингове
+            ->get()
+            ->map(function ($tag) {
+                $tag->name = trim($tag->name); // Склањамо невидљиве размаке са почетка/краја
+                return $tag;
+            })
+            ->unique('name') // Склањамо дупле тагове ако имају исто име
+            ->sortBy('name', SORT_LOCALE_STRING) // Сортирамо азбучно (Ћирилица/Латиница)
+            ->values(); // ПРЕСУДНО: Ресетујемо индексе на 0, 1, 2, 3...
+
+
         return view(
             'books.create',
-            ['tags' => Tag::all()]
+            ['tags' => $tags]
         );
     }
 
@@ -127,7 +151,17 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-        $tags = Tag::all();
+        $tags = Tag::whereNotNull('name') // Избацујемо потпуно празне
+            ->where('name', '!=', '')     // Избацујемо празне стрингове
+            ->get()
+            ->map(function ($tag) {
+                $tag->name = trim($tag->name); // Склањамо невидљиве размаке са почетка/краја
+                return $tag;
+            })
+            ->unique('name') // Склањамо дупле тагове ако имају исто име
+            ->sortBy('name', SORT_LOCALE_STRING) // Сортирамо азбучно (Ћирилица/Латиница)
+            ->values(); // ПРЕСУДНО: Ресетујемо индексе на 0, 1, 2, 3...
+
 
         $data = [
             'tags' => $tags,
@@ -157,8 +191,8 @@ class BookController extends Controller
 
         // Обрада нове слике ако је послата
         if ($request->hasFile('book_cover')) {
-         
-        // Обриши стару слику ако постоји
+
+            // Обриши стару слику ако постоји
 
             Storage::disk('public')->delete($book->book_cover);
 
