@@ -5,8 +5,9 @@
             <h1 class="font-bold text-4xl"> Пронађи књигу </h1>
 
             <x-forms.form action="/search" class="mt-6">
-                <x-forms.input :label="false" name="q" placeholder="Наслов, име аутора, година издавања..." />
-                {{-- <x-forms.button>Search</x-forms.button> --}}
+                <x-forms.input :label="false" name="q" placeholder="Наслов, име аутора, описна ознака..." />
+                 <x-forms.button>Search</x-forms.button>
+
             </x-forms.form>
 
         </section>

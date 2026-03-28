@@ -5,10 +5,14 @@
             <h1 class="font-bold text-4xl">БИБЛИОТЕКА {{ $library->name }}</h1>
         </section>
         <section>
+
+            @if ($books->count() > 0)
+                {{-- SCENARIO A: Biblioteka ima knjiga --}}
+
             <div class="space-y-10">
 
                 <section class="text-center">
-                    <x-forms.form action="/search" class="mt-6">
+                    <x-forms.form action="/search/oneLibraryBooks/{{ $library->id }}" class="mt-6">
                         <x-forms.input :label="false" name="q" placeholder="Наслов, аутор, година ..." />
                         <x-forms.button>ПРЕТРАЖИ</x-forms.button>
                     </x-forms.form>
@@ -24,8 +28,18 @@
                     </div>
                 </section>
             </div>
-
+            
         </section>
+        @else
+            {{-- SCENARIO B: Biblioteka je prazna --}}
+            <section class="text-center py-20 bg-slate-900/50 rounded-2xl border border-slate-800">
+                <div class="max-w-md mx-auto">
+                    <p class="text-gray-400 text-lg mb-8">
+                        Bиблиотека је тренутно празна.</p>
+                    
+                </div>
+            </section>
+        @endif
     </div>
 
     <x-forms.divider />

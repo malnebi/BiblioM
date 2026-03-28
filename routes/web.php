@@ -91,7 +91,10 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/search', SearchController::class)->middleware('auth')->name('search');  // pretraga knjiga po naslovu, autoru, žanru, tagu
+Route::get('/search/oneLibraryBooks/{id}', [SearchController::class, 'oneLibraryBooks'])->middleware('auth'); // searchOneLibraryBooks/{id}'
+
 Route::get('/tags/{tag:name}', TagController::class)->middleware('auth');  // tags/fantasy
+
 
 
 

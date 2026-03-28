@@ -12,7 +12,7 @@
                 <div class="space-y-10">
                     {{-- Pretraga --}}
                     <section class="text-center">
-                        <x-forms.form action="/search" class="mt-6">
+                        <x-forms.form action="/search/oneLibraryBooks/{{ $library->id }}" class="mt-6">
                             <x-forms.input :label="false" name="q" placeholder="Наслов, аутор, година ..." />
                             <x-forms.button>ПРЕТРАЖИ</x-forms.button>
                         </x-forms.form>

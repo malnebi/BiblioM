@@ -31,14 +31,16 @@ class LibraryController extends Controller
 
     public function show($id) // prikaži biblioteku člana sa svim knjigama njegove biblioteke 
     {
-        $library = Library::find($id);
+
+        // Прво дохватимо библиотеку (или је већ имаш)
+        $library = Library::findOrFail($id);
+
+        
         $books = Book::where('library_id', $id)->with(['library'])->get();
-        $featuredBooks = $books->where('featured', 1);
 
         $data = [
             'library' => $library,
             'books' => $books,
-            'featuredBooks' => $featuredBooks,
         ];
 
         return view('libraries.library', $data);
