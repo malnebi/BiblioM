@@ -1,6 +1,7 @@
 <x-layout>
     <div class="space-y-10">
         <section class="text-center">
+            <img src="{{ asset('storage/' . $user->user_photo) }}" alt="user_photo" class="w-52 h-52 mx-auto rounded-full object-cover border border-white/40">
             <h1 class="font-bold text-4xl"> Мој профил</h1>
         </section>
         @if (Auth::user()->role == 'admin')

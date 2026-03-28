@@ -19,20 +19,19 @@
                     <div class="flex gap-6 items-start">
                         {{-- Фотографија књиге са Preview функцијом --}}
                         <div class="shrink-0">
-                            <label for="book_image" class="cursor-pointer group">
-                                <div id="image-preview-container"
+                            <label for="book_cover_input" class="cursor-pointer group block">
+                                {{-- Овде ће JS убацити слику --}}
+                                <div id="book_cover_preview"
                                     class="w-32 h-44 bg-[#1e293b] border-2 border-dashed border-slate-600 rounded-lg flex flex-col items-center justify-center group-hover:border-blue-500 transition-all overflow-hidden">
-                                    <img id="image-preview" src="#" alt="Preview"
-                                        class="hidden w-full h-full object-cover">
-                                    <div id="upload-placeholder" class="flex flex-col items-center">
-                                        <span class="text-[10px] text-gray-400 mt-2">ДОДАЈ СЛИКУ</span>
-                                    </div>
+                                    <span id="placeholder-text"
+                                        class="text-slate-500 text-[10px] font-bold text-center px-2 uppercase">
+                                        Додај слику књиге
+                                    </span>
                                 </div>
-                                <input type="file" id="book_image" name="book_image" class="hidden"
-                                    onchange="previewFile()">
+                                <input type="file" id="book_cover_input" name="book_cover" class="hidden"
+                                    accept="image/*">
                             </label>
                         </div>
-
                         {{-- Име и презиме аутора --}}
                         <div class="flex-1 space-y-4">
                             <x-forms.input label="Име аутора" name="author_fname" placeholder="нпр. Иво" />
@@ -114,21 +113,27 @@
 
     {{-- 2. JavaScript за Preview слике --}}
     <script>
-        function previewFile() {
-            const preview = document.getElementById('image-preview');
-            const placeholder = document.getElementById('upload-placeholder');
-            const file = document.querySelector('input[type=file]').files[0];
-            const reader = new FileReader();
+        function setupPreview(inputId, previewId) {
+            const input = document.getElementById(inputId);
+            const preview = document.getElementById(previewId);
 
-            reader.addEventListener("load", function() {
-                preview.src = reader.result;
-                preview.classList.remove('hidden');
-                placeholder.classList.add('hidden');
-            }, false);
-
-            if (file) {
-                reader.readAsDataURL(file);
+            if (input && preview) {
+                input.addEventListener('change', function(e) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        // Ово мења комплетан садржај дива сликом
+                        preview.innerHTML =
+                            `<img src="${event.target.result}" class="w-full h-full object-cover">`;
+                        preview.classList.remove('border-dashed');
+                        preview.classList.add('border-solid');
+                    };
+                    if (e.target.files[0]) {
+                        reader.readAsDataURL(e.target.files[0]);
+                    }
+                });
             }
         }
+        // Покрећемо функцију за књигу
+        setupPreview('book_cover_input', 'book_cover_preview');
     </script>
 </x-layout>

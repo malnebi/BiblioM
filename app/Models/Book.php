@@ -24,6 +24,7 @@ class Book extends Model
         'publisher_name',
         'publisher_place',
         'year',
+        'book_cover',
     ];
 
  

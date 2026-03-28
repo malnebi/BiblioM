@@ -1,9 +1,19 @@
 <x-layout>
     <div class="container mx-auto px-4 py-10 max-w-5xl">
-        <h1 class="text-3xl font-bold text-white text-center mb-12 font-cyrillic uppercase tracking-tight">Регистрација</h1>
+        @if ($errors->any())
+            <div class="bg-red-500/20 border border-red-500 text-red-200 p-4 rounded-xl mb-6">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+        <h1 class="text-3xl font-bold text-white text-center mb-12 font-cyrillic uppercase tracking-tight">Регистрација
+        </h1>
 
         <x-forms.form action="/register" method="POST" enctype="multipart/form-data">
-            
+
             {{-- --- ГОРЊИ ОДЈЕЉАК: ПОДАЦИ О КОРИСНИКУ --- --}}
             <x-forms.section title="Подаци о кориснику">
                 <x-slot:left>
@@ -11,10 +21,14 @@
                         {{-- Слика корисника --}}
                         <div class="flex-none">
                             <label for="user_photo_input" class="cursor-pointer group block">
-                                <div id="user_photo_preview" class="w-32 h-32 bg-slate-800 rounded-xl flex flex-col items-center justify-center border-2 border-dashed border-slate-600 group-hover:border-blue-500 transition-all overflow-hidden">
-                                    <span class="text-slate-500 text-[10px] font-bold text-center px-2 uppercase font-cyrillic">Додај слику</span>
+                                <div id="user_photo_preview"
+                                    class="w-32 h-32 bg-slate-800 rounded-xl flex flex-col items-center justify-center border-2 border-dashed border-slate-600 group-hover:border-blue-500 transition-all overflow-hidden">
+                                    <span
+                                        class="text-slate-500 text-[10px] font-bold text-center px-2 uppercase font-cyrillic">Додај
+                                        слику</span>
                                 </div>
-                                <input type="file" name="user_photo" id="user_photo_input" class="hidden" accept="image/*">
+                                <input type="file" name="user_photo" id="user_photo_input" class="hidden"
+                                    accept="image/*">
                             </label>
                         </div>
 
@@ -35,7 +49,9 @@
 
                         {{-- Улога у школи --}}
                         <div class="pt-2">
-                            <label for="role_type" class="block text-sm font-medium text-slate-300 mb-2 font-cyrillic uppercase tracking-wide">Улога у школи</label>
+                            <label for="role_type"
+                                class="block text-sm font-medium text-slate-300 mb-2 font-cyrillic uppercase tracking-wide">Улога
+                                у школи</label>
                             <select name="role_type" id="role_type" class="custom-select w-full">
                                 <option value="" disabled selected>Изаберите улогу</option>
                                 @foreach (array_keys(\App\Models\User::$schoolRoles) as $role)
@@ -45,13 +61,18 @@
                         </div>
 
                         {{-- Динамички део --}}
-                        <div id="details_container" class="mt-4 p-4 bg-slate-800/30 rounded-lg hidden border border-slate-700/50">
+                        <div id="details_container"
+                            class="mt-4 p-4 bg-slate-800/30 rounded-lg hidden border border-slate-700/50">
                             <div id="select_wrapper" class="hidden">
-                                <label for="role_details_select" class="block text-sm font-medium text-slate-300 mb-2 font-cyrillic">Разред и одјељење</label>
-                                <select name="role_details_select" id="role_details_select" class="custom-select w-full"></select>
+                                <label for="role_details_select"
+                                    class="block text-sm font-medium text-slate-300 mb-2 font-cyrillic">Разред и
+                                    одјељење</label>
+                                <select name="role_details_select" id="role_details_select"
+                                    class="custom-select w-full"></select>
                             </div>
                             <div id="input_wrapper" class="hidden">
-                                <x-forms.input label="Наведите предмет/позицију" name="role_details_input" id="role_details_input" />
+                                <x-forms.input label="Наведите предмет/позицију" name="role_details_input"
+                                    id="role_details_input" />
                             </div>
                         </div>
                     </div>
@@ -67,8 +88,11 @@
                         {{-- Лого библиотеке --}}
                         <div class="flex-none">
                             <label for="logo_input" class="cursor-pointer group block">
-                                <div id="logo_preview" class="w-32 h-32 bg-slate-800 rounded-xl flex flex-col items-center justify-center border-2 border-dashed border-slate-600 group-hover:border-blue-500 transition-all overflow-hidden">
-                                    <span class="text-slate-500 text-[10px] font-bold text-center px-2 uppercase font-cyrillic">Додај лого</span>
+                                <div id="logo_preview"
+                                    class="w-32 h-32 bg-slate-800 rounded-xl flex flex-col items-center justify-center border-2 border-dashed border-slate-600 group-hover:border-blue-500 transition-all overflow-hidden">
+                                    <span
+                                        class="text-slate-500 text-[10px] font-bold text-center px-2 uppercase font-cyrillic">Додај
+                                        лого</span>
                                 </div>
                                 <input type="file" name="logo" id="logo_input" class="hidden" accept="image/*">
                             </label>
@@ -82,12 +106,13 @@
 
                 <x-slot:right>
                     <div class="flex flex-col items-center justify-center h-full space-y-6 pt-6 lg:pt-0">
-                        <x-forms.button type="submit" >
+                        <x-forms.button type="submit">
                             Региструј се
                         </x-forms.button>
 
                         <p class="text-slate-400 font-cyrillic text-sm">
-                            Имате профил? <a href="/login" class="text-blue-400 hover:text-blue-300 hover:underline transition-colors">Пријава</a>
+                            Имате профил? <a href="/login"
+                                class="text-blue-400 hover:text-blue-300 hover:underline transition-colors">Пријава</a>
                         </p>
                     </div>
                 </x-slot:right>

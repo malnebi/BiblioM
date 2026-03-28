@@ -54,6 +54,7 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::find($id);
+        $user_photo = $user->photo;
 
         $reservedLoans = Loan::where([['user_id', '=', $id], ['library_id', '=', Auth::user()->ownLibrary->id], ['active', '=', null], ['description', '=', 'rezervisano']])->get();
         $inProgressLoans = Loan::where([['user_id', '=', $id], ['active', '=', '1']])
@@ -99,6 +100,7 @@ class UserController extends Controller
         }
         $data = [
             'user' => $user,
+            'user_photo' => $user_photo,
             'reservedLoans' => $reservedLoans,
             'inProgressLoans' => $inProgressLoans,
             'returnInProgress' => $returnInProgress,

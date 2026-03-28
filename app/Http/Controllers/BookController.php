@@ -8,6 +8,7 @@ use App\Models\Loan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class BookController extends Controller
 {
@@ -31,69 +32,71 @@ class BookController extends Controller
     public function create()
     {
 
-        return view('books.create', ['tags' => Tag::all()]
-);
+        return view(
+            'books.create',
+            ['tags' => Tag::all()]
+        );
     }
 
     /**
      * Store a newly created resource in storage.
      */
-  public function store(Request $request)
-{
-    // 1. Валидација (пази на имена поља из наше компоненте)
-    $attributes = $request->validate([
-        'author_fname' => ['required', 'string', 'max:50'],
-        'author_lname' => ['required', 'string', 'max:50'],
-        'title' => ['required', 'string', 'max:200'],
-        'publisher_name' => ['required', 'string', 'max:100'],
-        'publisher_place' => ['required', 'string', 'max:100'],
-        'year' => ['required', 'integer', 'min:1000', 'max:' . (date('Y') + 1)],
-      //  'book_image' => ['nullable', 'image', 'max:2048'],
-        // Овде валидирамо ID-еве за падајуће меније
-        'tag1' => ['nullable', 'exists:tags,id'],
-        'tag2' => ['nullable', 'exists:tags,id'],
-        'tag3' => ['nullable', 'exists:tags,id'],
-        // Овде валидирамо текст за нову ознаку
-        'suggested_tag' => ['nullable', 'string', 'max:30'],
-    ]);
+    public function store(Request $request)
+    {
+        // 1. Валидација (пази на имена поља из наше компоненте)
+        $attributes = $request->validate([
+            'author_fname' => ['required', 'string', 'max:50'],
+            'author_lname' => ['required', 'string', 'max:50'],
+            'title' => ['required', 'string', 'max:200'],
+            'publisher_name' => ['required', 'string', 'max:100'],
+            'publisher_place' => ['required', 'string', 'max:100'],
+            'year' => ['required', 'integer', 'min:1000', 'max:' . (date('Y') + 1)],
+            'book_cover' => ['nullable', 'image', 'max:2048'],
+            // Овде валидирамо ID-еве за падајуће меније
+            'tag1' => ['nullable', 'exists:tags,id'],
+            'tag2' => ['nullable', 'exists:tags,id'],
+            'tag3' => ['nullable', 'exists:tags,id'],
+            // Овде валидирамо текст за нову ознаку
+            'suggested_tag' => ['nullable', 'string', 'max:30'],
+        ]);
 
-    $library = Auth::user()->ownLibrary;
-    $lastLibBookId = $library->books()->max('lib_book_id') ?? 0;
+        $library = Auth::user()->ownLibrary;
+        $lastLibBookId = $library->books()->max('lib_book_id') ?? 0;
 
-    // Снимање слике
-    $imagePath = $request->hasFile('book_image') 
-        ? $request->file('book_image')->store('book_covers', 'public') 
-        : null;
+        // Снимање слике
+        $imagePath = $request->hasFile('book_cover')
+            ? $request->file('book_cover')->store('book_covers', 'public')
+            : null;
 
-    // 2. Креирање књиге
-    $book = $library->books()->create([
-        'lib_book_id' => $lastLibBookId + 1,
-        'author_fname' => $attributes['author_fname'],
-        'author_lname' => $attributes['author_lname'],
-        'title' => $attributes['title'],
-        'publisher_name' => $attributes['publisher_name'],
-        'publisher_place' => $attributes['publisher_place'],
-        'year' => $attributes['year'],
-      //  'book_image' => $imagePath,
-        'loan' => 0,
-    ]);
+        // 2. Креирање књиге
+        $book = $library->books()->create([
+            'lib_book_id' => $lastLibBookId + 1,
+            'author_fname' => $attributes['author_fname'],
+            'author_lname' => $attributes['author_lname'],
+            'title' => $attributes['title'],
+            'publisher_name' => $attributes['publisher_name'],
+            'publisher_place' => $attributes['publisher_place'],
+            'year' => $attributes['year'],
+            'book_cover' => $imagePath,
+            'loan' => 0,
+        ]);
 
-    // 3. ПОВЕЗИВАЊЕ ОЗНАКА (Pivot логика)
+        // 3. ПОВЕЗИВАЊЕ ОЗНАКА (Pivot логика)
 
-    // А) Повезивање изабраних ознака преко ID-а (attach)
-    $selectedTags = collect([$request->tag1, $request->tag2, $request->tag3])->filter();
-    
-    if ($selectedTags->isNotEmpty()) {
-        $book->tags()->attach($selectedTags);
+        // А) Повезивање изабраних ознака преко ID-а (attach)
+        $selectedTags = collect([$request->tag1, $request->tag2, $request->tag3])->filter();
+
+        if ($selectedTags->isNotEmpty()) {
+            $book->tags()->attach($selectedTags);
+        }
+
+        // Б) Креирање и повезивање нове ознаке преко твоје методе tag()
+        if ($request->filled('suggested_tag')) {
+            $book->tag($request->suggested_tag);
+        }
+
+        return redirect('/books')->with('success', 'Књига је успешно додата у библиотеку!');
     }
-
-    // Б) Креирање и повезивање нове ознаке преко твоје методе tag()
-    if ($request->filled('suggested_tag')) {
-        $book->tag($request->suggested_tag);
-    }
-
-    return redirect('/books')->with('success', 'Књига је успешно додата у библиотеку!');
-}
     /**
      * Display the specified resource.
      */
@@ -124,32 +127,52 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
+        $tags = Tag::all();
 
-        return view('books.edit', ['book' => $book,]);
+        $data = [
+            'tags' => $tags,
+            'book' => $book,
+        ];
+        return view('books.edit', $data);
     }
 
     /**
      * Update the specified resource in storage.
      */
+
+
     public function update(Request $request, Book $book)
     {
-
-        $request->validate([
-            /**Validacija podataka */
-            'year' => ['required', 'string', 'max:4'],
+        $attributes = $request->validate([
+            'author_fname' => ['required', 'string', 'max:50'],
+            'author_lname' => ['required', 'string', 'max:50'],
             'title' => ['required', 'string', 'max:200'],
+            'publisher_name' => ['required', 'string', 'max:100'],
+            'publisher_place' => ['required', 'string', 'max:100'],
+            'year' => ['required', 'string'],
+            'book_cover' => ['nullable', 'image', 'max:2048'],
+            'tag1' => ['nullable', 'exists:tags,id'],
+            // ... остали тагови
         ]);
 
-        $book->author_fname = $request->author_fname;
-        $book->author_lname = $request->author_lname;
-        $book->title = $request->title;
-        $book->publisher_name = $request->publisher_name;
-        $book->publisher_place = $request->publisher_place;
-        $book->year = $request->year;
+        // Обрада нове слике ако је послата
+        if ($request->hasFile('book_cover')) {
+         
+        // Обриши стару слику ако постоји
 
-        $book->save();
+            Storage::disk('public')->delete($book->book_cover);
 
-        return redirect('books');
+            $attributes['book_cover'] = $request->file('book_cover')->store('book_covers', 'public');
+        }
+
+        // Ажурирање података у бази
+        $book->update(Arr::except($attributes, ['tag1', 'tag2', 'tag3', 'suggested_tag']));
+
+        // Освежавање ознака (Tags)
+        $tags = collect([$request->tag1, $request->tag2, $request->tag3])->filter();
+        $book->tags()->sync($tags);
+
+        return redirect('/books')->with('success', 'Подаци су успешно измењени!');
     }
 
     public function bookReservation(Request $request, Book $book)

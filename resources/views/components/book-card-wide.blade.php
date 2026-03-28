@@ -6,7 +6,7 @@
     @if (isset($book) && $book)
         <div class="flex flex-col items-center shrink-0">
 
-            <x-library-logo :library="$book->library ?? 'No library'" />
+            <img src="{{ asset('storage/' . $book->book_cover)}}" alt="{{ $book->title }}" class="w-24 h-32 object-cover mb-2">
 
             @if ($book->loan == 1)
                 <div class="text-red-500 text-xs font-bold mt-1">На читању</div>
@@ -28,9 +28,9 @@
             {{-- НАСЛОВ --}}
             <h3
                 class="font-bold text-md mt-2
-                   group-hover:text-blue-800
-                   active:text-blue-800
-                   focus-visible:text-blue-800">
+            group-hover:text-blue-800
+            active:text-blue-800
+            focus-visible:text-blue-800">
                 <a href="/books/{{ $book->id }}/book" target="_blank">
                     {{ $book->title }}
                 </a>
@@ -39,9 +39,8 @@
             {{-- БИБЛИОГРАФИЈА + ⋯ --}}
             <details class="mt-1">
                 {{-- ЈЕДАН РЕД (СКРАЋЕН) --}}
-                <summary
-                    class="flex items-center gap-2 cursor-pointer
-                       text-sm text-gray-200 list-none">
+                <summary class="flex items-center gap-2 cursor-pointer
+            text-sm text-gray-200 list-none">
                     <span class="truncate">
                         {{ $book->publisher_place }}:
                         {{ $book->publisher_name }},
@@ -50,7 +49,7 @@
 
                     <span
                         class="text-lg text-gray-300
-                           hover:text-blue-700 active:text-blue-700">
+                        hover:text-blue-700 active:text-blue-700">
                         ⋯
                     </span>
                 </summary>
@@ -80,6 +79,9 @@
             @foreach ($book->tags as $tag)
                 <x-tag :$tag />
             @endforeach
+        </div>
+        <div class="hidden sm:flex flex-wrap gap-2 items-start">
+            <x-library-logo :library="$book->library ?? 'No library'" />
         </div>
     @else
         <div class="p-4 bg-red-900/20 text-red-500 rounded-xl text-xs">

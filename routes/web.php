@@ -61,7 +61,7 @@ Route::delete('/users/{id}', [UserController::class, 'destroy'])->middleware('au
 Route::get('/loans', [LoanController::class, 'index'])->middleware('auth');
 Route::get('/loans/myLibraryLoans/{id}', [LoanController::class, 'myLibraryLoans'])->middleware('auth'); // приказ позајмица библиотеке улогованог корисника
 Route::get('/loans/create/{userId}', [LoanController::class, 'create'])->middleware('auth');
-Route::post('/loans', [LoanController::class, 'store'])->middleware('auth'); // креирање позајмице - библиотека додјељује позајмицу члану
+Route::post('/loans/store', [LoanController::class, 'store'])->middleware('auth'); // креирање позајмице - библиотека додјељује позајмицу члану
 
 Route::put('/loans/loanBookMemberConfirm/{loan}', [LoanController::class, 'loanBookMemberConfirm'])->middleware('auth'); // члан потврђује позајмицу
 Route::put('/loans/loanLibraryConfirm/{loan}', [LoanController::class, 'loanLibraryConfirm'])->middleware('auth'); // библиотека потврђује позајмицу

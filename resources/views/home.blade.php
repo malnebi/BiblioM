@@ -11,16 +11,6 @@
 
         </section>
 
-        <section class="pt-6">
-            <x-section-heading>Истакнуто </x-section-heading>
-
-            <div class="grid lg:grid-cols-3 gap-8 mt-6">
-                @foreach ($featuredBooks as $book)
-                    <x-book-card :$book />
-                @endforeach
-            </div>
-        </section>
-
         <section>
             <x-section-heading>Опсине ознаке</x-section-heading>
 

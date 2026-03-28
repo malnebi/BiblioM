@@ -129,8 +129,8 @@
                                             id="user-menu-button" :aria-expanded="userMenu" aria-haspopup="true">
                                             <span class="sr-only">Отвори мени</span>
                                             <img class="h-9 w-9 rounded-full object-cover border border-white/20"
-                                                src="{{ Auth::user()->profile_photo_url ?? 'https://ui-avatars.com' . urlencode(Auth::user()->name) }}"
-                                                alt="{{ Auth::user()->name }}">
+                                                src="{{ asset('storage/' .  Auth::user()->user_photo) ?? 'https://ui-avatars.com' . urlencode(Auth::user()->name) }}"
+                                                alt="{{ Auth::user()->name }}">                                     
                                         </button>
                                     </div>
 
@@ -153,7 +153,7 @@
 
                                         <a href="/loggedUser/{{ Auth::user()->id }}"
                                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                            role="menuitem">Ваш профил</a>
+                                            role="menuitem">Профил</a>
                                         <a href="/settings"
                                             class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                                             role="menuitem">Подешавања</a>
