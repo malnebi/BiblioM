@@ -6,7 +6,7 @@
 
             <x-forms.form action="/search" class="mt-6">
                 <x-forms.input :label="false" name="q" placeholder="Наслов, име аутора, описна ознака..." />
-                 <x-forms.button>Search</x-forms.button>
+                 <x-forms.button>ПРЕТРАЖИ</x-forms.button>
 
             </x-forms.form>
 

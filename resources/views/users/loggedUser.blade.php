@@ -1,138 +1,139 @@
 <x-layout>
-    <div class="space-y-10">
-        <section class="text-center">
-            <img src="{{ asset('storage/' . $user->user_photo) }}" alt="user_photo" class="w-52 h-52 mx-auto rounded-full object-cover border border-white/40">
-            <h1 class="font-bold text-4xl"> Мој профил</h1>
-        </section>
-        @if (Auth::user()->role == 'admin')
-            <a class ="text-blue-600 hover:text-blue-800" href="/admin/dashboard">Kонтролна табла</a>
-        @endif
+    <div class="space-y-12 max-w-7xl mx-auto py-8 px-4 text-slate-200">
+        
+        {{-- ================== DASHBOARD ================== --}}
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+            {{-- Корисник --}}
+            <div class="lg:col-span-1 bg-[#1e293b] border border-slate-700 p-5 rounded-2xl flex items-center gap-4 shadow-xl">
+                <img src="{{ asset('storage/' . $user->user_photo) }}" class="w-14 h-14 rounded-xl object-cover border border-slate-600">
+                <div class="min-w-0">
+                    <h1 class="font-bold text-white truncate text-base">{{ $user->name }}</h1>
+                    <p class="text-slate-500 text-[10px] uppercase tracking-tighter italic">Мој Профил</p>
+                </div>
+            </div>
 
-        {{-- ================== ПРЕУЗИМАЊЕ У ТОКУ ================== --}}
-        @if ($inProgressLoans->isNotEmpty())
-            <x-collapsible-section title="МОЈЕ ПРЕУЗИМАЊЕ КЊИГЕ" :count="count($inProgressLoans)">
-                <x-slot name="visible">
-                    @foreach ($inProgressLoans->take(2) as $loansBook)
-                        <x-book-card-wide :book="$loansBook->book" />
-                        <div class="border border-gray-300 rounded-lg bg-[#fdfaf5] px-4 py-2 text-sm text-black">
-                            <form method="POST" action="/loans/loanBookMemberConfirm/{{ $loansBook->id }}">
-                                @csrf
-                                {{ method_field('PUT') }}
-                                <div class="col-md-8">
-                                    <h3 class="hover:text-blue-600  font-bold ">
-                                        <button type="submit" class="btn btn-primary">Потврди позајмицу и преузми
-                                            књигу!</button>
-                                    </h3>
-                                </div>
+            {{-- Статистика --}}            
+            <div class="lg:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-3">
+                <button onclick="toggleDetail('det-preuzimanje', this)" class="stat-btn bg-[#1e293b]/40 border border-slate-800 p-3 rounded-xl hover:border-blue-500 transition-all group">
+                    <span class="block text-slate-500 text-[9px] font-bold uppercase mb-1 group-hover:text-blue-400 text-center">За преузимање</span>
+                    <span class="text-2xl font-black text-blue-400 block text-center">{{ count($inProgressLoans) }}</span>
+                </button>
+
+                <button onclick="toggleDetail('det-citanje', this)" class="stat-btn bg-[#1e293b]/40 border border-slate-800 p-3 rounded-xl hover:border-emerald-500 transition-all group">
+                    <span class="block text-slate-500 text-[9px] font-bold uppercase mb-1 group-hover:text-emerald-400 text-center">Читање</span>
+                    <span class="text-2xl font-black text-emerald-400 block text-center">{{ $loansNumber }}</span>
+                </button>
+
+                <button onclick="toggleDetail('det-rezervacije', this)" class="stat-btn bg-[#1e293b]/40 border border-slate-800 p-3 rounded-xl hover:border-amber-500 transition-all group">
+                    <span class="block text-slate-500 text-[9px] font-bold uppercase mb-1 group-hover:text-amber-400 text-center">Резервације</span>
+                    <span class="text-2xl font-black text-amber-400 block text-center">{{ count($reservedLoans) }}</span>
+                </button>
+
+                <button onclick="toggleDetail('det-procitano', this)" class="stat-btn bg-[#1e293b]/40 border border-slate-800 p-3 rounded-xl hover:border-indigo-500 transition-all group">
+                    <span class="block text-slate-500 text-[9px] font-bold uppercase mb-1 group-hover:text-indigo-400 text-center">Прочитано</span>
+                    <span class="text-2xl font-black text-indigo-400 block text-center">{{ $overLoansCount }}</span>
+                </button>
+            </div>
+        </div>
+
+        <x-forms.divider />
+
+        {{-- ================== ДЕТАЉИ СЕКЦИЈА ================== --}}
+        <div id="details-wrapper">
+
+            {{-- 1. ПРЕУЗИМАЊЕ --}}
+            <div id="det-preuzimanje" class="detail-sec hidden animate-fade-in">
+                <h2 class="text-blue-400 text-[11px] font-bold uppercase tracking-[0.2em] mb-8">Књиге за преузимање</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
+                    @foreach ($inProgressLoans as $loansBook)
+                        <div class="flex flex-col">
+                            <x-book-card-wide :book="$loansBook->book" />
+                            <form method="POST" action="/loans/loanBookMemberConfirm/{{ $loansBook->id }}" class="mt-4">
+                                @csrf @method('PUT')
+                                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-black py-2 rounded-lg uppercase tracking-widest transition-colors shadow-lg">
+                                    Потврди преузимање
+                                </button>
                             </form>
                         </div>
                     @endforeach
-                </x-slot>
-                @foreach ($inProgressLoans->skip(2) as $loansBook)
-                    <x-book-card-wide :book="$loansBook->book" />
-                    <div class="border border-gray-300 rounded-lg bg-[#fdfaf5] px-4 py-2 text-sm text-black">
-                        <form method="POST" action="/loans/loanBookMemberConfirm/{{ $loansBook->id }}">
-                            @csrf
-                            {{ method_field('PUT') }}
-                            <div class="col-md-8">
-                                <h3 class="hover:text-blue-600  font-bold ">
-                                    <button type="submit" class="btn btn-primary">Потврди позајмицу и преузми
-                                        књигу!</button>
-                                </h3>
-                            </div>
-                        </form>
-                    </div>
-                @endforeach
-            </x-collapsible-section>
-        @endif
+                </div>
+            </div>
 
-        {{-- ================== РЕЗЕРВАЦИЈЕ ================== --}}
-        @if ($reservedLoans->isNotEmpty())
-            <x-collapsible-section title="МОЈЕ РЕЗЕРВАЦИЈЕ" :count="count($reservedLoans)">
-
-                <x-slot name="visible">
-                    @foreach ($reservedLoans->take(2) as $loansBook)
-                        <x-book-card-wide :book="$loansBook->book" />
-                        <div class="border border-gray-300 rounded-lg bg-[#fdfaf5] px-4 py-2 text-sm text-black">
-                            @if ($loansBook->book->loans->where('description', 'rezervisano')->where('user_id', Auth::id())->first())
-                                Резервисали сте књигу {{ $loansBook->created_at->format('d. m. Y. ') }}
-                            @endif
-                            @if ($loansBook->book->loans->where('description', 'potpisano')->where('user_id', Auth::id())->first())
-                                Сачекајте да се књига врати у библиотеку да бисте могли да је позајмите.
-                            @endif
-                        </div>
-                    @endforeach
-                </x-slot>
-                {{-- Све испод овога аутоматски иде у главни $slot --}}
-                @foreach ($reservedLoans->skip(2) as $loansBook)
-                    <x-book-card-wide :book="$loansBook->book" />
-                    <div class="border border-gray-300 rounded-lg bg-[#fdfaf5] px-4 py-2 text-sm text-black">
-                        @if ($loansBook->book->loans->where('description', 'rezervisano')->where('user_id', Auth::id())->first())
-                            Резервисали сте књигу {{ $loansBook->created_at->format('d. m. Y. ') }}
-                        @endif
-                        @if ($loansBook->book->loans->where('description', 'potpisano')->where('user_id', Auth::id())->first())
-                            Сачекајте да се књига врати у библиотеку да бисте могли да је позајмите.
-                        @endif
-                    </div>
-                @endforeach
-            </x-collapsible-section>
-        @else
-            <x-section-heading> НЕМАТЕ РЕЗЕРВАЦИЈА </x-section-heading>
-        @endif
-
-        {{-- ================== КЊИГЕ НА ЧИТАЊУ ================== --}}
-        @if ($loansNumber > 0)
-            <x-collapsible-section title="МОЈЕ КЊИГЕ НА ЧИТАЊУ" :count="$loansNumber">
-
-                {{-- ОВО ЈЕ КЉУЧНИ ДИО: Шаљемо податке у 'visible' слот --}}
-                <x-slot name="visible">
-                    @foreach ($activeLoans->take(2) as $loansBook)
+            {{-- 2. ЧИТАЊЕ --}}
+            <div id="det-citanje" class="detail-sec hidden animate-fade-in">
+                <h2 class="text-emerald-400 text-[11px] font-bold uppercase tracking-[0.2em] mb-8">Тренутно на читању</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
+                    @foreach ($activeLoans as $loansBook)
                         <x-book-card-wide :book="$loansBook->book" />
                     @endforeach
-                </x-slot>
-                {{-- Све испод овога аутоматски иде у главни $slot --}}
+                </div>
+            </div>
 
-                @foreach ($activeLoans->skip(2) as $loansBook)
-                    <x-book-card-wide :book="$loansBook->book" />
-                @endforeach
-            </x-collapsible-section>
-        @endif
-        <x-forms.divider />
-
-
-        {{-- ================== ПРОЧИТАНЕ КЊИГЕ ================== --}}
-        @if ($overLoansCount > 0)
-            <x-collapsible-section id="sekcija-procitane" title="ПРОЧИТАНЕ КЊИГЕ" :count="$overLoansCount">
-
-                {{-- ОВО ЈЕ КЉУЧНИ ДИО: Шаљемо податке у 'visible' слот --}}
-                <x-slot name="visible">
-                    @foreach ($overLoans->take(2) as $loansBooks)
-                        <div class="mb-4">
-                            <x-book-card-wide :book="$loansBooks->book" />
-                            <div
-                                class="border border-gray-300 rounded-lg bg-[#fdfaf5] px-4 py-2 text-sm text-black mt-2">
-                                {{ $loansBooks->created_at->format('d. m. Y. ') }} -
-                                {{ $loansBooks->updated_at->format('d. m. Y. ') }}
+            {{-- 3. РЕЗЕРВАЦИЈЕ --}}
+            <div id="det-rezervacije" class="detail-sec hidden animate-fade-in">
+                <h2 class="text-amber-400 text-[11px] font-bold uppercase tracking-[0.2em] mb-8">Ваше резервације</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-16">
+                    @foreach ($reservedLoans as $loansBook)
+                        <div class="flex flex-col">
+                            <x-book-card-wide :book="$loansBook->book" />
+                            <div class="mt-4 bg-amber-100 border-l-4 border-amber-500 p-3 rounded-r-xl shadow-md flex justify-between items-center">
+                                <span class="text-[10px] font-bold uppercase tracking-tight">Резервисано:</span>
+                                <span class="text-xs font-black">{{ $loansBook->created_at->format('d.m.Y.') }}</span>
                             </div>
                         </div>
                     @endforeach
-                </x-slot>
+                </div>
+            </div>
 
-                {{-- Све испод овога аутоматски иде у главни $slot --}}
-                @foreach ($overLoans->skip(2) as $loansBooks)
-                    <div class="mb-6">
-                        <x-book-card-wide :book="$loansBooks->book" />
-                        <div class="border border-gray-300 rounded-lg bg-[#fdfaf5] px-4 py-2 text-sm text-black mt-2">
-                            {{ $loansBooks->created_at->format('d. m. Y. ') }} -
-                            {{ $loansBooks->updated_at->format('d. m. Y. ') }}
+            {{-- 4. ПРОЧИТАНО --}}
+            <div id="det-procitano" class="detail-sec hidden animate-fade-in">
+                <h2 class="text-indigo-400 text-[11px] font-bold uppercase tracking-[0.2em] mb-8 text-center md:text-left">Историја прочитаних књига</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-16">
+                    @foreach ($overLoans as $loan)
+                        <div class="flex flex-col">
+                            <x-book-card-wide :book="$loan->book" />
+                            {{-- СВЕТЛА ПОДЛОГА СА ТАМНИМ СЛОВИМА И ВЕЋИМ РАЗМАКОМ (MT-4) --}}
+                            <div class="mt-4 bg-slate-100 border-b-2 border-indigo-400 p-3 rounded-xl shadow-inner flex flex-col gap-1">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-[11px] text-slate-900 font-black italic">{{ $loan->created_at->format('d.m.y') }}</span>
+                                    <span class="text-slate-900 text-xs">—</span>
+                                    <span class="text-[11px] text-slate-900 font-black italic">{{ $loan->updated_at->format('d.m.y') }}</span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                @endforeach
-            </x-collapsible-section>
-        @else
-            <x-section-heading> {{ $user->name }} НЕМАТЕ ПРОЧИТАНИХ КЊИГA </x-section-heading>
-        @endif
-        <x-forms.divider />
-        <x-forms.divider />
+                    @endforeach
+                </div>
+            </div>
+
+        </div>
     </div>
+
+    <script>
+        function toggleDetail(id, btn) {
+            const sections = document.querySelectorAll('.detail-sec');
+            const btns = document.querySelectorAll('.stat-btn');
+            const target = document.getElementById(id);
+            const isVisible = !target.classList.contains('hidden');
+
+            sections.forEach(s => s.classList.add('hidden'));
+            btns.forEach(b => {
+                b.classList.remove('bg-slate-800/80', 'border-blue-500', 'border-emerald-500', 'border-amber-500', 'border-indigo-500');
+                b.classList.add('bg-[#1e293b]/40', 'border-slate-800');
+            });
+
+            if (!isVisible) {
+                target.classList.remove('hidden');
+                btn.classList.add('bg-slate-800/80', 'border-current');
+                target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }
+        }
+    </script>
+
+    <style>
+        .animate-fade-in { animation: fadeIn 0.5s ease-out forwards; }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </x-layout>
