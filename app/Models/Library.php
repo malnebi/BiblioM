@@ -13,6 +13,12 @@ class Library extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'owner_id',
+        'name',
+        'logo',
+    ];
+
 
     /*    public function user(): BelongsTo
     {

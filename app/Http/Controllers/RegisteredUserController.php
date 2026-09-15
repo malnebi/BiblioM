@@ -37,13 +37,13 @@ class RegisteredUserController extends Controller
             'role_type' => ['required', \Illuminate\Validation\Rule::in(array_keys(User::$schoolRoles))],
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'confirmed', \Illuminate\Validation\Rules\Password::min(6)],
-            'user_photo' => ['required', \Illuminate\Validation\Rules\File::types(['png', 'jpg', 'webp'])],
+            'user_photo' => ['nullable', \Illuminate\Validation\Rules\File::types(['png', 'jpg', 'webp'])],
         ]);
 
         // 2. Валидирамо податке за библиотеку
         $libraryAttributes = $request->validate([
-            'library' => ['required'],
-            'logo' => ['required', \Illuminate\Validation\Rules\File::types(['png', 'jpg', 'webp'])],
+            'library' => ['nullable', 'string', 'max:255'],
+            'logo' => ['nullable', \Illuminate\Validation\Rules\File::types(['png', 'jpg', 'webp'])],
         ]);
 
         // 3. ОДЛУКА: Које поље за детаље користимо?
@@ -53,7 +53,9 @@ class RegisteredUserController extends Controller
             : $request->role_details_input;
 
         // 4. Обрада фотографије корисника
-        $userPhotoPath = $request->user_photo->store('user_photos', 'public');
+        $userPhotoPath = $request->hasFile('user_photo')
+            ? $request->user_photo->store('user_photos', 'public')
+            : null;
 
         // 5. Креирамо корисника ручно мапирајући поља
         $user = User::create([
@@ -69,12 +71,14 @@ class RegisteredUserController extends Controller
         ]);
 
         // 6. Обрада логотипа
-        $logoPath = $request->logo->store('logos', 'public');
+        $logoPath = $request->hasFile('logo')
+            ? $request->logo->store('logos', 'public')
+            : null;
 
         // 7. Креирање библиотеке повезане са корисником
         $user->library()->create([
             'owner_id' => $user->id,
-            'name' => $libraryAttributes['library'],
+            'name' => $libraryAttributes['library'] ?: 'Моја библиотека',
             'logo' => $logoPath,
         ]);
 

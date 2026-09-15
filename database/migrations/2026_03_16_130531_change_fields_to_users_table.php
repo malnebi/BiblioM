@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             //
-            $table->boolean('approved')->default(false)->change();
+            $table->boolean('approved')->default(false);
         });
     }
 

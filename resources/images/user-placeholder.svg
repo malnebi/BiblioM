@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 197" role="img" aria-labelledby="title">
+  <title>Подразумијевана слика корисника</title>
+  <rect width="180" height="197" fill="#f7f7f9"/>
+  <g fill="none" stroke="#050505" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="61" cy="45" r="23" stroke-width="3.5"/>
+    <path d="M61 68c-25 0-43 20-47 48-2 13 15 23 41 25 18 1 33-2 45-9" stroke-width="3.5"/>
+    <path d="M15 143c-1 15 20 25 45 26 16 1 29-2 40-8" stroke-width="3.5"/>
+    <path d="M102 105V174" stroke-width="2.5"/>
+    <path d="M108 174h20M134 174h20M160 174h15" stroke-width="2.5"/>
+    <path d="M108 174V121h20v53Z" fill="#f7f7f9" stroke-width="3"/>
+    <path d="M134 174V101h20v73Z" fill="#f7f7f9" stroke-width="3"/>
+    <path d="M160 174V83h15v91Z" fill="#f7f7f9" stroke-width="3"/>
+    <path d="M111 127h14m12-18h14m26-18h8" stroke-width="2"/>
+  </g>
+</svg>

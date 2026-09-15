@@ -71,6 +71,63 @@
                         <div class="ml-4 flex items-center md:ml-6">
                             @auth
                                 {{-- ОВАЈ ДИВ МОРА ИМАТИ x-data АКО ГА ВЕЋ НЕМА ИЗНАД --}}
+                               
+                                <div class="relative ml-3" x-data="{ userMenu: false }" @click.away="userMenu = false">
+                                    <div>
+                                        <button @click="userMenu = !userMenu" type="button"
+                                            :class="userMenu ||
+                                                {{ request()->is('loggedUser*', 'settings*') ? 'true' : 'false' }} ?
+                                                'ring-2 ring-white ring-offset-2 ring-offset-green-800 scale-105' :
+                                                'focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-green-800'"
+                                            class="relative flex max-w-xs items-center rounded-full bg-green-800 text-sm transition-all duration-300 ease-in-out focus:outline-none"
+                                            id="user-menu-button" :aria-expanded="userMenu" aria-haspopup="true">
+                                            <span class="sr-only">Отвори мени</span>
+                                            <img class="h-9 w-9 rounded-full object-cover border border-white/20"
+                                                src="{{ Auth::user()->user_photo ? asset('storage/' . Auth::user()->user_photo) : Vite::asset('resources/images/user-placeholder.svg') }}"
+                                                alt="{{ Auth::user()->name }}">                                     
+                                        </button>
+                                    </div>
+
+                                    {{-- Падајући мени --}}
+                                    <div x-show="userMenu" x-cloak x-transition:enter="transition ease-out duration-100"
+                                        x-transition:enter-start="transform opacity-0 scale-95"
+                                        x-transition:enter-end="transform opacity-100 scale-100"
+                                        x-transition:leave="transition ease-in duration-75"
+                                        x-transition:leave-start="transform opacity-100 scale-100"
+                                        x-transition:leave-end="transform opacity-0 scale-95"
+                                        class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                                        role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button"
+                                        tabindex="-1">
+
+                                        <div class="px-4 py-2 border-b border-gray-100">
+                                            <p class="text-sm text-gray-900 font-bold truncate">{{ Auth::user()->name }}
+                                            </p>
+                                            <p class="text-xs text-gray-500 truncate">{{ Auth::user()->email }}</p>
+                                        </div>
+
+                                        <a href="/loggedUser/{{ Auth::user()->id }}"
+                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                            role="menuitem">Профил</a>
+                                        <a href="/settings"
+                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                            role="menuitem">Подешавања</a>
+                                        @if (Auth::user()->role === 'admin')
+                                            <a href="/admin/dashboard"
+                                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                role="menuitem">Администрација</a>
+                                        @endif
+
+                                        <form method="POST" action="/logout" role="none">
+                                            @csrf
+                                            <button type="submit"
+                                                class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 font-semibold"
+                                                role="menuitem">
+                                                Одјава
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+
                                 <div class="relative ml-3" x-data="{ libraryMenu: false }" @click.away="libraryMenu = false">
                                     <div>
                                         <button @click="libraryMenu = !libraryMenu" type="button"
@@ -101,7 +158,7 @@
                                         <div class="px-4 py-2 border-b border-gray-100">
                                             <p class="text-sm text-gray-700 font-bold truncate">
                                                 {{ Auth::user()->ownLibrary->name }}</p>
-                                            <p class="text-sm text-gray-700 truncate">Библиотека
+                                            <p class="text-sm text-gray-700 truncate">Моја библиотека
                                             </p>
                                         </div>
                                         <a href="/library/libraryBooks/{{ Auth::user()->ownLibrary->id ?? '' }}"
@@ -121,56 +178,6 @@
                                     </div>
                                 </div>
 
-                                <div class="relative ml-3" x-data="{ userMenu: false }" @click.away="userMenu = false">
-                                    <div>
-                                        <button @click="userMenu = !userMenu" type="button"
-                                            :class="userMenu ||
-                                                {{ request()->is('loggedUser*', 'settings*') ? 'true' : 'false' }} ?
-                                                'ring-2 ring-white ring-offset-2 ring-offset-green-800 scale-105' :
-                                                'focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-green-800'"
-                                            class="relative flex max-w-xs items-center rounded-full bg-green-800 text-sm transition-all duration-300 ease-in-out focus:outline-none"
-                                            id="user-menu-button" :aria-expanded="userMenu" aria-haspopup="true">
-                                            <span class="sr-only">Отвори мени</span>
-                                            <img class="h-9 w-9 rounded-full object-cover border border-white/20"
-                                                src="{{ asset('storage/' .  Auth::user()->user_photo) ?? 'https://ui-avatars.com' . urlencode(Auth::user()->name) }}"
-                                                alt="{{ Auth::user()->name }}">                                     
-                                        </button>
-                                    </div>
-
-                                    {{-- Падајући мени --}}
-                                    <div x-show="userMenu" x-cloak x-transition:enter="transition ease-out duration-100"
-                                        x-transition:enter-start="transform opacity-0 scale-95"
-                                        x-transition:enter-end="transform opacity-100 scale-100"
-                                        x-transition:leave="transition ease-in duration-75"
-                                        x-transition:leave-start="transform opacity-100 scale-100"
-                                        x-transition:leave-end="transform opacity-0 scale-95"
-                                        class="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
-                                        role="menu" aria-orientation="vertical" aria-labelledby="user-menu-button"
-                                        tabindex="-1">
-
-                                        <div class="px-4 py-2 border-b border-gray-100">
-                                            <p class="text-sm text-gray-900 font-bold truncate">{{ Auth::user()->name }}
-                                            </p>
-                                            <p class="text-xs text-gray-500 truncate">{{ Auth::user()->email }}</p>
-                                        </div>
-
-                                        <a href="/loggedUser/{{ Auth::user()->id }}"
-                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                            role="menuitem">Профил</a>
-                                        <a href="/settings"
-                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                            role="menuitem">Подешавања</a>
-
-                                        <form method="POST" action="/logout" role="none">
-                                            @csrf
-                                            <button type="submit"
-                                                class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 font-semibold"
-                                                role="menuitem">
-                                                Одјава
-                                            </button>
-                                        </form>
-                                    </div>
-                                </div>
                             @endauth
 
                             @guest
@@ -233,7 +240,7 @@
                         <div class="flex items-center px-5">
                             <div class="shrink-0">
                                 <img class="h-10 w-10 rounded-full border border-white/20"
-                                    src="{{ Auth::user()->profile_photo_url ?? 'https://ui-avatars.com(Auth::user()->name) ?>' }}"
+                                    src="{{ Auth::user()->user_photo ? asset('storage/' . Auth::user()->user_photo) : Vite::asset('resources/images/user-placeholder.svg') }}"
                                     alt="">
                             </div>
                             <div class="ml-3">

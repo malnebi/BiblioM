@@ -35,7 +35,7 @@
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                     <div class="space-y-6">
-                        <h2 class="text-2xl font-bold text-white uppercase tracking-widest text-blue-400">Наша Мисија
+                        <h2 class="text-2xl font-bold  uppercase tracking-widest text-blue-400">Наша Мисија
                         </h2>
                         <div class="text-slate-300 leading-relaxed text-lg space-y-4">
                             <p>

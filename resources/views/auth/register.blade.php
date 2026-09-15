@@ -20,13 +20,15 @@
                     <div class="flex items-start gap-6">
                         {{-- Слика корисника --}}
                         <div class="flex-none">
-                            <label for="user_photo_input" class="cursor-pointer group block">
+                            <label for="user_photo_input" class="relative cursor-pointer group block">
                                 <div id="user_photo_preview"
                                     class="w-32 h-32 bg-slate-800 rounded-xl flex flex-col items-center justify-center border-2 border-dashed border-slate-600 group-hover:border-blue-500 transition-all overflow-hidden">
-                                    <span
-                                        class="text-slate-500 text-[10px] font-bold text-center px-2 uppercase font-cyrillic">Додај
-                                        слику</span>
+                                    <img src="{{ Vite::asset('resources/images/user-placeholder.svg') }}"
+                                        alt="Подразумијевана слика корисника" class="w-full h-full object-cover">
                                 </div>
+                                <span
+                                    class="absolute inset-x-2 bottom-2 rounded-md bg-black/65 px-2 py-1 text-center text-xs font-semibold text-white">Додај
+                                    слику</span>
                                 <input type="file" name="user_photo" id="user_photo_input" class="hidden"
                                     accept="image/*">
                             </label>
@@ -87,19 +89,21 @@
                     <div class="flex items-center gap-6">
                         {{-- Лого библиотеке --}}
                         <div class="flex-none">
-                            <label for="logo_input" class="cursor-pointer group block">
+                            <label for="logo_input" class="relative cursor-pointer group block">
                                 <div id="logo_preview"
                                     class="w-32 h-32 bg-slate-800 rounded-xl flex flex-col items-center justify-center border-2 border-dashed border-slate-600 group-hover:border-blue-500 transition-all overflow-hidden">
-                                    <span
-                                        class="text-slate-500 text-[10px] font-bold text-center px-2 uppercase font-cyrillic">Додај
-                                        лого</span>
+                                    <img src="{{ Vite::asset('resources/images/library-placeholder.svg') }}"
+                                        alt="Подразумијевани лого библиотеке" class="w-full h-full object-cover">
                                 </div>
+                                <span
+                                    class="absolute inset-x-2 bottom-2 rounded-md bg-black/65 px-2 py-1 text-center text-xs font-semibold text-white">Додај
+                                    лого</span>
                                 <input type="file" name="logo" id="logo_input" class="hidden" accept="image/*">
                             </label>
                         </div>
 
                         <div class="flex-grow">
-                            <x-forms.input label="Назив библиотеке" name="library" required />
+                            <x-forms.input label="Назив библиотеке (опционо)" name="library" />
                         </div>
                     </div>
                 </x-slot:left>

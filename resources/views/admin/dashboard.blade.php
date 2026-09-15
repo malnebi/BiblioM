@@ -18,11 +18,42 @@
                 @forelse($pendingUsers as $user)
                     <tr>
                         <td class="px-6 py-4">
-                            <div class="text-sm font-medium text-gray-900">{{ $user->name }}</div>
-                            <div class="text-sm text-gray-500">{{ $user->email }}</div>
+                            <div class="flex items-center gap-3">
+                                @if ($user->user_photo)
+                                    <a href="{{ asset('storage/' . $user->user_photo) }}" target="_blank"
+                                        rel="noopener" title="Прикажи слику корисника">
+                                        <img src="{{ asset('storage/' . $user->user_photo) }}"
+                                            alt="Слика корисника {{ $user->name }}"
+                                            class="h-12 w-12 rounded-full object-cover border border-gray-200">
+                                    </a>
+                                @else
+                                    <img src="{{ Vite::asset('resources/images/user-placeholder.svg') }}" alt="Подразумијевана слика"
+                                        class="h-12 w-12 rounded-full object-cover border border-gray-200">
+                                @endif
+                                <div>
+                                    <div class="text-sm font-medium text-gray-900">{{ $user->name }}</div>
+                                    <div class="text-sm text-gray-500">{{ $user->email }}</div>
+                                </div>
+                            </div>
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-500">
-                            {{ $user->ownlibrary->name ?? 'Није унесено' }}
+                            @if ($user->ownLibrary?->logo)
+                                <div class="flex items-center gap-3">
+                                    <a href="{{ asset('storage/' . $user->ownLibrary->logo) }}" target="_blank"
+                                        rel="noopener" title="Прикажи лого библиотеке">
+                                        <img src="{{ asset('storage/' . $user->ownLibrary->logo) }}"
+                                            alt="Лого библиотеке {{ $user->ownLibrary->name }}"
+                                            class="h-12 w-12 rounded-md object-cover border border-gray-200">
+                                    </a>
+                                    <span>{{ $user->ownLibrary->name }}</span>
+                                </div>
+                            @else
+                                <div class="flex items-center gap-3">
+                                    <img src="{{ Vite::asset('resources/images/library-placeholder.svg') }}" alt="Подразумијевани лого"
+                                        class="h-12 w-12 rounded-md object-cover border border-gray-200">
+                                    <span>{{ $user->ownLibrary->name ?? 'Није унесено' }}</span>
+                                </div>
+                            @endif
                         </td>
                         <td class="px-6 py-4 text-center">
                             <div class="flex justify-center gap-2">
