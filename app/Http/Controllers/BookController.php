@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 class BookController extends Controller
 {
@@ -43,6 +44,7 @@ class BookController extends Controller
      */
     public function create()
     {
+            $library = Auth::user()->ownLibrary;
 
             $tags = Tag::whereNotNull('name') // Избацујемо потпуно празне
             ->where('name', '!=', '')     // Избацујемо празне стрингове
@@ -58,7 +60,7 @@ class BookController extends Controller
 
         return view(
             'books.create',
-            ['tags' => $tags]
+            ['tags' => $tags, 'library' => $library]
         );
     }
 
@@ -67,8 +69,20 @@ class BookController extends Controller
      */
     public function store(Request $request)
     {
+        $library = Auth::user()->ownLibrary;
+        $usesAutomaticNumbering = $library->numbering_mode === 'automatic';
+
         // 1. Валидација (пази на имена поља из наше компоненте)
         $attributes = $request->validate([
+            'lib_book_id' => [
+                Rule::requiredIf(!$usesAutomaticNumbering),
+                'nullable',
+                'integer',
+                'min:1',
+                Rule::unique('books', 'lib_book_id')->where(
+                    fn ($query) => $query->where('library_id', $library->id)
+                ),
+            ],
             'author_fname' => ['required', 'string', 'max:50'],
             'author_lname' => ['required', 'string', 'max:50'],
             'title' => ['required', 'string', 'max:200'],
@@ -84,9 +98,6 @@ class BookController extends Controller
             'suggested_tag' => ['nullable', 'string', 'max:30'],
         ]);
 
-        $library = Auth::user()->ownLibrary;
-        $lastLibBookId = $library->books()->max('lib_book_id') ?? 0;
-
         // Снимање слике
         $imagePath = $request->hasFile('book_cover')
             ? $request->file('book_cover')->store('book_covers', 'public')
@@ -94,7 +105,9 @@ class BookController extends Controller
 
         // 2. Креирање књиге
         $book = $library->books()->create([
-            'lib_book_id' => $lastLibBookId + 1,
+            'lib_book_id' => $usesAutomaticNumbering
+                ? (($library->books()->max('lib_book_id') ?? 0) + 1)
+                : $attributes['lib_book_id'],
             'author_fname' => $attributes['author_fname'],
             'author_lname' => $attributes['author_lname'],
             'title' => $attributes['title'],
@@ -178,6 +191,14 @@ class BookController extends Controller
     public function update(Request $request, Book $book)
     {
         $attributes = $request->validate([
+            'lib_book_id' => [
+                'required',
+                'integer',
+                'min:1',
+                Rule::unique('books', 'lib_book_id')
+                    ->where(fn ($query) => $query->where('library_id', $book->library_id))
+                    ->ignore($book->id),
+            ],
             'author_fname' => ['required', 'string', 'max:50'],
             'author_lname' => ['required', 'string', 'max:50'],
             'title' => ['required', 'string', 'max:200'],

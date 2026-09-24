@@ -1,0 +1,22 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    public function up(): void
+    {
+        Schema::table('libraries', function (Blueprint $table) {
+            $table->string('numbering_mode')->default('manual');
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::table('libraries', function (Blueprint $table) {
+            $table->dropColumn('numbering_mode');
+        });
+    }
+};

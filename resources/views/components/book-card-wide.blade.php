@@ -44,7 +44,8 @@
                         <span class="text-xs">⋯</span>
                     </summary>
                     <div class="mt-1 text-[9px] text-gray-400 bg-black/20 p-1.5 rounded leading-tight">
-                        <strong>Инвентарни број:</strong> #{{ $book->id }}
+                        <strong>Инвентарни број:</strong> #{{ $book->lib_book_id }}
+                        </br> <strong>Број у апликацији:</strong> #{{ $book->id }}
                         </br> <strong>БИБЛИОТЕКА:</strong> {{ $book->library->name }}
                     </div>
                 </details>

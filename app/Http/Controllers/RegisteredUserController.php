@@ -8,6 +8,7 @@ use Illuminate\Validation\Rules\File;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 
 class RegisteredUserController extends Controller
@@ -44,6 +45,7 @@ class RegisteredUserController extends Controller
         $libraryAttributes = $request->validate([
             'library' => ['nullable', 'string', 'max:255'],
             'logo' => ['nullable', \Illuminate\Validation\Rules\File::types(['png', 'jpg', 'webp'])],
+            'numbering_mode' => ['required', Rule::in(['manual', 'automatic'])],
         ]);
 
         // 3. ОДЛУКА: Које поље за детаље користимо?
@@ -84,6 +86,7 @@ class RegisteredUserController extends Controller
                 ? $libraryName
                 : 'Библиотека ' . trim($userAttributes['name']),
             'logo' => $logoPath,
+            'numbering_mode' => $libraryAttributes['numbering_mode'],
         ]);
 
         // 7. Преусмеравање са поруком

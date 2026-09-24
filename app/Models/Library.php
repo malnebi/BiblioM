@@ -17,6 +17,7 @@ class Library extends Model
         'owner_id',
         'name',
         'logo',
+        'numbering_mode',
     ];
 
 

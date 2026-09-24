@@ -38,6 +38,12 @@
                             <x-forms.input label="Презиме аутора" name="author_lname" placeholder="нпр. Андрић" />
                         </div>
                     </div>
+                    @if ($library->numbering_mode === 'manual')
+                        <x-forms.input label="Инвентарски број" name="lib_book_id" type="number" min="1"
+                            placeholder="нпр. 4087" required />
+                    @else
+                        <p class="text-sm text-slate-400">Број књиге ће бити додијељен аутоматски.</p>
+                    @endif
                     <x-forms.input label="Наслов књиге" name="title" placeholder="Унесите пуни наслов..." />
                 </x-slot:left>
 

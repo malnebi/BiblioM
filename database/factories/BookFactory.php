@@ -20,7 +20,7 @@ class BookFactory extends Factory
     public function definition(): array
     {
         return [
-            'lib_book_id' => fake()->numberBetween(1, 100),
+            'lib_book_id' => fake()->unique()->numberBetween(1, 1000000),
             'author_fname' => fake()->name(),
             'author_lname' => fake()->name(),
             'title' => fake()->name(),

@@ -106,6 +106,24 @@
                             <x-forms.input label="Назив библиотеке (опционо)" name="library" />
                         </div>
                     </div>
+
+                    <div class="mt-6">
+                        <label for="numbering_mode"
+                            class="block text-sm font-medium text-slate-300 mb-2 font-cyrillic uppercase tracking-wide">
+                            Нумерација књига
+                        </label>
+                        <select name="numbering_mode" id="numbering_mode" class="custom-select w-full" required>
+                            <option value="automatic" @selected(old('numbering_mode', 'automatic') === 'automatic')>
+                                Аутоматски редни број
+                            </option>
+                            <option value="manual" @selected(old('numbering_mode') === 'manual')>
+                                Ручни инвентарски број
+                            </option>
+                        </select>
+                        <p class="text-xs text-slate-400 mt-2">
+                            Изаберите аутоматско додјељивање броја или унос постојећих инвентарских бројева.
+                        </p>
+                    </div>
                 </x-slot:left>
 
                 <x-slot:right>

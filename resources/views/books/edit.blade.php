@@ -39,6 +39,9 @@
                         <x-forms.input label="Презиме аутора" name="author_lname" value="{{ $book->author_lname }}" />
                     </div>
                 </div>
+                <x-forms.input label="Инвентарски број" name="lib_book_id" type="number" min="1"
+                    value="{{ $book->lib_book_id }}" required
+                    @if ($book->library->numbering_mode === 'automatic') readonly @endif />
                 <x-forms.input label="Наслов књиге" name="title" value="{{ $book->title }}" />
             </x-slot:left>
 
