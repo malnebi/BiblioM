@@ -49,7 +49,12 @@ class UserController extends Controller
     public function show($id)
     {
         $user = User::find($id);
-        $user_photo = $user->photo;
+
+        if (!$user) {
+            abort(404);
+        }
+
+        $user_photo = $user->user_photo;
 
         $reservedLoans = Loan::where([['user_id', '=', $id], ['library_id', '=', Auth::user()->ownLibrary->id], ['active', '=', null], ['description', '=', 'rezervisano']])->get();
         $inProgressLoans = Loan::where([['user_id', '=', $id], ['active', '=', '1']])
@@ -90,9 +95,6 @@ class UserController extends Controller
             ->get();
 
 
-        if (!$user) {
-            abort(404);
-        }
         $data = [
             'user' => $user,
             'user_photo' => $user_photo,

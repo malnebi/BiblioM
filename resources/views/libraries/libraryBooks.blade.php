@@ -11,7 +11,10 @@
                     <x-library-logo :library="$library ?? 'No library'" width="80" />
                 </div>
                 <h1 class="font-black text-xl md:text-4xl text-white tracking-tight uppercase">
-                    БИБЛИОТЕКА <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">{{ $library->name }}</span>
+                    @unless (str_starts_with($library->name, 'Библиотека '))
+                        БИБЛИОТЕКА
+                    @endunless
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">{{ $library->name }}</span>
                 </h1>
                 <div class="mt-2 flex items-center gap-2 text-slate-400 text-sm font-medium">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

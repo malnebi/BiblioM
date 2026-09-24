@@ -9,7 +9,7 @@
            class="group block transition-transform duration-200 active:scale-95" title="Профил">
             
             <div class="relative inline-block">
-                <img src="{{ asset('storage/' . $user->user_photo) }}" alt="Avatar" 
+                <img src="{{ $user->user_photo ? asset('storage/' . $user->user_photo) : Vite::asset('resources/images/user-placeholder.svg') }}" alt="{{ $user->name }}" 
                      class="w-52 h-52 rounded-full object-cover mx-auto transition-all duration-300 transform 
                             border-4 border-transparent 
                             group-hover:border-white group-hover:scale-105">
@@ -32,7 +32,7 @@
                 <div class="p-1 rounded-lg transition-all duration-300 transform 
                             border-4 border-transparent 
                             group-hover:border-white group-hover:scale-110 flex-shrink-0">
-                    <x-library-logo :library="$user->ownLibrary" :width="48" />
+                    <x-library-logo :library="$library" :width="48" />
                 </div>
 
                 <div class="transition-all duration-300 transform group-hover:scale-105">

@@ -158,7 +158,7 @@
                                         <div class="px-4 py-2 border-b border-gray-100">
                                             <p class="text-sm text-gray-700 font-bold truncate">
                                                 {{ Auth::user()->ownLibrary->name }}</p>
-                                            <p class="text-sm text-gray-700 truncate">Моја библиотека
+                                            <p class="text-xs text-gray-700 truncate">Моја библиотека
                                             </p>
                                         </div>
                                         <a href="/library/libraryBooks/{{ Auth::user()->ownLibrary->id ?? '' }}"

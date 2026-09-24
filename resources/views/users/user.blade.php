@@ -1,8 +1,9 @@
 <x-layout>
     <div class="space-y-10">
         <section class="text-left">
-            <img src="{{ asset('storage/' . $user->user_photo) }}" alt="user_photo"
+            <img src="{{ $user->user_photo ? asset('storage/' . $user->user_photo) : Vite::asset('resources/images/user-placeholder.svg') }}" alt="{{ $user->name }}"
                 class="w-52 h-52 rounded-full object-cover border border-white/40">
+            <x-library-logo :library="$user->ownLibrary" :width="100" />
             <h1 class="font-bold text-4xl"> {{ $user->name }}</h1>
 
             {{-- ================== ФОРМУЛАР ЗА ДОДЈЕЛУ КЊИГЕ ЧЛАНУ ================== --}}

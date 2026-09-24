@@ -5,11 +5,12 @@
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
             {{-- Корисник --}}
             <div class="lg:col-span-1 bg-[#1e293b] border border-slate-700 p-5 rounded-2xl flex items-center gap-4 shadow-xl">
-                <img src="{{ asset('storage/' . $user->user_photo) }}" class="w-14 h-14 rounded-xl object-cover border border-slate-600">
+                <img src="{{ $user->user_photo ? asset('storage/' . $user->user_photo) : Vite::asset('resources/images/user-placeholder.svg') }}" alt="{{ $user->name }}" class="w-14 h-14 rounded-xl object-cover border border-slate-600">
                 <div class="min-w-0">
                     <h1 class="font-bold text-white truncate text-base">{{ $user->name }}</h1>
                     <p class="text-slate-500 text-[10px] uppercase tracking-tighter italic">Мој Профил</p>
                 </div>
+                <x-library-logo :library="$user->ownLibrary" :width="56" />
             </div>
 
             {{-- Статистика --}}            

@@ -76,9 +76,13 @@ class RegisteredUserController extends Controller
             : null;
 
         // 7. Креирање библиотеке повезане са корисником
+        $libraryName = trim($libraryAttributes['library'] ?? '');
+
         $user->library()->create([
             'owner_id' => $user->id,
-            'name' => $libraryAttributes['library'] ?: 'Моја библиотека',
+            'name' => $libraryName !== ''
+                ? $libraryName
+                : 'Библиотека ' . trim($userAttributes['name']),
             'logo' => $logoPath,
         ]);
 

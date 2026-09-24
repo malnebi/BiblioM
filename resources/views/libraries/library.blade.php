@@ -2,7 +2,12 @@
     <div class="space-y-10">
         <section class="text-center">
             <x-library-logo :library="$library ?? 'No library'" width="100" />
-            <h1 class="font-bold text-4xl">БИБЛИОТЕКА {{ $library->name }}</h1>
+            <h1 class="font-bold text-4xl">
+                @unless (str_starts_with($library->name, 'Библиотека '))
+                    БИБЛИОТЕКА
+                @endunless
+                {{ $library->name }}
+            </h1>
         </section>
         <section>
 
