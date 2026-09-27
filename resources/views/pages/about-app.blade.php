@@ -17,7 +17,7 @@
         <section class="bg-[#1e293b]/30 border border-slate-800 p-8 rounded-3xl shadow-2xl relative overflow-hidden">
             <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-3xl rounded-full -mr-16 -mt-16"></div>
             <div class="relative z-10 text-slate-300 leading-loose text-lg italic">
-                "БИБЛИ је платформа која повезује дигиталну евиденцију са физичком размјеном.
+                "БиблиоМи је платформа која повезује дигиталну евиденцију са физичком размјеном.
                 Настала у оквиру добојске гимназије, апликација подстиче читање као сазнајни процес,
                 сарадњу и одговорно коришћење књига као заједничког ресурса."
             </div>
@@ -39,7 +39,7 @@
                         </h2>
                         <div class="text-slate-300 leading-relaxed text-lg space-y-4">
                             <p>
-                                <strong class="text-white">БИБЛИ</strong> је живи екосистем заједнице који претвара
+                                <strong class="text-white">БиблиоМи</strong> је живи екосистем заједнице који претвара
                                 изоловане кућне полице у заједничку дигиталну мрежу.
                             </p>
                             <p>

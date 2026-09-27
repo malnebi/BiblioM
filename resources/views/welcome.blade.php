@@ -3,7 +3,7 @@
 
         <section class="text-center">
             <h1 class="font-black text-xl md:text-4xl text-white tracking-tight uppercase">
-                БИБЛИ </h1>
+                БиблиоМи </h1>
         </section>
 
         <div class="max-w-7xl mx-auto p-6 lg:p-8">
