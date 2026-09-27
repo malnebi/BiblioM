@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\Rules\File;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -59,35 +60,36 @@ class RegisteredUserController extends Controller
             ? $request->user_photo->store('user_photos', 'public')
             : null;
 
-        // 5. Креирамо корисника ручно мапирајући поља
-        $user = User::create([
-            'name' => $userAttributes['name'],
-            'last_name' => $userAttributes['last_name'],
-            'email' => $userAttributes['email'],
-            'password' => \Illuminate\Support\Facades\Hash::make($userAttributes['password']),
-            'role_type' => $userAttributes['role_type'],
-            'role_details' => $details, // Ово смо извукли из корака 3
-            'approved' => 0, // Корисник није одобрен по дефолту
-            'remember_token' => \Illuminate\Support\Str::random(10),
-            'user_photo' => $userPhotoPath,
-        ]);
-
         // 6. Обрада логотипа
         $logoPath = $request->hasFile('logo')
             ? $request->logo->store('logos', 'public')
             : null;
 
-        // 7. Креирање библиотеке повезане са корисником
         $libraryName = trim($libraryAttributes['library'] ?? '');
 
-        $user->library()->create([
-            'owner_id' => $user->id,
-            'name' => $libraryName !== ''
-                ? $libraryName
-                : 'Библиотека ' . trim($userAttributes['name']),
-            'logo' => $logoPath,
-            'numbering_mode' => $libraryAttributes['numbering_mode'],
-        ]);
+        DB::transaction(function () use ($userAttributes, $details, $userPhotoPath, $libraryName, $logoPath, $libraryAttributes) {
+            // Креирамо корисника и библиотеку атомски, да не остане недовршен налог.
+            $user = User::create([
+                'name' => $userAttributes['name'],
+                'last_name' => $userAttributes['last_name'],
+                'email' => $userAttributes['email'],
+                'password' => \Illuminate\Support\Facades\Hash::make($userAttributes['password']),
+                'role_type' => $userAttributes['role_type'],
+                'role_details' => $details,
+                'approved' => 0,
+                'remember_token' => \Illuminate\Support\Str::random(10),
+                'user_photo' => $userPhotoPath,
+            ]);
+
+            $user->library()->create([
+                'owner_id' => $user->id,
+                'name' => $libraryName !== ''
+                    ? $libraryName
+                    : 'Библиотека ' . trim($userAttributes['name']),
+                'logo' => $logoPath,
+                'numbering_mode' => $libraryAttributes['numbering_mode'],
+            ]);
+        });
 
         // 7. Преусмеравање са поруком
         return redirect('/login')->with('message', 'Хвала за регистрацију! Сачекајте одобрење администратора.');

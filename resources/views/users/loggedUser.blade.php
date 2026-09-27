@@ -10,8 +10,7 @@
                     <h1 class="font-bold text-white truncate text-base">{{ $user->name }}</h1>
                     <p class="text-slate-500 text-[10px] uppercase tracking-tighter italic">Мој Профил</p>
                 </div>
-                <x-library-logo :library="$user->ownLibrary" :width="56" />
-            </div>
+                </div>
 
             {{-- Статистика --}}            
             <div class="lg:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-3">
