@@ -9,62 +9,24 @@
                     књиге.</span>
             </h1>
             <p class="text-slate-400 text-lg max-w-2xl mx-auto leading-relaxed font-medium">
-                Дигитални мост између твоје полице и заједнице читалаца.
+                Дигитални мост између твоје кућне библиотеке и заједнице читалаца.
             </p>
         </section>
-
 
         <section class="bg-[#1e293b]/30 border border-slate-800 p-8 rounded-3xl shadow-2xl relative overflow-hidden">
             <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-3xl rounded-full -mr-16 -mt-16"></div>
             <div class="relative z-10 text-slate-300 leading-loose text-lg italic">
-                "БиблиоМ је платформа која повезује дигиталну евиденцију са физичком размјеном.
-                Настала у оквиру добојске гимназије, апликација подстиче читање као сазнајни процес,
-                сарадњу и одговорно коришћење књига као заједничког ресурса."
+                <strong>БиблиоМ</strong> је платформа за евидентирање, позајмљивање и размјену књига из кућних библиотека.
+                Повезујући дигиталну евиденцију са стварним кретањем књига међу читаоцима, БиблиоМ подстиче читање,
+                сарадњу и одговорно коришћење књига.
             </div>
         </section>
 
-        {{-- 2. МИСИЈА - Стаклени ефекат --}}
-        <section class="relative">
-            <div
-                class="absolute -inset-1 bg-gradient-to-r from-blue-500 to-emerald-500 rounded-[2.5rem] blur opacity-10">
-            </div>
-            <div
-                class="relative bg-[#1e293b]/50 border border-slate-800 p-10 md:p-16 rounded-[2.5rem] shadow-2xl backdrop-blur-sm overflow-hidden">
-                <div class="absolute top-0 right-0 w-64 h-64 bg-blue-500/5 blur-[80px] rounded-full -mr-32 -mt-32">
-                </div>
 
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                    <div class="space-y-6">
-                        <h2 class="text-2xl font-bold  uppercase tracking-widest text-blue-400">Наша Мисија
-                        </h2>
-                        <div class="text-slate-300 leading-relaxed text-lg space-y-4">
-                            <p>
-                                <strong class="text-white">БиблиоМ</strong> је живи екосистем заједнице који претвара
-                                изоловане кућне полице у заједничку дигиталну мрежу.
-                            </p>
-                            <p>
-                                Развијена у оквиру библиотеке добојске гимназије, апликација повезује дигиталну
-                                евиденцију са физичком размјеном, подстичући читање, сарадњу и одговорно коришћење књига
-                                као заједничког ресурса.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="hidden lg:block">
-                        {{-- Овдје можеш ставити неку илустрацију или чак лого са путањом --}}
-                        <div class="bg-slate-900/50 border border-slate-800 rounded-3xl p-8 flex justify-center">
-                            {{--                                                        <-- <x-library-logo :library="$library" width="150" />   --}}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        {{-- 3. КЉУЧНЕ ФУНКЦИЈЕ (Кориштење компоненте) --}}
         <section class="space-y-12">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                {{-- Картица: Дигитализација --}}
-                <x-feature-card title="Дигитализација"
-                    description="Претворите своју кућну библиотеку у претраживу базу података. Свака књига добија свој дигитални идентитет спреман за размјену."
+                <x-feature-card title="Дигитална библиотека"
+                    description="Претвори своју кућну библиотеку у уређену и претраживу дигиталну збирку. Евидентирај књиге и учини их доступним другим читаоцима."
                     color="blue">
                     <svg class="w-7 h-7 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -73,9 +35,8 @@
                     </svg>
                 </x-feature-card>
 
-                {{-- Картица: Циркулација --}}
-                <x-feature-card title="Циркулација"
-                    description="Праћење сваке позајмице у реалном времену. Циркуларна економија књига омогућава да ресурси буду у сталном покрету."
+                <x-feature-card title="Позајмљивање и размјена"
+                    description="Прати доступност и позајмице књига. Једноставна евиденција омогућава да књиге безбједно круже и проналазе пут до нових читалаца."
                     color="emerald">
                     <svg class="w-7 h-7 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -84,9 +45,8 @@
                     </svg>
                 </x-feature-card>
 
-                {{-- Картица: Заједница --}}
-                <x-feature-card title="Заједница"
-                    description="Будите дио мреже која негује повјерење. Систем заснован на сарадњи корисника и библиотеке добојске гимназије."
+                <x-feature-card title="Заједница читалаца"
+                    description="Постани дио читалачке мреже засноване на сарадњи, повјерењу и одговорном односу према књигама."
                     color="amber">
                     <svg class="w-7 h-7 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -97,10 +57,6 @@
             </div>
         </section>
 
-        {{-- 4. FOOTER ИНФО --}}
-        <section class="text-center pt-10 border-t border-slate-800">
-
-        </section>
-
+        <section class="text-center pt-10 border-t border-slate-800"></section>
     </div>
 </x-layout>
