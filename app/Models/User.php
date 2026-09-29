@@ -63,7 +63,8 @@ class User extends Authenticatable
         ],
         'Професор' => [],
         'Стручни сарадник' => [],
-        'Родитељ' => []
+        'Родитељ' => [],
+        'Бивши ученик / пријатељ библиотеке' => []
     ];
     protected function casts(): array
     {

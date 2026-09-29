@@ -13,56 +13,51 @@
         </h1>
 
         <x-forms.form action="/register" method="POST" enctype="multipart/form-data">
+            <div class="p-8 bg-[#0f172a]/50 border border-slate-700 rounded-2xl">
+                <h2 class="font-bold text-blue-400 mb-8 text-lg uppercase tracking-wider">Подаци о кориснику</h2>
 
-            {{-- --- ГОРЊИ ОДЈЕЉАК: ПОДАЦИ О КОРИСНИКУ --- --}}
-            <x-forms.section title="Подаци о кориснику">
-                <x-slot:left>
-                    <div class="flex items-start gap-6">
-                        {{-- Слика корисника --}}
-                        <div class="flex-none">
-                            <label for="user_photo_input" class="relative cursor-pointer group block">
-                                <div id="user_photo_preview"
-                                    class="w-32 h-32 bg-slate-800 rounded-xl flex flex-col items-center justify-center border-2 border-dashed border-slate-600 group-hover:border-blue-500 transition-all overflow-hidden">
-                                    <img src="{{ Vite::asset('resources/images/user-placeholder.svg') }}"
-                                        alt="Подразумијевана слика корисника" class="w-full h-full object-cover">
-                                </div>
-                                <span
-                                    class="absolute inset-x-2 bottom-2 rounded-md bg-black/65 px-2 py-1 text-center text-xs font-semibold text-white">Додај
-                                    слику</span>
-                                <input type="file" name="user_photo" id="user_photo_input" class="hidden"
-                                    accept="image/*">
-                            </label>
+                <div class="grid lg:grid-cols-2 gap-12">
+                    <div class="space-y-6">
+                        <div class="flex items-start gap-6">
+                            <div class="flex-none">
+                                <label for="user_photo_input" class="relative cursor-pointer group block">
+                                    <div id="user_photo_preview"
+                                        class="w-32 h-32 bg-slate-800 rounded-xl flex flex-col items-center justify-center border-2 border-dashed border-slate-600 group-hover:border-blue-500 transition-all overflow-hidden">
+                                        <img src="{{ Vite::asset('resources/images/user-placeholder.svg') }}"
+                                            alt="Подразумијевана слика корисника" class="w-full h-full object-cover">
+                                    </div>
+                                    <span
+                                        class="absolute inset-x-2 bottom-2 rounded-md bg-black/65 px-2 py-1 text-center text-xs font-semibold text-white">Додај
+                                        слику</span>
+                                    <input type="file" name="user_photo" id="user_photo_input" class="hidden"
+                                        accept="image/*">
+                                </label>
+                            </div>
+
+                            <div class="flex-grow space-y-4">
+                                <x-forms.input label="Име" name="name" required />
+                                <x-forms.input label="Презиме" name="last_name" required />
+                            </div>
                         </div>
 
-                        {{-- Име и Презиме --}}
-                        <div class="flex-grow space-y-4">
-                            <x-forms.input label="Име" name="name" required />
-                            <x-forms.input label="Презиме" name="last_name" required />
-                        </div>
+                        <x-forms.input label="Имејл адреса" name="email" type="email" required />
                     </div>
 
-                    <x-forms.input label="Имејл адреса" name="email" type="email" required />
-                </x-slot:left>
-
-                <x-slot:right>
                     <div class="space-y-4">
                         <x-forms.input label="Лозинка" name="password" type="password" required />
                         <x-forms.input label="Потврди лозинку" name="password_confirmation" type="password" required />
 
-                        {{-- Улога у школи --}}
                         <div class="pt-2">
                             <label for="role_type"
-                                class="block text-sm font-medium text-slate-300 mb-2 font-cyrillic uppercase tracking-wide">Улога
-                                у школи</label>
+                                class="block text-sm font-medium text-slate-300 mb-2 font-cyrillic uppercase tracking-wide">Означите своју улогу у школи</label>
                             <select name="role_type" id="role_type" class="custom-select w-full">
-                                <option value="" disabled selected>Изаберите улогу</option>
+                                <option value="" disabled @selected(old('role_type') === null)></option>
                                 @foreach (array_keys(\App\Models\User::$schoolRoles) as $role)
-                                    <option value="{{ $role }}">{{ $role }}</option>
+                                    <option value="{{ $role }}" @selected(old('role_type') === $role)>{{ $role }}</option>
                                 @endforeach
                             </select>
                         </div>
 
-                        {{-- Динамички део --}}
                         <div id="details_container"
                             class="mt-4 p-4 bg-slate-800/30 rounded-lg hidden border border-slate-700/50">
                             <div id="select_wrapper" class="hidden">
@@ -78,73 +73,78 @@
                             </div>
                         </div>
                     </div>
-                </x-slot:right>
-            </x-forms.section>
+                </div>
 
-            <div class="h-10"></div> {{-- Размак између секција --}}
+                <div class="mt-10 border-t border-slate-700 pt-8">
+                    <h2 class="font-bold text-blue-400 mb-6 text-lg uppercase tracking-wider">Подаци о библиотеци</h2>
+                    <div class="grid lg:grid-cols-2 gap-8 items-start">
+                        <div class="flex items-center gap-6">
+                            <div class="flex-none">
+                                <label for="logo_input" class="relative cursor-pointer group block">
+                                    <div id="logo_preview"
+                                        class="w-32 h-32 bg-slate-800 rounded-xl flex flex-col items-center justify-center border-2 border-dashed border-slate-600 group-hover:border-blue-500 transition-all overflow-hidden">
+                                        <img src="{{ Vite::asset('resources/images/library-placeholder.svg') }}"
+                                            alt="Подразумијевани лого библиотеке" class="w-full h-full object-cover">
+                                    </div>
+                                    <span
+                                        class="absolute inset-x-2 bottom-2 rounded-md bg-black/65 px-2 py-1 text-center text-xs font-semibold text-white">Додај
+                                        лого</span>
+                                    <input type="file" name="logo" id="logo_input" class="hidden" accept="image/*">
+                                </label>
+                            </div>
 
-            {{-- --- ДОЊИ ОДЈЕЉАК: ПОДАЦИ О БИБЛИОТЕЦИ --- --}}
-            <x-forms.section title="Подаци о библиотеци">
-                <x-slot:left>
-                    <div class="flex items-center gap-6">
-                        {{-- Лого библиотеке --}}
-                        <div class="flex-none">
-                            <label for="logo_input" class="relative cursor-pointer group block">
-                                <div id="logo_preview"
-                                    class="w-32 h-32 bg-slate-800 rounded-xl flex flex-col items-center justify-center border-2 border-dashed border-slate-600 group-hover:border-blue-500 transition-all overflow-hidden">
-                                    <img src="{{ Vite::asset('resources/images/library-placeholder.svg') }}"
-                                        alt="Подразумијевани лого библиотеке" class="w-full h-full object-cover">
-                                </div>
-                                <span
-                                    class="absolute inset-x-2 bottom-2 rounded-md bg-black/65 px-2 py-1 text-center text-xs font-semibold text-white">Додај
-                                    лого</span>
-                                <input type="file" name="logo" id="logo_input" class="hidden" accept="image/*">
+                            <div class="flex-grow">
+                                <x-forms.input label="Име моје библиотеке" name="library"
+                                    placeholder="Библиотека {{ old('name', 'Име корисника') }}" />
+                                <p class="text-xs text-slate-400 mt-2">
+                                    Ако оставите поље празно, користиће се предложени назив.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="numbering_mode"
+                                class="block text-sm font-medium text-slate-300 mb-2 font-cyrillic uppercase tracking-wide">
+                                Нумерација књига
                             </label>
+                            <select name="numbering_mode" id="numbering_mode" class="custom-select w-full" required>
+                                <option value="automatic" @selected(old('numbering_mode', 'automatic') === 'automatic')>
+                                    Аутоматски редни број
+                                </option>
+                                <option value="manual" @selected(old('numbering_mode') === 'manual')>
+                                    Ручни инвентарски број
+                                </option>
+                            </select>
+                            <p class="text-xs text-slate-400 mt-2">
+                                Изаберите аутоматско додјељивање броја или унос постојећих инвентарских бројева.
+                            </p>
                         </div>
-
-                        <div class="flex-grow">
-                            <x-forms.input label="Назив библиотеке (опционо)" name="library" />
-                        </div>
                     </div>
+                </div>
 
-                    <div class="mt-6">
-                        <label for="numbering_mode"
-                            class="block text-sm font-medium text-slate-300 mb-2 font-cyrillic uppercase tracking-wide">
-                            Нумерација књига
-                        </label>
-                        <select name="numbering_mode" id="numbering_mode" class="custom-select w-full" required>
-                            <option value="automatic" @selected(old('numbering_mode', 'automatic') === 'automatic')>
-                                Аутоматски редни број
-                            </option>
-                            <option value="manual" @selected(old('numbering_mode') === 'manual')>
-                                Ручни инвентарски број
-                            </option>
-                        </select>
-                        <p class="text-xs text-slate-400 mt-2">
-                            Изаберите аутоматско додјељивање броја или унос постојећих инвентарских бројева.
-                        </p>
-                    </div>
-                </x-slot:left>
-
-                <x-slot:right>
-                    <div class="flex flex-col items-center justify-center h-full space-y-6 pt-6 lg:pt-0">
-                        <x-forms.button type="submit">
-                            Региструј се
-                        </x-forms.button>
-
-                        <p class="text-slate-400 font-cyrillic text-sm">
-                            Имате профил? <a href="/login"
-                                class="text-blue-400 hover:text-blue-300 hover:underline transition-colors">Пријава</a>
-                        </p>
-                    </div>
-                </x-slot:right>
-            </x-forms.section>
+                <div class="mt-8 flex flex-col items-center gap-4">
+                    <x-forms.button type="submit">Региструј се</x-forms.button>
+                    <p class="text-slate-400 font-cyrillic text-sm">
+                        Имате профил? <a href="/login"
+                            class="text-blue-400 hover:text-blue-300 hover:underline transition-colors">Пријава</a>
+                    </p>
+                </div>
+            </div>
 
         </x-forms.form>
     </div>
 
     <script>
         const rolesData = @json(\App\Models\User::$schoolRoles);
+        const userNameInput = document.getElementById('name');
+        const libraryNameInput = document.getElementById('library');
+
+        function updateLibraryPlaceholder() {
+            const userName = userNameInput.value.trim() || 'Име корисника';
+            libraryNameInput.placeholder = `Библиотека ${userName}`;
+        }
+
+        userNameInput.addEventListener('input', updateLibraryPlaceholder);
 
         // Preview логика (унапређена да уклања текст)
         function setupPreview(inputId, previewId) {
@@ -184,5 +184,6 @@
                 detailsCont.classList.add('hidden');
             }
         });
+        roleType.dispatchEvent(new Event('change'));
     </script>
 </x-layout>
