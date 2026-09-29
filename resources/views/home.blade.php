@@ -1,6 +1,12 @@
 <x-layout>
     <div class="space-y-10">
 
+        @if (session('success'))
+            <div class="rounded-md bg-green-100 px-4 py-3 text-green-900" role="status">
+                {{ session('success') }}
+            </div>
+        @endif
+
         <section class="text-center">
             <h1 class="font-bold text-4xl"> Пронађи књигу </h1>
 

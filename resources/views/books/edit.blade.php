@@ -2,9 +2,24 @@
 
     <x-page-heading>Измјена података о књизи</x-page-heading>
 
-    <x-forms.form method="POST" action="/books/{{ $book->id }}" enctype="multipart/form-data">
-        @csrf
-        {{ method_field('PUT') }}
+    @if ($errors->any())
+        <div class="mx-auto mb-6 max-w-2xl rounded-md bg-red-100 px-4 py-3 text-red-900" role="alert">
+            <p class="font-semibold">Подаци нису сачувани. Провјерите сљедеће:</p>
+            <ul class="mt-2 list-inside list-disc">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    @if (session('success'))
+        <div class="mx-auto mb-6 max-w-2xl rounded-md bg-green-100 px-4 py-3 text-green-900" role="status">
+            {{ session('success') }}
+        </div>
+    @endif
+
+    <x-forms.form method="PUT" action="/books/{{ $book->id }}" enctype="multipart/form-data">
         {{-- ГОРЊИ ДИО: Основни подаци --}}
         <x-forms.section title="Подаци о књизи">
             {{-- Лијева страна --}}
@@ -40,8 +55,7 @@
                     </div>
                 </div>
                 <x-forms.input label="Инвентарски број" name="lib_book_id" type="number" min="1"
-                    value="{{ $book->lib_book_id }}" required
-                    @if ($book->library->numbering_mode === 'automatic') readonly @endif />
+                    value="{{ $book->lib_book_id }}" required />
                 <x-forms.input label="Наслов књиге" name="title" value="{{ $book->title }}" />
             </x-slot:left>
 
@@ -69,28 +83,28 @@
         </x-forms.section>
 
         {{-- ДОЊИ ДИО: Ознаке и слање --}}
-        <x-forms.section title="Описне ознаке">
+        <x-forms.section title="Изаберите ознаке за књигу">
             <x-slot:left>
 
                 {{-- Користимо класу 'custom-select' коју већ имаш у app.css --}}
                 <select name="tag1" class="custom-select w-full">
-                    <option value="" disabled selected>Изаберите прву ознаку</option>
+                    <option value="" @selected(!old('tag1', $selectedTagIds[0] ?? null))></option>
                     @foreach ($tags as $tag)
-                        <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+                        <option value="{{ $tag->id }}" @selected(old('tag1', $selectedTagIds[0] ?? null) == $tag->id)>{{ $tag->name }}</option>
                     @endforeach
                 </select>
 
                 <select name="tag2" class="custom-select w-full">
-                    <option value="" disabled selected>Изаберите другу ознаку</option>
+                    <option value="" @selected(!old('tag2', $selectedTagIds[1] ?? null))></option>
                     @foreach ($tags as $tag)
-                        <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+                        <option value="{{ $tag->id }}" @selected(old('tag2', $selectedTagIds[1] ?? null) == $tag->id)>{{ $tag->name }}</option>
                     @endforeach
                 </select>
 
                 <select name="tag3" class="custom-select w-full">
-                    <option value="" disabled selected>Изаберите трећу ознаку</option>
+                    <option value="" @selected(!old('tag3', $selectedTagIds[2] ?? null))></option>
                     @foreach ($tags as $tag)
-                        <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+                        <option value="{{ $tag->id }}" @selected(old('tag3', $selectedTagIds[2] ?? null) == $tag->id)>{{ $tag->name }}</option>
                     @endforeach
                 </select>
             </x-slot:left>
@@ -98,8 +112,8 @@
             {{-- Десна страна: Нова ознака и заобљено дугме --}}
             <x-slot:right>
                 <div>
-                    <x-forms.input label="Предложи нову ознаку (опција у изради)" name="suggested_tag"
-                        placeholder="Упишите нову ознаку... (опција у изради)" />
+                    <x-forms.input label="Предложи нову ознаку" name="suggested_tag"
+                        placeholder="Упишите нову ознаку..." />
                     <p class="text-[11px] text-gray-500 mt-2 italic">
                         * Ваше предложене ознаке ће постати видљиве након одобрења администратора.
                     </p>

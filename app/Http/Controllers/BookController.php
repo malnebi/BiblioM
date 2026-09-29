@@ -21,7 +21,7 @@ class BookController extends Controller
         $books = Book::latest()->with(['library', 'tags'])->get();  // use eager loading
 
 
-        $tags = Tag::whereNotNull('name') // Избацујемо потпуно празне
+        $tags = Tag::where('approved', true)->whereNotNull('name') // Избацујемо потпуно празне
             ->where('name', '!=', '')     // Избацујемо празне стрингове
             ->get()
             ->map(function ($tag) {
@@ -46,7 +46,7 @@ class BookController extends Controller
     {
             $library = Auth::user()->ownLibrary;
 
-            $tags = Tag::whereNotNull('name') // Избацујемо потпуно празне
+            $tags = Tag::where('approved', true)->whereNotNull('name') // Избацујемо потпуно празне
             ->where('name', '!=', '')     // Избацујемо празне стрингове
             ->get()
             ->map(function ($tag) {
@@ -91,9 +91,9 @@ class BookController extends Controller
             'year' => ['required', 'integer', 'min:1000', 'max:' . (date('Y') + 1)],
             'book_cover' => ['nullable', 'image', 'max:2048'],
             // Овде валидирамо ID-еве за падајуће меније
-            'tag1' => ['nullable', 'exists:tags,id'],
-            'tag2' => ['nullable', 'exists:tags,id'],
-            'tag3' => ['nullable', 'exists:tags,id'],
+            'tag1' => ['nullable', 'exists:tags,id,approved,1'],
+            'tag2' => ['nullable', 'exists:tags,id,approved,1'],
+            'tag3' => ['nullable', 'exists:tags,id,approved,1'],
             // Овде валидирамо текст за нову ознаку
             'suggested_tag' => ['nullable', 'string', 'max:30'],
         ]);
@@ -124,15 +124,20 @@ class BookController extends Controller
         $selectedTags = collect([$request->tag1, $request->tag2, $request->tag3])->filter();
 
         if ($selectedTags->isNotEmpty()) {
-            $book->tags()->attach($selectedTags);
+            $book->tags()->syncWithoutDetaching($selectedTags);
         }
 
-        // Б) Креирање и повезивање нове ознаке преко твоје методе tag()
+        $suggestionMessage = null;
         if ($request->filled('suggested_tag')) {
-            $book->tag($request->suggested_tag);
+            $suggestionMessage = $this->suggestTag($book, $request->suggested_tag);
         }
 
-        return redirect('/books')->with('success', 'Књига је успешно додата у библиотеку!');
+        $message = 'Књига је успешно додата у библиотеку!';
+        if ($suggestionMessage) {
+            $message .= ' ' . $suggestionMessage;
+        }
+
+        return redirect('/books')->with('success', $message);
     }
     /**
      * Display the specified resource.
@@ -164,7 +169,7 @@ class BookController extends Controller
      */
     public function edit(Book $book)
     {
-        $tags = Tag::whereNotNull('name') // Избацујемо потпуно празне
+        $tags = Tag::where('approved', true)->whereNotNull('name') // Избацујемо потпуно празне
             ->where('name', '!=', '')     // Избацујемо празне стрингове
             ->get()
             ->map(function ($tag) {
@@ -179,6 +184,12 @@ class BookController extends Controller
         $data = [
             'tags' => $tags,
             'book' => $book,
+            'selectedTagIds' => $book->tags()
+                ->where('approved', true)
+                ->orderBy('tags.id')
+                ->limit(3)
+                ->pluck('tags.id')
+                ->all(),
         ];
         return view('books.edit', $data);
     }
@@ -206,8 +217,10 @@ class BookController extends Controller
             'publisher_place' => ['required', 'string', 'max:100'],
             'year' => ['required', 'string'],
             'book_cover' => ['nullable', 'image', 'max:2048'],
-            'tag1' => ['nullable', 'exists:tags,id'],
-            // ... остали тагови
+            'tag1' => ['nullable', 'exists:tags,id,approved,1'],
+            'tag2' => ['nullable', 'exists:tags,id,approved,1'],
+            'tag3' => ['nullable', 'exists:tags,id,approved,1'],
+            'suggested_tag' => ['nullable', 'string', 'max:30'],
         ]);
 
         // Обрада нове слике ако је послата
@@ -227,7 +240,44 @@ class BookController extends Controller
         $tags = collect([$request->tag1, $request->tag2, $request->tag3])->filter();
         $book->tags()->sync($tags);
 
-        return redirect('/books')->with('success', 'Подаци су успешно измењени!');
+        $suggestionMessage = $request->filled('suggested_tag')
+            ? $this->suggestTag($book, $request->suggested_tag)
+            : null;
+
+        $message = 'Подаци су успешно измењени!';
+        if ($suggestionMessage) {
+            $message .= ' ' . $suggestionMessage;
+        }
+
+        return redirect('/books/' . $book->id . '/edit')->with('success', $message);
+    }
+
+    private function suggestTag(Book $book, string $name): ?string
+    {
+        $name = trim($name);
+        if ($name === '') {
+            return null;
+        }
+
+        $existingTag = Tag::whereRaw('LOWER(name) = ?', [mb_strtolower($name)])->first();
+        if ($existingTag) {
+            if ($existingTag->approved) {
+                $book->tags()->syncWithoutDetaching([$existingTag->id]);
+
+                return 'Ова ознака већ постоји и додата је књизи.';
+            }
+
+            return 'Исти приједлог већ чека одобрење администратора.';
+        }
+
+        Tag::create([
+            'name' => $name,
+            'approved' => false,
+            'book_id' => $book->id,
+            'suggested_by' => Auth::id(),
+        ]);
+
+        return 'Предлог нове ознаке је прослијеђен администратору на одобрење.';
     }
 
     public function bookReservation(Request $request, Book $book)

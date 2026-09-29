@@ -27,6 +27,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     // Акција одбијања (брисања) корисника
     Route::delete('/admin/users/{user}/reject', [AdminController::class, 'reject'])->name('admin.users.reject');
+
+    Route::patch('/admin/tags/{tag}/approve', [AdminController::class, 'approveTag'])->name('admin.tags.approve');
+    Route::delete('/admin/tags/{tag}/reject', [AdminController::class, 'rejectTag'])->name('admin.tags.reject');
 });
 
 Route::get('/', function () {

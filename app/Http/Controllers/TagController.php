@@ -11,6 +11,8 @@ class TagController extends Controller
 
     public function __invoke(Tag $tag){
 
+      abort_unless($tag->approved, 404);
+
         //books for this tags 
       $data = [
 
@@ -24,12 +26,12 @@ class TagController extends Controller
 
 
  public function show($tag){
-    $tag = Tag::where('name', $tag)->first();
+    $tag = Tag::where('approved', true)->where('name', $tag)->firstOrFail();
     return view('tags.show', ['tag' => $tag]);
  }      
 
  public function tags(){
-    $tags = Tag::all();
+   $tags = Tag::where('approved', true)->get();
     return view('tags', ['tags' => $tags]);
  }
 
@@ -38,6 +40,7 @@ class TagController extends Controller
  {
      $tags = Tag::query()
      ->with(['books'])
+   ->where('approved', true)
      ->where('name', 'LIKE', '%'.request('q').'%')
      ->get();
 

@@ -20,7 +20,7 @@ class HomeController extends Controller
 
         $books = Book::latest()->with(['library', 'tags'])->get();  // use eager loading
 
-        $tags = Tag::whereNotNull('name') // Избацујемо потпуно празне
+        $tags = Tag::where('approved', true)->whereNotNull('name') // Избацујемо потпуно празне
             ->where('name', '!=', '')     // Избацујемо празне стрингове
             ->get()
             ->map(function ($tag) {

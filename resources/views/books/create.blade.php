@@ -70,28 +70,28 @@
             </x-forms.section>
 
             {{-- ДОЊИ ДИО: Ознаке и слање --}}
-            <x-forms.section title="Описне ознаке">
+            <x-forms.section title="Опис књиге">
                 <x-slot:left>
 
                     {{-- Користимо класу 'custom-select' коју већ имаш у app.css --}}
                     <select name="tag1" class="custom-select w-full">
-                        <option value="" disabled selected>Изаберите прву ознаку</option>
+                        <option value="" @selected(!old('tag1'))></option>
                         @foreach ($tags as $tag)
-                            <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+                            <option value="{{ $tag->id }}" @selected(old('tag1') == $tag->id)>{{ $tag->name }}</option>
                         @endforeach
                     </select>
 
                     <select name="tag2" class="custom-select w-full">
-                        <option value="" disabled selected>Изаберите другу ознаку</option>
+                        <option value="" @selected(!old('tag2'))></option>
                         @foreach ($tags as $tag)
-                            <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+                            <option value="{{ $tag->id }}" @selected(old('tag2') == $tag->id)>{{ $tag->name }}</option>
                         @endforeach
                     </select>
 
                     <select name="tag3" class="custom-select w-full">
-                        <option value="" disabled selected>Изаберите трећу ознаку</option>
+                        <option value="" @selected(!old('tag3'))></option>
                         @foreach ($tags as $tag)
-                            <option value="{{ $tag->id }}">{{ $tag->name }}</option>
+                            <option value="{{ $tag->id }}" @selected(old('tag3') == $tag->id)>{{ $tag->name }}</option>
                         @endforeach
                     </select>
                 </x-slot:left>
@@ -99,8 +99,8 @@
                 {{-- Десна страна: Нова ознака и заобљено дугме --}}
                 <x-slot:right>
                     <div>
-                        <x-forms.input label="Предложи нову ознаку (опција у изради)" name="suggested_tag"
-                            placeholder="Упишите нову ознаку... (опција у изради)" />
+                        <x-forms.input label="Предложи нову ознаку" name="suggested_tag"
+                            placeholder="Упишите нову ознаку..." />
                         <p class="text-[11px] text-gray-500 mt-2 italic">
                             * Ваше предложене ознаке ће постати видљиве након одобрења администратора.
                         </p>
