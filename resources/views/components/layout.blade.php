@@ -106,14 +106,14 @@
                                         </div>
 
                                         <a href="/loggedUser/{{ Auth::user()->id }}"
-                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                            role="menuitem">Профил</a>
+                                            class="mx-2 my-1 block rounded-md border-l-2 border-blue-500 bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-100"
+                                               role="menuitem">Моје позајмице</a>
                                         <a href="/settings"
-                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                            class="mx-2 my-1 block rounded-md border-l-2 border-blue-500 bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-100"
                                             role="menuitem">Подешавања</a>
                                         @if (Auth::user()->role === 'admin')
                                             <a href="/admin/dashboard"
-                                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+                                                class="mx-2 my-1 block rounded-md border-l-2 border-blue-500 bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-100"
                                                 role="menuitem">Администрација</a>
                                         @endif
 
@@ -162,14 +162,14 @@
                                             </p>
                                         </div>
                                         <a href="/library/libraryBooks/{{ Auth::user()->ownLibrary->id ?? '' }}"
-                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200"
+                                            class="mx-2 my-1 block rounded-md border-l-2 border-blue-500 bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-100"
                                             role="menuitem">Књиге</a>
                                         <a href="/books/create"
-                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200"
+                                            class="mx-2 my-1 block rounded-md border-l-2 border-blue-500 bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-100"
                                             role="menuitem"> + Додај нову књигу</a>
                                         <a href="/loans/myLibraryLoans/{{ Auth::user()->ownLibrary->id ?? '' }}"
-                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 transition-colors duration-200"
-                                            role="menuitem">ЦИРКУЛАЦИЈА
+                                            class="mx-2 my-1 block rounded-md border-l-2 border-blue-500 bg-blue-50 px-3 py-2 text-sm font-semibold text-blue-700 hover:bg-blue-100"
+                                            role="menuitem">Циркулација
                                             <p class="text-xs text-gray-500">- Резервације </p>
                                             <p class="text-xs text-gray-500">- Књиге на читању </p>
                                             <p class="text-xs text-gray-500">- Враћене књиге </p>
@@ -226,13 +226,13 @@
                         </div>
                         <div class="mt-3 space-y-1 px-2">
                             <a href="/books/create"
-                                class="block rounded-md px-3 py-2 text-base font-medium text-white/70 hover:bg-white/10"
+                                class="block rounded-md border-l-2 border-blue-400 bg-blue-400/10 px-3 py-2 text-base font-semibold text-blue-200 hover:bg-blue-400/20"
                                 role="menuitem">Додај нову књигу</a>
                             <a href="/library/libraryBooks/{{ Auth::user()->ownLibrary->id ?? '' }}"
-                                class="block rounded-md px-3 py-2 text-base font-medium text-white/70 hover:bg-white/10"
+                                class="block rounded-md border-l-2 border-blue-400 bg-blue-400/10 px-3 py-2 text-base font-semibold text-blue-200 hover:bg-blue-400/20"
                                 role="menuitem">Књиге</a>
                             <a href="/loans/myLibraryLoans/{{ Auth::user()->ownLibrary->id ?? '' }}"
-                                class="block rounded-md px-3 py-2 text-base font-medium text-white/70 hover:bg-white/10"
+                                class="block rounded-md border-l-2 border-blue-400 bg-blue-400/10 px-3 py-2 text-base font-semibold text-blue-200 hover:bg-blue-400/20"
                                 role="menuitem">ЦИРКУЛАЦИЈА</a>
                         </div>
                     </div>
@@ -253,9 +253,13 @@
                         </div>
                         <div class="mt-3 space-y-1 px-2">
                             <a href="/loggedUser/{{ Auth::user()->id }}"
-                                class="block rounded-md px-3 py-2 text-base font-medium text-white/70 hover:bg-white/10">Профил</a>
+                                class="block rounded-md border-l-2 border-blue-400 bg-blue-400/10 px-3 py-2 text-base font-semibold text-blue-200 hover:bg-blue-400/20">Моје позајмице</a>
                             <a href="/settings"
-                                class="block rounded-md px-3 py-2 text-base font-medium text-white/70 hover:bg-white/10">Подешавања</a>
+                                class="block rounded-md border-l-2 border-blue-400 bg-blue-400/10 px-3 py-2 text-base font-semibold text-blue-200 hover:bg-blue-400/20">Подешавања</a>
+                            @if (Auth::user()->role === 'admin')
+                                <a href="/admin/dashboard"
+                                    class="block rounded-md border-l-2 border-blue-400 bg-blue-400/10 px-3 py-2 text-base font-semibold text-blue-200 hover:bg-blue-400/20">Администрација</a>
+                            @endif
                             <form method="POST" action="/logout">
                                 @csrf
                                 <button type="submit"
