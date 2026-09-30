@@ -64,6 +64,19 @@ class AdminController extends Controller
         return back()->with('status', 'Ознака је одобрена.');
     }
 
+    public function updateTagName(Request $request, Tag $tag)
+    {
+        abort_if($tag->approved, 404);
+
+        $attributes = $request->validate([
+            'name' => ['required', 'string', 'max:255', Rule::unique('tags', 'name')->ignore($tag->id)],
+        ]);
+
+        $tag->update($attributes);
+
+        return back()->with('status', 'Назив ознаке је исправљен.');
+    }
+
     public function rejectTag(Tag $tag)
     {
         abort_if($tag->approved, 404);

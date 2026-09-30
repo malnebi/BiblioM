@@ -171,6 +171,50 @@ it('approves a suggested tag and attaches it to its book', function () {
     ]);
 });
 
+it('lets admins correct a pending tag name before approving it', function () {
+    $admin = User::factory()->create();
+    $admin->forceFill(['role' => 'admin'])->save();
+    $book = Book::factory()->create();
+    $tag = Tag::create([
+        'name' => 'Стари назив',
+        'approved' => false,
+        'book_id' => $book->id,
+    ]);
+
+    $response = $this->actingAs($admin)->patch(route('admin.tags.update-name', $tag), [
+        'name' => 'Исправљени назив',
+    ]);
+
+    $response->assertRedirect();
+    $this->assertDatabaseHas('tags', [
+        'id' => $tag->id,
+        'name' => 'Исправљени назив',
+        'approved' => false,
+    ]);
+
+    $this->actingAs($admin)->patch(route('admin.tags.approve', $tag->fresh()));
+
+    expect($tag->fresh()->approved)->toBeTrue();
+    $this->assertDatabaseHas('book_tag', [
+        'book_id' => $book->id,
+        'tag_id' => $tag->id,
+    ]);
+});
+
+it('prevents admins from renaming a pending tag to an existing tag name', function () {
+    $admin = User::factory()->create();
+    $admin->forceFill(['role' => 'admin'])->save();
+    $tag = Tag::create(['name' => 'Предлог', 'approved' => false]);
+    Tag::create(['name' => 'Постојећа ознака', 'approved' => true]);
+
+    $response = $this->actingAs($admin)->patch(route('admin.tags.update-name', $tag), [
+        'name' => 'Постојећа ознака',
+    ]);
+
+    $response->assertSessionHasErrors('name');
+    $this->assertDatabaseHas('tags', ['id' => $tag->id, 'name' => 'Предлог']);
+});
+
 it('rejects a suggested tag by removing it', function () {
     $admin = User::factory()->create();
     $admin->forceFill(['role' => 'admin'])->save();

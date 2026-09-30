@@ -128,7 +128,18 @@
             <tbody class="bg-white divide-y divide-gray-200">
                 @forelse($pendingTags as $tag)
                     <tr>
-                        <td class="px-6 py-4 text-sm font-medium text-gray-900">{{ $tag->name }}</td>
+                        <td class="px-6 py-4">
+                            <form method="POST" action="{{ route('admin.tags.update-name', $tag) }}" class="flex items-center gap-2">
+                                @csrf
+                                @method('PATCH')
+                                <input type="text" name="name" value="{{ $tag->name }}"
+                                    class="w-full rounded border-gray-300 text-sm" maxlength="255"
+                                    aria-label="Назив предложене ознаке">
+                                <button class="rounded bg-blue-600 px-3 py-1 text-sm font-semibold text-white hover:bg-blue-700">
+                                    Сачувај
+                                </button>
+                            </form>
+                        </td>
                         <td class="px-6 py-4 text-sm text-gray-500">{{ $tag->suggestedBook?->title ?? 'Књига је уклоњена' }}</td>
                         <td class="px-6 py-4 text-sm text-gray-500">{{ $tag->suggestedBy?->name ?? 'Непознат корисник' }}</td>
                         <td class="px-6 py-4 text-center">
