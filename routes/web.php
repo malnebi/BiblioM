@@ -24,6 +24,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     // Акција одобравања корисника
     Route::patch('/admin/users/{user}/approve', [AdminController::class, 'approve'])->name('admin.users.approve');
+    Route::patch('/admin/users/{user}/role', [AdminController::class, 'updateRole'])->name('admin.users.update-role');
 
     // Акција одбијања (брисања) корисника
     Route::delete('/admin/users/{user}/reject', [AdminController::class, 'reject'])->name('admin.users.reject');

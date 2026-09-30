@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Tag;
 use App\Models\User;
+use Illuminate\Validation\Rule;
 
 class AdminController extends Controller
 {
@@ -27,6 +28,20 @@ class AdminController extends Controller
         $user->update(['approved' => 1]);
 
         return back()->with('status', 'Корисник је успjешно одобрен!');
+    }
+
+    public function updateRole(Request $request, User $user)
+    {
+        abort_if($user->approved, 404);
+
+        $attributes = $request->validate([
+            'role_type' => ['required', Rule::in(array_keys(User::$schoolRoles))],
+            'role_details' => ['required_if:role_type,Друго', 'nullable', 'string', 'max:255'],
+        ]);
+
+        $user->update($attributes);
+
+        return back()->with('status', 'Улога корисника је исправљена.');
     }
 
     public function reject(User $user)

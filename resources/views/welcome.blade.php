@@ -4,6 +4,10 @@
         <section class="text-center">
             <h1 class="font-black text-xl md:text-4xl text-white tracking-tight uppercase">
                 БиблиоМ</h1>
+
+            <p class="mt-6 text-sm md:text-lg text-slate-200 leading-relaxed max-w-3xl mx-auto">
+ Дигитални мост између  заједнице читалаца и њихових кућних библиотека.
+            </p>
         </section>
 
         <div class="max-w-7xl mx-auto p-6 lg:p-8">

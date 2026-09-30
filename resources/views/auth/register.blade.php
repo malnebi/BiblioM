@@ -14,7 +14,7 @@
 
         <x-forms.form action="/register" method="POST" enctype="multipart/form-data">
             <div class="p-8 bg-[#0f172a]/50 border border-slate-700 rounded-2xl">
-                <h2 class="font-bold text-blue-400 mb-8 text-lg uppercase tracking-wider">Подаци о кориснику</h2>
+                <h2 class="font-bold text-blue-400 mb-8 text-lg uppercase tracking-wider"></h2>
 
                 <div class="grid lg:grid-cols-2 gap-12">
                     <div class="space-y-6">
@@ -49,7 +49,7 @@
 
                         <div class="pt-2">
                             <label for="role_type"
-                                class="block text-sm font-medium text-slate-300 mb-2 font-cyrillic uppercase tracking-wide">Означите своју улогу у школи</label>
+                                class="block text-sm font-medium text-slate-300 mb-2 font-cyrillic uppercase tracking-wide">У школи сам</label>
                             <select name="role_type" id="role_type" class="custom-select w-full">
                                 <option value="" disabled @selected(old('role_type') === null)></option>
                                 @foreach (array_keys(\App\Models\User::$schoolRoles) as $role)
@@ -68,7 +68,7 @@
                                     class="custom-select w-full"></select>
                             </div>
                             <div id="input_wrapper" class="hidden">
-                                <x-forms.input label="Наведите предмет/позицију" name="role_details_input"
+                                                <x-forms.input label="Наведите предмет/позицију" name="role_details_input"
                                     id="role_details_input" />
                             </div>
                         </div>
@@ -76,7 +76,7 @@
                 </div>
 
                 <div class="mt-10 border-t border-slate-700 pt-8">
-                    <h2 class="font-bold text-blue-400 mb-6 text-lg uppercase tracking-wider">Подаци о библиотеци</h2>
+                    <h2 class="font-bold text-blue-400 mb-6 text-lg uppercase tracking-wider">Моја библиотека</h2>
                     <div class="grid lg:grid-cols-2 gap-8 items-start">
                         <div class="flex items-center gap-6">
                             <div class="flex-none">
@@ -94,7 +94,7 @@
                             </div>
 
                             <div class="flex-grow">
-                                <x-forms.input label="Име моје библиотеке" name="library"
+                                <x-forms.input label="Назив" name="library"
                                     placeholder="Библиотека {{ old('name', 'Име корисника') }}" />
                                 <p class="text-xs text-slate-400 mt-2">
                                     Ако оставите поље празно, користиће се предложени назив.
@@ -112,11 +112,11 @@
                                     Аутоматски редни број
                                 </option>
                                 <option value="manual" @selected(old('numbering_mode') === 'manual')>
-                                    Ручни инвентарски број
+                                    Ручни инвентарни број
                                 </option>
                             </select>
                             <p class="text-xs text-slate-400 mt-2">
-                                Изаберите аутоматско додјељивање броја или унос постојећих инвентарских бројева.
+                                Изаберите аутоматско додјељивање броја или унос постојећих инвентарних бројева.
                             </p>
                         </div>
                     </div>
@@ -166,6 +166,8 @@
         const selWrap = document.getElementById('select_wrapper');
         const inpWrap = document.getElementById('input_wrapper');
         const subSel = document.getElementById('role_details_select');
+        const roleDetailsInput = document.getElementById('role_details_input');
+        const roleDetailsLabel = inpWrap.querySelector('label');
 
         roleType.addEventListener('change', function() {
             const val = this.value;
@@ -177,9 +179,14 @@
                 inpWrap.classList.add('hidden');
                 subSel.innerHTML = '';
                 subs.forEach(s => subSel.add(new Option(s, s)));
-            } else if (val === 'Професор' || val === 'Стручни сарадник') {
+            } else if (val === 'Професор' || val === 'Стручни сарадник' || val === 'Друго') {
                 selWrap.classList.add('hidden');
                 inpWrap.classList.remove('hidden');
+                const isOtherRole = val === 'Друго';
+                roleDetailsInput.required = isOtherRole;
+                roleDetailsLabel.textContent = isOtherRole
+                    ? 'Опишите свој однос према школи или библиотеци'
+                    : 'Наведите предмет/позицију';
             } else {
                 detailsCont.classList.add('hidden');
             }

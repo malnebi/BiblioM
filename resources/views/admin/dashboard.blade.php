@@ -5,11 +5,21 @@
             {{ session('status') }}
         </div>
     @endif
+    @if ($errors->any())
+        <div class="mb-4 rounded-lg border border-red-300 bg-red-50 p-4 text-sm text-red-800">
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
     <div class="mt-6 overflow-hidden bg-white shadow sm:rounded-lg">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">корисник</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Улога</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Библиотека</th>
                     <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase">Опције</th>
                 </tr>
@@ -35,6 +45,23 @@
                                     <div class="text-sm text-gray-500">{{ $user->email }}</div>
                                 </div>
                             </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <form method="POST" action="{{ route('admin.users.update-role', $user) }}" class="space-y-2">
+                                @csrf
+                                @method('PATCH')
+                                <select name="role_type" class="w-full rounded border-gray-300 text-sm" aria-label="Улога корисника">
+                                    @foreach (array_keys(\App\Models\User::$schoolRoles) as $role)
+                                        <option value="{{ $role }}" @selected($user->role_type === $role)>{{ $role }}</option>
+                                    @endforeach
+                                </select>
+                                <input type="text" name="role_details" value="{{ $user->role_details }}"
+                                    class="w-full rounded border-gray-300 text-sm" maxlength="255"
+                                    placeholder="Детаљи или опис улоге" aria-label="Детаљи или опис улоге">
+                                <button class="rounded bg-blue-600 px-3 py-1 text-sm font-semibold text-white hover:bg-blue-700">
+                                    Сачувај улогу
+                                </button>
+                            </form>
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-500">
                             @if ($user->ownLibrary?->logo)
@@ -78,7 +105,7 @@
                     </tr>
                 @empty
                     <tr>
-                        <td colspan="3" class="px-6 py-4 text-center text-gray-500">
+                        <td colspan="4" class="px-6 py-4 text-center text-gray-500">
                             Нема нових захтjева.
                         </td>
                     </tr>
@@ -87,7 +114,7 @@
         </table>
     </div>
 
-    <x-page-heading>Пријдлози нових ознака</x-page-heading>
+    <x-page-heading>Приједлози нових ознака за књиге</x-page-heading>
     <div class="mt-6 overflow-hidden bg-white shadow sm:rounded-lg">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">

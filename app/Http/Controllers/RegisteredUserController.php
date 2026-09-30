@@ -37,6 +37,7 @@ class RegisteredUserController extends Controller
             'name' => ['required'],
             'last_name' => ['required'],
             'role_type' => ['required', \Illuminate\Validation\Rule::in(array_keys(User::$schoolRoles))],
+            'role_details_input' => ['required_if:role_type,Друго', 'nullable', 'string', 'max:255'],
             'email' => ['required', 'email', 'unique:users,email'],
             'password' => ['required', 'confirmed', \Illuminate\Validation\Rules\Password::min(6)],
             'user_photo' => ['nullable', \Illuminate\Validation\Rules\File::types(['png', 'jpg', 'webp'])],
@@ -53,7 +54,7 @@ class RegisteredUserController extends Controller
         // Ако је изабран Ученик, узимамо вредност из селекта, иначе из инпута
         $details = ($request->role_type === 'Ученик')
             ? $request->role_details_select
-            : $request->role_details_input;
+            : ($userAttributes['role_details_input'] ?? null);
 
         // 4. Обрада фотографије корисника
         $userPhotoPath = $request->hasFile('user_photo')
