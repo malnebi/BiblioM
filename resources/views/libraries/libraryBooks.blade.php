@@ -56,16 +56,29 @@
 
                 {{-- КАРТИЦЕ КЊИГА - ГРИД СА ТРИ КОЛОНЕ --}}
                 <section>
-                    <x-section-heading>Најновије књиге библиотеке</x-section-heading>
-                    
-                    {{-- ГРИД СА GAP-Y-12 РАЗМАКОМ --}}
-                    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
-                        @foreach ($books as $book)
-                            <div class="flex flex-col h-full">
-                                <x-book-card-wide :$book />
+                    <x-collapsible-section
+                        title="Најновије књиге библиотеке"
+                        :count="$books->count()"
+                        :show-more="$books->count() > 6"
+                    >
+                        <x-slot name="visible">
+                            <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
+                                @foreach ($books->take(6) as $book)
+                                    <div class="flex flex-col h-full">
+                                        <x-book-card-wide :$book />
+                                    </div>
+                                @endforeach
                             </div>
-                        @endforeach
-                    </div>
+                        </x-slot>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
+                            @foreach ($books->skip(6) as $book)
+                                <div class="flex flex-col h-full">
+                                    <x-book-card-wide :$book />
+                                </div>
+                            @endforeach
+                        </div>
+                    </x-collapsible-section>
                 </section>
 
             </div>

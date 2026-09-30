@@ -1,30 +1,32 @@
 <x-layout>
+    @php
+        $communityLibraries = $libraries->filter(fn ($library) => $users->contains('id', $library->owner_id))->values();
+    @endphp
 
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
 
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mt-6">
-                    <h1 class="font-bold text-4xl col-span-3 text-center mb-3">
-                        ЗАЈЕДНИЦА
-                    </h1>
-                </div> <x-forms.divider />
-
                 <section class="pt-6">
-                    <div class="grid lg:grid-cols-3 gap-8 mt-3">
+                    <x-collapsible-section
+                        title="ЗАЈЕДНИЦА"
+                        :count="$communityLibraries->count()"
+                        :show-more="$communityLibraries->count() > 6"
+                    >
+                        <x-slot name="visible">
+                            <div class="grid lg:grid-cols-3 gap-8 mt-3">
+                                @foreach ($communityLibraries->take(6) as $library)
+                                    <x-userlib-card :user="$users->firstWhere('id', $library->owner_id)" :library="$library" />
+                                @endforeach
+                            </div>
+                        </x-slot>
 
-                        @foreach ($users as $user)
-                            @if ($user->ownLibrary)
-                            @endif
-
-                            @foreach ($libraries as $library)
-                                @if ($library->owner_id === $user->id)
-                                    <x-userlib-card :user="$user" :library="$library" />
-                                @endif
+                        <div class="grid lg:grid-cols-3 gap-8 mt-3">
+                            @foreach ($communityLibraries->skip(6) as $library)
+                                <x-userlib-card :user="$users->firstWhere('id', $library->owner_id)" :library="$library" />
                             @endforeach
-                        @endforeach
-
-                    </div>
+                        </div>
+                    </x-collapsible-section>
             </div>
         </div>
     </div>

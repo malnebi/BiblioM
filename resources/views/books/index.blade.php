@@ -40,7 +40,7 @@
 
         <section>
             <x-section-heading>Најновије у апликацији</x-section-heading>
-            <div class="mt-6 space-y-6">
+            <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
                 @foreach ($books as $book)
                     <x-book-card-wide :$book />
                 @endforeach

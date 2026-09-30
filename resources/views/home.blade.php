@@ -43,12 +43,25 @@
         </section>
         
         <section>
-            <x-section-heading>Најновије књиге у апликацији</x-section-heading>
-            <div class="mt-6 space-y-6">
-                @foreach ($books as $book)
-                    <x-book-card-wide :$book />
-                @endforeach
-            </div>
+            <x-collapsible-section
+                title="Најновије књиге у апликацији"
+                :count="$books->count()"
+                :show-more="$books->count() > 6"
+            >
+                <x-slot name="visible">
+                    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
+                        @foreach ($books->take(6) as $book)
+                            <x-book-card-wide :$book />
+                        @endforeach
+                    </div>
+                </x-slot>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
+                    @foreach ($books->skip(6) as $book)
+                        <x-book-card-wide :$book />
+                    @endforeach
+                </div>
+            </x-collapsible-section>
         </section>
     </div>
 </x-layout>

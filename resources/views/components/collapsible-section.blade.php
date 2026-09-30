@@ -1,4 +1,4 @@
-@props(['id' => 'section-' . Str::random(8), 'title' => null, 'count' => null])
+@props(['id' => 'section-' . Str::random(8), 'title' => null, 'count' => null, 'showMore' => true])
 
 <div {{ $attributes->merge(['class' => 'mt-6']) }}>
 
@@ -18,7 +18,7 @@
     </div>
 
     {{-- Приказ дела који се отвара на клик --}}
-    @if(isset($slot) && trim($slot) !== '')
+    @if($showMore && isset($slot) && trim($slot) !== '')
         <details 
             id="{{ $id }}" 
             class="group mt-4" 

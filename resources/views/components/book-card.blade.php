@@ -1,6 +1,6 @@
 @props(['book'])
 
-<x-panel class="flex flex-col text-center ">
+<x-panel class="group flex h-full flex-col text-center">
     <div class="self-start text-sm">{{ $book->library->name }}</div>
    @if ($book->loan == 1)
             {{-- Ako je knjiga pozajmljena nekome --}}
