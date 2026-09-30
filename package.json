@@ -1,4 +1,5 @@
 {
+    "name": "bibliom",
     "private": true,
     "type": "module",
     "scripts": {

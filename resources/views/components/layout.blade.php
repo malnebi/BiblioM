@@ -36,7 +36,7 @@
                                 class="relative flex max-w-xs items-center rounded-full bg-green-800 text-sm transition-all duration-300 ease-in-out focus:outline-none"
                                 id="logoapp-menu-button" :aria-expanded="logoAppMenu" aria-haspopup="true">
                                 <span class="sr-only">Отвори мени</span>
-                                <img src="{{ Vite::asset('resources/images/logo.svg') }}" alt="BiBLiB logo"
+                                <img src="{{ Vite::asset('resources/images/logo.svg') }}" alt="БиблиоМ"
                                     class="h-10 w-10">
                             </button>
                         </div>
