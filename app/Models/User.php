@@ -19,6 +19,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'last_name',
         'email',
         'password',
         'role_type',
@@ -100,5 +101,10 @@ class User extends Authenticatable
     public function loans()
     {
         return $this->hasMany('App\Models\Loan');
+    }
+
+    public function profileChangeRequests()
+    {
+        return $this->hasMany(ProfileChangeRequest::class);
     }
 }

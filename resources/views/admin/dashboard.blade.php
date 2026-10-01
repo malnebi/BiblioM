@@ -114,6 +114,92 @@
         </table>
     </div>
 
+    <x-page-heading>Захтјеви за измјену профила</x-page-heading>
+    <div class="mt-6 overflow-hidden bg-white shadow sm:rounded-lg">
+        <table class="min-w-full divide-y divide-gray-200">
+            <thead class="bg-gray-50">
+                <tr>
+                    <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Корисник</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Тренутни подаци</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium uppercase text-gray-500">Предложене измјене</th>
+                    <th class="px-6 py-3 text-center text-xs font-medium uppercase text-gray-500">Опције</th>
+                </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-200 bg-white">
+                @forelse ($pendingProfileChanges as $change)
+                    <tr>
+                        <td class="px-6 py-4 text-sm text-gray-700">
+                            {{ $change->user?->email ?? 'Кориснички налог је уклоњен' }}
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="space-y-3">
+                                <div class="flex items-center gap-3">
+                                    <img src="{{ $change->user?->user_photo ? asset('storage/' . $change->user->user_photo) : Vite::asset('resources/images/user-placeholder.svg') }}"
+                                        alt="Тренутна фотографија" class="h-12 w-12 rounded-full border border-gray-200 object-cover">
+                                    <span class="text-sm text-gray-800">{{ $change->user?->name }} {{ $change->user?->last_name }}</span>
+                                </div>
+                                @if ($change->library)
+                                    <div class="flex items-center gap-3 border-t border-gray-100 pt-3">
+                                        <img src="{{ $change->library->logo ? asset('storage/' . $change->library->logo) : Vite::asset('resources/images/library-placeholder.svg') }}"
+                                            alt="Тренутни логотип библиотеке" class="h-10 w-10 rounded-md border border-gray-200 object-cover">
+                                        <span class="text-sm text-gray-700">{{ $change->library->name }}</span>
+                                    </div>
+                                @endif
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="space-y-3">
+                                <div class="flex items-center gap-3">
+                                    @if ($change->requested_photo)
+                                        <a href="{{ asset('storage/' . $change->requested_photo) }}" target="_blank" rel="noopener">
+                                            <img src="{{ asset('storage/' . $change->requested_photo) }}" alt="Предложена фотографија"
+                                                class="h-12 w-12 rounded-full border border-blue-300 object-cover">
+                                        </a>
+                                    @endif
+                                    <span class="text-sm text-gray-800">
+                                        {{ $change->requested_name ?? $change->user?->name }}
+                                        {{ $change->requested_last_name ?? $change->user?->last_name }}
+                                    </span>
+                                </div>
+                                @if ($change->library)
+                                    <div class="flex items-center gap-3 border-t border-gray-100 pt-3">
+                                        @if ($change->requested_library_logo)
+                                            <a href="{{ asset('storage/' . $change->requested_library_logo) }}" target="_blank" rel="noopener">
+                                                <img src="{{ asset('storage/' . $change->requested_library_logo) }}" alt="Предложени логотип библиотеке"
+                                                    class="h-10 w-10 rounded-md border border-blue-300 object-cover">
+                                            </a>
+                                        @endif
+                                        <span class="text-sm text-gray-700">
+                                            {{ $change->requested_library_name ?? $change->library->name }}
+                                        </span>
+                                    </div>
+                                @endif
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-center">
+                            <div class="flex justify-center gap-2">
+                                <form method="POST" action="{{ route('admin.profile-changes.approve', $change) }}">
+                                    @csrf
+                                    @method('PATCH')
+                                    <button class="rounded bg-green-500 px-3 py-1 text-sm text-white hover:bg-green-600">Одобри</button>
+                                </form>
+                                <form method="POST" action="{{ route('admin.profile-changes.reject', $change) }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button class="rounded bg-red-500 px-3 py-1 text-sm text-white hover:bg-red-600">Одбиј</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="4" class="px-6 py-4 text-center text-gray-500">Нема захтјева за измјену профила.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+    </div>
+
     <x-page-heading>Приједлози нових ознака за књиге</x-page-heading>
     <div class="mt-6 overflow-hidden bg-white shadow sm:rounded-lg">
         <table class="min-w-full divide-y divide-gray-200">

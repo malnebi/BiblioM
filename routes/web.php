@@ -32,6 +32,9 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::patch('/admin/tags/{tag}/approve', [AdminController::class, 'approveTag'])->name('admin.tags.approve');
     Route::patch('/admin/tags/{tag}/name', [AdminController::class, 'updateTagName'])->name('admin.tags.update-name');
     Route::delete('/admin/tags/{tag}/reject', [AdminController::class, 'rejectTag'])->name('admin.tags.reject');
+
+    Route::patch('/admin/profile-changes/{profileChangeRequest}/approve', [AdminController::class, 'approveProfileChange'])->name('admin.profile-changes.approve');
+    Route::delete('/admin/profile-changes/{profileChangeRequest}/reject', [AdminController::class, 'rejectProfileChange'])->name('admin.profile-changes.reject');
 });
 
 Route::get('/', function () {
@@ -56,6 +59,8 @@ Route::get('/library/libraryBooks/{id}', [LibraryController::class, 'libraryBook
 Route::get('/users', [UserController::class, 'index']); // Навигацијски линк за приказ странице са члановима и њиховим библиотекама
 Route::get('/users/{id}', [UserController::class, 'show']);   // профил корисника - члана 
 Route::get('/loggedUser/{id}', [UserController::class, 'showLoggedUser'])->middleware('auth'); // профил улогованог корисника    
+Route::get('/settings', [UserController::class, 'edit'])->middleware('auth')->name('settings.edit');
+Route::put('/settings', [UserController::class, 'update'])->middleware('auth')->name('settings.update');
 Route::get('/users/{id}/edit', [UserController::class, 'edit'])->middleware('auth');
 Route::put('/users/{id}', [UserController::class, 'update'])->middleware('auth');
 Route::delete('/users/{id}', [UserController::class, 'destroy'])->middleware('auth');

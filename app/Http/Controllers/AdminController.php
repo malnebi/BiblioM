@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Tag;
 use App\Models\User;
+use App\Models\ProfileChangeRequest;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class AdminController extends Controller
@@ -18,8 +20,12 @@ class AdminController extends Controller
         //$pendingUsers = User::where('approved', false)->with('library')->get();
         $pendingUsers = User::where('approved', 0)->with('library')->get();
         $pendingTags = Tag::where('approved', false)->with(['suggestedBook', 'suggestedBy'])->orderBy('name')->get();
+        $pendingProfileChanges = ProfileChangeRequest::where('status', 'pending')
+            ->with(['user', 'library'])
+            ->latest()
+            ->get();
 
-        return view('admin.dashboard', compact('pendingUsers', 'pendingTags'));
+        return view('admin.dashboard', compact('pendingUsers', 'pendingTags', 'pendingProfileChanges'));
      }
 
     public function approve(User $user)
@@ -84,5 +90,72 @@ class AdminController extends Controller
         $tag->delete();
 
         return back()->with('status', 'Предлог ознаке је одбијен.');
+    }
+
+    public function approveProfileChange(ProfileChangeRequest $profileChangeRequest)
+    {
+        abort_unless($profileChangeRequest->status === 'pending', 404);
+
+        $user = $profileChangeRequest->user;
+        $oldPhoto = $user->user_photo;
+        $library = $profileChangeRequest->library;
+        $oldLibraryLogo = $library?->logo;
+
+        if ($profileChangeRequest->requested_name !== null) {
+            $user->name = $profileChangeRequest->requested_name;
+            $user->last_name = $profileChangeRequest->requested_last_name;
+        }
+
+        if ($profileChangeRequest->requested_photo !== null) {
+            $user->user_photo = $profileChangeRequest->requested_photo;
+        }
+
+        $user->save();
+
+        if ($library && $profileChangeRequest->requested_library_name !== null) {
+            $library->name = $profileChangeRequest->requested_library_name;
+        }
+
+        if ($library && $profileChangeRequest->requested_library_logo !== null) {
+            $library->logo = $profileChangeRequest->requested_library_logo;
+        }
+
+        $library?->save();
+        $profileChangeRequest->update([
+            'status' => 'approved',
+            'reviewed_by' => auth()->id(),
+            'reviewed_at' => now(),
+        ]);
+
+        if ($profileChangeRequest->requested_photo !== null && $oldPhoto) {
+            Storage::disk('public')->delete($oldPhoto);
+        }
+
+        if ($profileChangeRequest->requested_library_logo !== null && $oldLibraryLogo) {
+            Storage::disk('public')->delete($oldLibraryLogo);
+        }
+
+        return back()->with('status', 'Захтјев за измјену профила и библиотеке је одобрен.');
+    }
+
+    public function rejectProfileChange(ProfileChangeRequest $profileChangeRequest)
+    {
+        abort_unless($profileChangeRequest->status === 'pending', 404);
+
+        $profileChangeRequest->update([
+            'status' => 'rejected',
+            'reviewed_by' => auth()->id(),
+            'reviewed_at' => now(),
+        ]);
+
+        if ($profileChangeRequest->requested_photo) {
+            Storage::disk('public')->delete($profileChangeRequest->requested_photo);
+        }
+
+        if ($profileChangeRequest->requested_library_logo) {
+            Storage::disk('public')->delete($profileChangeRequest->requested_library_logo);
+        }
+
+        return back()->with('status', 'Захтјев за измјену профила и библиотеке је одбијен.');
     }
 }

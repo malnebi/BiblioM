@@ -8,7 +8,9 @@ use App\Models\Library;
 use App\Models\Loan;
 use App\Models\Book;
 use App\Models\Tag;
+use App\Models\ProfileChangeRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 
 class UserController extends Controller
@@ -168,17 +170,95 @@ class UserController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(?string $id = null)
     {
-        //
+        $user = User::findOrFail($id ?? Auth::id());
+        abort_unless($user->is(Auth::user()), 403);
+
+        $pendingChange = ProfileChangeRequest::where('user_id', $user->id)
+            ->where('status', 'pending')
+            ->first();
+        $library = $user->ownLibrary;
+
+        return view('users.edit', compact('user', 'pendingChange', 'library'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, ?string $id = null)
     {
-        //
+        $user = User::findOrFail($id ?? Auth::id());
+        abort_unless($user->is(Auth::user()), 403);
+
+        $rules = [
+            'name' => ['required', 'string', 'max:100'],
+            'last_name' => ['nullable', 'string', 'max:100'],
+            'user_photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+        ];
+        $library = $user->ownLibrary;
+
+        if ($library) {
+            $rules['library_name'] = ['required', 'string', 'max:255'];
+            $rules['library_logo'] = ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'];
+        }
+
+        $attributes = $request->validate($rules);
+
+        $nameChanged = $attributes['name'] !== $user->name
+            || $attributes['last_name'] !== $user->last_name;
+        $photoChanged = $request->hasFile('user_photo');
+        $libraryNameChanged = $library && $attributes['library_name'] !== $library->name;
+        $libraryLogoChanged = $library && $request->hasFile('library_logo');
+
+        if (! $nameChanged && ! $photoChanged && ! $libraryNameChanged && ! $libraryLogoChanged) {
+            $message = ProfileChangeRequest::where('user_id', $user->id)
+                ->where('status', 'pending')
+                ->exists()
+                    ? 'Ваш захтјев за промјену профила већ чека администраторско одобрење.'
+                    : 'Нема промјена за слање.';
+
+            return redirect()->route('settings.edit')->with('status', $message);
+        }
+
+        $pendingChange = ProfileChangeRequest::where('user_id', $user->id)
+            ->where('status', 'pending')
+            ->first();
+        $requestedPhoto = $pendingChange?->requested_photo;
+        $requestedLibraryLogo = $pendingChange?->requested_library_logo;
+
+        if ($photoChanged) {
+            $requestedPhoto = $request->file('user_photo')->store('profile-change-requests', 'public');
+        }
+
+        if ($libraryLogoChanged) {
+            $requestedLibraryLogo = $request->file('library_logo')->store('library-change-requests', 'public');
+        }
+
+        ProfileChangeRequest::updateOrCreate(
+            ['user_id' => $user->id, 'status' => 'pending'],
+            [
+                'requested_name' => $nameChanged ? $attributes['name'] : $pendingChange?->requested_name,
+                'requested_last_name' => $nameChanged ? $attributes['last_name'] : $pendingChange?->requested_last_name,
+                'requested_photo' => $requestedPhoto,
+                'library_id' => $library?->id ?? $pendingChange?->library_id,
+                'requested_library_name' => $libraryNameChanged ? $attributes['library_name'] : $pendingChange?->requested_library_name,
+                'requested_library_logo' => $requestedLibraryLogo,
+            ]
+        );
+
+        if ($photoChanged && $pendingChange?->requested_photo) {
+            Storage::disk('public')->delete($pendingChange->requested_photo);
+        }
+
+        if ($libraryLogoChanged && $pendingChange?->requested_library_logo) {
+            Storage::disk('public')->delete($pendingChange->requested_library_logo);
+        }
+
+        return redirect()->route('settings.edit')->with(
+            'status',
+            'Захтјев је послат. Измјене профила и библиотеке биће примјењене након администраторског одобрења.'
+        );
     }
 
     /**
