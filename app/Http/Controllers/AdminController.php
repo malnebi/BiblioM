@@ -42,7 +42,7 @@ class AdminController extends Controller
 
         $attributes = $request->validate([
             'role_type' => ['required', Rule::in(array_keys(User::$schoolRoles))],
-            'role_details' => ['required_if:role_type,Друго', 'nullable', 'string', 'max:255'],
+            'role_details' => ['required_if:role_type,Радник школе,Друго', 'nullable', 'string', 'max:255'],
         ]);
 
         $user->update($attributes);

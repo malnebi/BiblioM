@@ -65,11 +65,11 @@
                                     class="block text-sm font-medium text-slate-300 mb-2 font-cyrillic">Разред и
                                     одјељење</label>
                                 <select name="role_details_select" id="role_details_select"
-                                    class="custom-select w-full"></select>
+                                    class="custom-select w-full" disabled></select>
                             </div>
                             <div id="input_wrapper" class="hidden">
-                                                <x-forms.input label="Наведите предмет/позицију" name="role_details_input"
-                                    id="role_details_input" />
+                                <x-forms.input label="Детаљи улоге" name="role_details_input"
+                                    id="role_details_input" disabled />
                             </div>
                         </div>
                     </div>
@@ -168,27 +168,40 @@
         const subSel = document.getElementById('role_details_select');
         const roleDetailsInput = document.getElementById('role_details_input');
         const roleDetailsLabel = inpWrap.querySelector('label');
+        const oldStudentDetails = @json(old('role_details_select'));
 
         roleType.addEventListener('change', function() {
             const val = this.value;
             const subs = rolesData[val];
-            detailsCont.classList.remove('hidden');
+
+            detailsCont.classList.add('hidden');
+            selWrap.classList.add('hidden');
+            inpWrap.classList.add('hidden');
+            subSel.disabled = true;
+            subSel.required = false;
+            roleDetailsInput.disabled = true;
+            roleDetailsInput.required = false;
 
             if (val === 'Ученик') {
+                detailsCont.classList.remove('hidden');
                 selWrap.classList.remove('hidden');
-                inpWrap.classList.add('hidden');
+                subSel.disabled = false;
+                subSel.required = true;
                 subSel.innerHTML = '';
+                subSel.add(new Option('Изаберите разред и одјељење', ''));
                 subs.forEach(s => subSel.add(new Option(s, s)));
-            } else if (val === 'Професор' || val === 'Стручни сарадник' || val === 'Друго') {
-                selWrap.classList.add('hidden');
+                subSel.value = oldStudentDetails || '';
+            } else if (val === 'Радник школе' || val === 'Друго') {
+                detailsCont.classList.remove('hidden');
                 inpWrap.classList.remove('hidden');
-                const isOtherRole = val === 'Друго';
-                roleDetailsInput.required = isOtherRole;
-                roleDetailsLabel.textContent = isOtherRole
+                roleDetailsInput.disabled = false;
+                roleDetailsInput.required = true;
+                roleDetailsLabel.textContent = val === 'Друго'
                     ? 'Опишите свој однос према школи или библиотеци'
-                    : 'Наведите предмет/позицију';
-            } else {
-                detailsCont.classList.add('hidden');
+                    : 'Радно мјесто';
+                roleDetailsInput.placeholder = val === 'Друго'
+                    ? 'нпр. пријатељ школе, спољни сарадник'
+                    : 'нпр. директор, професор (наставни предмет), педагог, психолог, библиотекар';
             }
         });
         roleType.dispatchEvent(new Event('change'));

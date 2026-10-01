@@ -164,15 +164,18 @@
                 return;
             }
 
-            if (['Професор', 'Стручни сарадник', 'Друго'].includes(role)) {
+            if (['Радник школе', 'Друго'].includes(role)) {
                 roleDetailsContainer.classList.remove('hidden');
                 roleDetailsInputWrapper.classList.remove('hidden');
                 roleDetailsInput.disabled = false;
                 roleDetailsInput.value = currentValue;
-                roleDetailsInput.required = role === 'Друго';
+                roleDetailsInput.required = true;
+                roleDetailsInput.placeholder = role === 'Друго'
+                    ? 'нпр. пријатељ школе, спољни сарадник'
+                    : 'нпр. директор, професор (наставни предмет), педагог, психолог, библиотекар';
                 roleDetailsLabel.textContent = role === 'Друго'
                     ? 'Опишите свој однос према школи или библиотеци'
-                    : 'Наведите предмет или позицију';
+                    : 'Радно мјесто';
             }
         }
 

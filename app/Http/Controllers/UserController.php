@@ -199,7 +199,7 @@ class UserController extends Controller
             'last_name' => ['nullable', 'string', 'max:100'],
             'user_photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
             'role_type' => ['nullable', Rule::in(array_keys(User::$schoolRoles))],
-            'role_details' => ['nullable', 'string', 'max:255', 'required_if:role_type,Ученик,Друго'],
+            'role_details' => ['nullable', 'string', 'max:255', 'required_if:role_type,Ученик,Радник школе,Друго'],
         ];
         $library = $user->ownLibrary;
 

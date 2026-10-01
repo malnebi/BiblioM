@@ -18,6 +18,10 @@ it('shows the profile settings form to the signed-in user', function () {
     $response->assertOk()
         ->assertSee('Подешавања профила')
         ->assertSee('Пошаљи измјене на одобрење')
+        ->assertSee('value="Радник школе"', false)
+        ->assertDontSee('value="Професор"', false)
+        ->assertDontSee('value="Стручни сарадник"', false)
+        ->assertSee('директор, професор (наставни предмет), педагог, психолог, библиотекар')
         ->assertSee('Разред и одјељење')
         ->assertSee('I-1')
         ->assertSee('II-2')
@@ -70,7 +74,7 @@ it('submits school role changes for approval without applying them immediately',
 
 it('stores a selected class when changing to the student role', function () {
     $user = User::factory()->create([
-        'role_type' => 'Професор',
+        'role_type' => 'Радник школе',
         'role_details' => 'Математика',
     ]);
 
