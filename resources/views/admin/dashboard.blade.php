@@ -136,7 +136,10 @@
                                 <div class="flex items-center gap-3">
                                     <img src="{{ $change->user?->user_photo ? asset('storage/' . $change->user->user_photo) : Vite::asset('resources/images/user-placeholder.svg') }}"
                                         alt="Тренутна фотографија" class="h-12 w-12 rounded-full border border-gray-200 object-cover">
-                                    <span class="text-sm text-gray-800">{{ $change->user?->name }} {{ $change->user?->last_name }}</span>
+                                    <div>
+                                        <p class="text-sm text-gray-800">{{ $change->user?->name }} {{ $change->user?->last_name }}</p>
+                                        <p class="text-xs text-gray-500">{{ $change->user?->role_type ?? 'Улога није наведена' }}{{ $change->user?->role_details ? ' · ' . $change->user->role_details : '' }}</p>
+                                    </div>
                                 </div>
                                 @if ($change->library)
                                     <div class="flex items-center gap-3 border-t border-gray-100 pt-3">
@@ -161,6 +164,14 @@
                                         {{ $change->requested_last_name ?? $change->user?->last_name }}
                                     </span>
                                 </div>
+                                @if ($change->requested_role_type !== null)
+                                    <p class="border-t border-gray-100 pt-3 text-sm text-gray-700">
+                                        Улога: {{ $change->requested_role_type }}
+                                        @if ($change->requested_role_details)
+                                            <span class="text-gray-500">· {{ $change->requested_role_details }}</span>
+                                        @endif
+                                    </p>
+                                @endif
                                 @if ($change->library)
                                     <div class="flex items-center gap-3 border-t border-gray-100 pt-3">
                                         @if ($change->requested_library_logo)

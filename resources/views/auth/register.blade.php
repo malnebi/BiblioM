@@ -49,7 +49,7 @@
 
                         <div class="pt-2">
                             <label for="role_type"
-                                class="block text-sm font-medium text-slate-300 mb-2 font-cyrillic uppercase tracking-wide">У школи сам</label>
+                                class="block text-sm font-medium text-slate-300 mb-2 font-cyrillic uppercase tracking-wide">(У) ШКОЛИ САМ</label>
                             <select name="role_type" id="role_type" class="custom-select w-full">
                                 <option value="" disabled @selected(old('role_type') === null)></option>
                                 @foreach (array_keys(\App\Models\User::$schoolRoles) as $role)

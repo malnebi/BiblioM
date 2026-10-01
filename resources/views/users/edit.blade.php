@@ -61,6 +61,34 @@
                 <p class="text-sm text-slate-400">Промјене имена и фотографије постају активне тек након прегледа администратора.</p>
             </section>
 
+            <section class="space-y-5 border-t border-slate-700 pt-6">
+                <h2 class="text-lg font-bold text-white">(У) ШКОЛИ САМ</h2>
+                <div>
+                    <select id="role_type" name="role_type" class="custom-select w-full">
+                        <option value="">Задржи тренутну улогу</option>
+                        @foreach ($roles as $role => $details)
+                            <option value="{{ $role }}" @selected(old('role_type', $pendingChange?->requested_role_type ?? $user->role_type) === $role)>
+                                {{ $role }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+                <div id="role_details_container" class="hidden rounded-lg border border-slate-700/50 bg-slate-800/30 p-4">
+                    <div id="role_details_select_wrapper" class="hidden">
+                        <label for="role_details_select" class="mb-2 block text-sm font-medium text-slate-300">Разред и одјељење</label>
+                        <select id="role_details_select" name="role_details" class="custom-select w-full" disabled></select>
+                    </div>
+                    <div id="role_details_input_wrapper" class="hidden">
+                        <label id="role_details_label" for="role_details_input" class="mb-2 block text-sm font-medium text-slate-300">Детаљи улоге</label>
+                        <input id="role_details_input" name="role_details" type="text" maxlength="255"
+                            value="{{ old('role_details', $pendingChange?->requested_role_details ?? $user->role_details) }}"
+                            class="bg-[#1e293b] text-white border border-slate-600 rounded-lg px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-slate-500"
+                            disabled>
+                    </div>
+                </div>
+                <p class="text-sm text-slate-400">За особе које више нису у школи изаберите „Друго“ и наведите то у детаљима. Промјена се активира након одобрења администратора.</p>
+            </section>
+
             @if ($library)
                 <section class="space-y-5 border-t border-slate-700 pt-6">
                     <h2 class="text-lg font-bold text-white">Моја библиотека</h2>
@@ -97,4 +125,58 @@
             </div>
         </form>
     </div>
+
+    <script>
+        const schoolRoles = @json($roles);
+        const roleTypeSelect = document.getElementById('role_type');
+        const roleDetailsContainer = document.getElementById('role_details_container');
+        const roleDetailsSelectWrapper = document.getElementById('role_details_select_wrapper');
+        const roleDetailsInputWrapper = document.getElementById('role_details_input_wrapper');
+        const roleDetailsSelect = document.getElementById('role_details_select');
+        const roleDetailsInput = document.getElementById('role_details_input');
+        const roleDetailsLabel = document.getElementById('role_details_label');
+        const initialRoleDetails = @json(old('role_details', $pendingChange?->requested_role_details ?? $user->role_details));
+        const initialRole = roleTypeSelect.value;
+
+        function updateRoleDetails(resetValue = false) {
+            const role = roleTypeSelect.value;
+            const currentValue = resetValue ? '' : (initialRoleDetails || '');
+
+            roleDetailsContainer.classList.add('hidden');
+            roleDetailsSelectWrapper.classList.add('hidden');
+            roleDetailsInputWrapper.classList.add('hidden');
+            roleDetailsSelect.disabled = true;
+            roleDetailsInput.disabled = true;
+            roleDetailsSelect.required = false;
+            roleDetailsInput.required = false;
+
+            if (role === 'Ученик') {
+                roleDetailsContainer.classList.remove('hidden');
+                roleDetailsSelectWrapper.classList.remove('hidden');
+                roleDetailsSelect.disabled = false;
+                roleDetailsSelect.required = true;
+                roleDetailsSelect.innerHTML = '';
+                roleDetailsSelect.add(new Option('Изаберите разред и одјељење', ''));
+                (schoolRoles[role] || []).forEach((detail) => {
+                    roleDetailsSelect.add(new Option(detail, detail));
+                });
+                roleDetailsSelect.value = currentValue;
+                return;
+            }
+
+            if (['Професор', 'Стручни сарадник', 'Друго'].includes(role)) {
+                roleDetailsContainer.classList.remove('hidden');
+                roleDetailsInputWrapper.classList.remove('hidden');
+                roleDetailsInput.disabled = false;
+                roleDetailsInput.value = currentValue;
+                roleDetailsInput.required = role === 'Друго';
+                roleDetailsLabel.textContent = role === 'Друго'
+                    ? 'Опишите свој однос према школи или библиотеци'
+                    : 'Наведите предмет или позицију';
+            }
+        }
+
+        roleTypeSelect.addEventListener('change', () => updateRoleDetails(roleTypeSelect.value !== initialRole));
+        updateRoleDetails();
+    </script>
 </x-layout>

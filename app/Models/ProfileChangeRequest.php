@@ -12,6 +12,8 @@ class ProfileChangeRequest extends Model
         'requested_name',
         'requested_last_name',
         'requested_photo',
+        'requested_role_type',
+        'requested_role_details',
         'library_id',
         'requested_library_name',
         'requested_library_logo',

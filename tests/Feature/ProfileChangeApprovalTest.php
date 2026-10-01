@@ -7,7 +7,10 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 it('shows the profile settings form to the signed-in user', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->create([
+        'role_type' => 'Ученик',
+        'role_details' => 'II-2',
+    ]);
     Library::factory()->create(['owner_id' => $user->id]);
 
     $response = $this->actingAs($user)->get(route('settings.edit'));
@@ -15,6 +18,9 @@ it('shows the profile settings form to the signed-in user', function () {
     $response->assertOk()
         ->assertSee('Подешавања профила')
         ->assertSee('Пошаљи измјене на одобрење')
+        ->assertSee('Разред и одјељење')
+        ->assertSee('I-1')
+        ->assertSee('II-2')
         ->assertSee('method="POST"', false)
         ->assertSee('name="_method" value="PUT"', false);
 });
@@ -37,6 +43,78 @@ it('submits profile identity changes for approval without changing the active pr
         'requested_last_name' => 'Ново презиме',
         'status' => 'pending',
     ]);
+});
+
+it('submits school role changes for approval without applying them immediately', function () {
+    $user = User::factory()->create([
+        'role_type' => 'Ученик',
+        'role_details' => 'III-1',
+    ]);
+
+    $response = $this->actingAs($user)->put(route('settings.update'), [
+        'name' => $user->name,
+        'last_name' => $user->last_name,
+        'role_type' => 'Друго',
+        'role_details' => 'Више нисам у школи',
+    ]);
+
+    $response->assertRedirect(route('settings.edit'));
+    expect($user->fresh()->role_type)->toBe('Ученик');
+    $this->assertDatabaseHas('profile_change_requests', [
+        'user_id' => $user->id,
+        'requested_role_type' => 'Друго',
+        'requested_role_details' => 'Више нисам у школи',
+        'status' => 'pending',
+    ]);
+});
+
+it('stores a selected class when changing to the student role', function () {
+    $user = User::factory()->create([
+        'role_type' => 'Професор',
+        'role_details' => 'Математика',
+    ]);
+
+    $response = $this->actingAs($user)->put(route('settings.update'), [
+        'name' => $user->name,
+        'last_name' => $user->last_name,
+        'role_type' => 'Ученик',
+        'role_details' => 'II-3',
+    ]);
+
+    $response->assertRedirect(route('settings.edit'));
+    $this->assertDatabaseHas('profile_change_requests', [
+        'user_id' => $user->id,
+        'requested_role_type' => 'Ученик',
+        'requested_role_details' => 'II-3',
+        'status' => 'pending',
+    ]);
+});
+
+it('requires details for Друго and rejects unsupported profile roles', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)->put(route('settings.update'), [
+        'name' => $user->name,
+        'last_name' => $user->last_name,
+        'role_type' => 'Друго',
+        'role_details' => '',
+    ])->assertSessionHasErrors('role_details');
+
+    $this->actingAs($user)->put(route('settings.update'), [
+        'name' => $user->name,
+        'last_name' => $user->last_name,
+        'role_type' => 'Ученик',
+        'role_details' => '',
+    ])->assertSessionHasErrors('role_details');
+
+    $this->actingAs($user)->put(route('settings.update'), [
+        'name' => $user->name,
+        'last_name' => $user->last_name,
+        'role_type' => 'Администратор',
+        'role_details' => 'Неприхваћена улога',
+    ])->assertSessionHasErrors('role_type');
+
+    $this->assertDatabaseMissing('profile_change_requests', ['user_id' => $user->id]);
 });
 
 it('only allows a user to edit their own profile settings', function () {
@@ -72,12 +150,16 @@ it('shows pending profile changes on the admin dashboard', function () {
         'user_id' => $user->id,
         'requested_name' => 'Предложено име',
         'requested_last_name' => 'Предложено презиме',
+        'requested_role_type' => 'Друго',
+        'requested_role_details' => 'Више нисам у школи',
     ]);
 
     $this->actingAs($admin)
         ->get(route('admin.dashboard'))
         ->assertOk()
         ->assertSee('Предложено име')
+        ->assertSee('Друго')
+        ->assertSee('Више нисам у школи')
         ->assertSee('Одобри')
         ->assertSee('Одбиј');
 });
@@ -105,6 +187,28 @@ it('applies requested profile changes after admin approval', function () {
         'id' => $request->id,
         'status' => 'approved',
         'reviewed_by' => $admin->id,
+    ]);
+});
+
+it('applies requested school role after admin approval', function () {
+    $admin = User::factory()->create();
+    $admin->forceFill(['role' => 'admin'])->save();
+    $user = User::factory()->create([
+        'role_type' => 'Ученик',
+        'role_details' => 'III-1',
+    ]);
+    $request = ProfileChangeRequest::create([
+        'user_id' => $user->id,
+        'requested_role_type' => 'Друго',
+        'requested_role_details' => 'Више нисам у школи',
+    ]);
+
+    $this->actingAs($admin)->patch(route('admin.profile-changes.approve', $request));
+
+    $this->assertDatabaseHas('users', [
+        'id' => $user->id,
+        'role_type' => 'Друго',
+        'role_details' => 'Више нисам у школи',
     ]);
 });
 

@@ -11,6 +11,7 @@ use App\Models\Tag;
 use App\Models\ProfileChangeRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 
 
 class UserController extends Controller
@@ -180,7 +181,9 @@ class UserController extends Controller
             ->first();
         $library = $user->ownLibrary;
 
-        return view('users.edit', compact('user', 'pendingChange', 'library'));
+        $roles = User::$schoolRoles;
+
+        return view('users.edit', compact('user', 'pendingChange', 'library', 'roles'));
     }
 
     /**
@@ -195,6 +198,8 @@ class UserController extends Controller
             'name' => ['required', 'string', 'max:100'],
             'last_name' => ['nullable', 'string', 'max:100'],
             'user_photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'role_type' => ['nullable', Rule::in(array_keys(User::$schoolRoles))],
+            'role_details' => ['nullable', 'string', 'max:255', 'required_if:role_type,Ученик,Друго'],
         ];
         $library = $user->ownLibrary;
 
@@ -208,10 +213,16 @@ class UserController extends Controller
         $nameChanged = $attributes['name'] !== $user->name
             || $attributes['last_name'] !== $user->last_name;
         $photoChanged = $request->hasFile('user_photo');
+        $roleTypeWasProvided = isset($attributes['role_type']);
+        $roleType = $roleTypeWasProvided ? $attributes['role_type'] : $user->role_type;
+        $roleDetails = array_key_exists('role_details', $attributes)
+            ? $attributes['role_details']
+            : ($roleType !== $user->role_type ? null : $user->role_details);
+        $roleChanged = $roleType !== $user->role_type || $roleDetails !== $user->role_details;
         $libraryNameChanged = $library && $attributes['library_name'] !== $library->name;
         $libraryLogoChanged = $library && $request->hasFile('library_logo');
 
-        if (! $nameChanged && ! $photoChanged && ! $libraryNameChanged && ! $libraryLogoChanged) {
+        if (! $nameChanged && ! $photoChanged && ! $roleChanged && ! $libraryNameChanged && ! $libraryLogoChanged) {
             $message = ProfileChangeRequest::where('user_id', $user->id)
                 ->where('status', 'pending')
                 ->exists()
@@ -241,6 +252,8 @@ class UserController extends Controller
                 'requested_name' => $nameChanged ? $attributes['name'] : $pendingChange?->requested_name,
                 'requested_last_name' => $nameChanged ? $attributes['last_name'] : $pendingChange?->requested_last_name,
                 'requested_photo' => $requestedPhoto,
+                'requested_role_type' => $roleChanged ? $roleType : $pendingChange?->requested_role_type,
+                'requested_role_details' => $roleChanged ? $roleDetails : $pendingChange?->requested_role_details,
                 'library_id' => $library?->id ?? $pendingChange?->library_id,
                 'requested_library_name' => $libraryNameChanged ? $attributes['library_name'] : $pendingChange?->requested_library_name,
                 'requested_library_logo' => $requestedLibraryLogo,

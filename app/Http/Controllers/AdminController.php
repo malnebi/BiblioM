@@ -110,6 +110,11 @@ class AdminController extends Controller
             $user->user_photo = $profileChangeRequest->requested_photo;
         }
 
+        if ($profileChangeRequest->requested_role_type !== null) {
+            $user->role_type = $profileChangeRequest->requested_role_type;
+            $user->role_details = $profileChangeRequest->requested_role_details;
+        }
+
         $user->save();
 
         if ($library && $profileChangeRequest->requested_library_name !== null) {
