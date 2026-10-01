@@ -40,7 +40,10 @@ class LoanController extends Controller
             $library = Library::find($id);
 
             // Помоћна функција да не бисмо понављали исти код
-            $baseQuery = Loan::where('library_id', $id)->whereHas('book')->whereHas('user');
+            $baseQuery = Loan::with(['user', 'book'])
+                ->where('library_id', $id)
+                ->whereHas('book')
+                ->whereHas('user');
 
             // 1. Резервисано
             $reservedLoans = (clone $baseQuery)->where([['active', '=', null], ['description', '=', 'rezervisano']])->get();
@@ -65,7 +68,7 @@ class LoanController extends Controller
 
             // 6. Главна листа са пагинацијом
             $loans = (clone $baseQuery)->orderBy('created_at', 'asc')
-                ->with(['user', 'book', 'library'])
+                ->with('library')
                 ->paginate(20);
 
             $loansNumber = $activeLoans->count();

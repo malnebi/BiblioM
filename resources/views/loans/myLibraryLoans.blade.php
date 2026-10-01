@@ -62,7 +62,10 @@
                                     @php $firstLoan = $loans->first(); @endphp
                                     <div class="grid grid-cols-3 text-[10px] text-slate-800 p-3 items-center">
                                         <div class="font-mono text-slate-400">{{ $firstLoan->created_at->format('d.m.y') }}</div>
-                                        <div class="font-bold truncate text-center px-1 text-slate-700">{{ $firstLoan->user->name }}</div>
+                                        <div class="truncate text-center px-1 text-slate-700">
+                                            <a href="/users/{{ $firstLoan->user->id }}" class="font-bold hover:text-blue-600 hover:underline">{{ $firstLoan->user->name }} {{ $firstLoan->user->last_name }}</a>
+                                            <div class="truncate text-[9px] text-slate-500">{{ $firstLoan->user->role_type ?? 'Улога није наведена' }}@if ($firstLoan->user->role_details) · {{ $firstLoan->user->role_details }}@endif</div>
+                                        </div>
                                         <div class="font-mono text-right text-slate-400">{{ $firstLoan->updated_at->format('d.m.y') }}</div>
                                     </div>
                                     
@@ -71,7 +74,10 @@
                                         @foreach ($loans->skip(1) as $loan)
                                             <div class="grid grid-cols-3 text-[10px] text-slate-800 p-3 items-center hover:bg-slate-50 transition-colors">
                                                 <div class="font-mono text-slate-400">{{ $loan->created_at->format('d.m.y') }}</div>
-                                                <div class="font-bold truncate text-center px-1 text-slate-700">{{ $loan->user->name }}</div>
+                                                <div class="truncate text-center px-1 text-slate-700">
+                                                    <a href="/users/{{ $loan->user->id }}" class="font-bold hover:text-blue-600 hover:underline">{{ $loan->user->name }} {{ $loan->user->last_name }}</a>
+                                                    <div class="truncate text-[9px] text-slate-500">{{ $loan->user->role_type ?? 'Улога није наведена' }}@if ($loan->user->role_details) · {{ $loan->user->role_details }}@endif</div>
+                                                </div>
                                                 <div class="font-mono text-right text-slate-400">{{ $loan->updated_at->format('d.m.y') }}</div>
                                             </div>
                                         @endforeach
@@ -106,7 +112,10 @@
                             <div class="mt-4 bg-white border border-slate-200 border-t-4 border-t-blue-400 rounded-b-xl shadow-md p-3">
                                 @foreach ($loans->take(1) as $loan)
                                     <div class="flex justify-between items-center bg-slate-50 p-2 rounded border border-slate-100">
-                                        <span class="text-[10px] font-bold text-slate-700 truncate mr-2">{{ $loan->user->name }}</span>
+                                        <div class="mr-2 min-w-0 truncate">
+                                            <a href="/users/{{ $loan->user->id }}" class="block truncate text-[10px] font-bold text-slate-700 hover:text-blue-600 hover:underline">{{ $loan->user->name }} {{ $loan->user->last_name }}</a>
+                                            <span class="block truncate text-[9px] text-slate-500">{{ $loan->user->role_type ?? 'Улога није наведена' }}@if ($loan->user->role_details) · {{ $loan->user->role_details }}@endif</span>
+                                        </div>
                                         @if ($loan->active != 1)
                                             <form method="POST" action="/loans/loanLibraryConfirm/{{ $loan->id }}">
                                                 @csrf @method('PUT')
@@ -135,7 +144,10 @@
                             <div class="mt-4 bg-white border border-slate-200 border-t-4 border-t-amber-400 rounded-b-xl shadow-md p-3">
                                 @foreach ($loans->take(1) as $loan)
                                     <div class="flex justify-between items-center">
-                                        <span class="text-[10px] font-bold text-slate-700">{{ $loan->user->name }}</span>
+                                        <div class="min-w-0 truncate">
+                                            <a href="/users/{{ $loan->user->id }}" class="block truncate text-[10px] font-bold text-slate-700 hover:text-blue-600 hover:underline">{{ $loan->user->name }} {{ $loan->user->last_name }}</a>
+                                            <span class="block truncate text-[9px] text-slate-500">{{ $loan->user->role_type ?? 'Улога није наведена' }}@if ($loan->user->role_details) · {{ $loan->user->role_details }}@endif</span>
+                                        </div>
                                         <span class="text-[10px] font-mono text-slate-400">{{ $loan->created_at->format('d.m.y') }}</span>
                                     </div>
                                 @endforeach
@@ -157,7 +169,10 @@
                             <div class="mt-4 bg-white border border-slate-200 border-t-4 border-t-emerald-400 rounded-b-xl shadow-md p-3">
                                 @foreach ($loans->take(1) as $loan)
                                     <div class="flex justify-between items-center">
-                                        <span class="text-[10px] font-bold text-slate-700 truncate mr-2">{{ $loan->user->name }}</span>
+                                        <div class="mr-2 min-w-0 truncate">
+                                            <a href="/users/{{ $loan->user->id }}" class="block truncate text-[10px] font-bold text-slate-700 hover:text-blue-600 hover:underline">{{ $loan->user->name }} {{ $loan->user->last_name }}</a>
+                                            <span class="block truncate text-[9px] text-slate-500">{{ $loan->user->role_type ?? 'Улога није наведена' }}@if ($loan->user->role_details) · {{ $loan->user->role_details }}@endif</span>
+                                        </div>
                                         <form method="POST" action="/loans/returnBookLibraryConfirm/{{ $loan->id }}">
                                             @csrf @method('PUT')
                                             <button class="px-3 py-1 bg-emerald-600 text-white text-[9px] font-black rounded uppercase hover:bg-emerald-700 transition-colors">Врати</button>

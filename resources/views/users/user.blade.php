@@ -1,32 +1,57 @@
 <x-layout>
-    <div class="space-y-10">
+    <div class="mx-auto max-w-7xl space-y-10 px-4 py-8">
         <section class="text-left">
-            <img src="{{ $user->user_photo ? asset('storage/' . $user->user_photo) : Vite::asset('resources/images/user-placeholder.svg') }}" alt="{{ $user->name }}"
-                class="w-52 h-52 rounded-full object-cover border border-white/40">
-            <h1 class="font-bold text-4xl"> {{ $user->name }}</h1>
+            <section class="relative overflow-hidden rounded-3xl border border-slate-700 bg-[#1e293b] p-6 shadow-2xl md:p-8">
+                <div class="relative z-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+                    <div class="flex min-w-0 items-center gap-4">
+                        <div class="shrink-0 rounded-2xl border border-slate-700 bg-slate-900/50 p-2 shadow-inner">
+                            <img src="{{ $user->user_photo ? asset('storage/' . $user->user_photo) : Vite::asset('resources/images/user-placeholder.svg') }}"
+                                alt="{{ $user->name }}" class="h-20 w-20 rounded-xl object-cover">
+                        </div>
+                        <div class="min-w-0">
+                            <h1 class="text-lg font-black uppercase text-white md:text-2xl">{{ $user->name }} {{ $user->last_name }}</h1>
+                            <p class="mt-2 text-base font-semibold text-blue-300">
+                                {{ $user->role_type ?? 'Није наведена' }}@if ($user->role_details) · {{ $user->role_details }}@endif
+                            </p>
+                        </div>
+                    </div>
 
-            {{-- ================== ФОРМУЛАР ЗА ДОДЈЕЛУ КЊИГЕ ЧЛАНУ ================== --}}
-            <section>
+                    {{-- ================== ФОРМУЛАР ЗА ДОДЈЕЛУ КЊИГЕ ЧЛАНУ ================== --}}
                 @if ($activeLoansCount <= 2 && $books->isNotEmpty())
-                    <x-forms.form method="POST" action="/loans/store" enctype="multipart/form-data">
-                        
-                        <input type="hidden" name="user_id" value="{{ $user->id }}" />
+                    <div class="w-full lg:w-1/2">
+                        <x-forms.form method="POST" action="/loans/store" class="relative !mx-0 !max-w-none !space-y-3">
+                            <input type="hidden" name="user_id" value="{{ $user->id }}" />
 
-                        <select name="book_id" id="book_id" class="custom-select w-full">
-                            <option value="" disabled selected>Изаберите књигу за корисника</option>
-                            
-                            @foreach ($books as $book)
-                                <option value="{{ $book->id }}"> 
-                                    {{ $book->id }} {{ $book->title }}
-                                    / {{ $book->author_fname }} {{ $book->author_lname }}. - {{ $book->publisher_place }}: {{ $book->publisher_name }}, {{ $book->year }}  </option>
-                            @endforeach
-                        </select>
-                        <x-forms.button>Потврди</x-forms.button>
-                    </x-forms.form>
+                            <label for="book_search" class="mb-2 block text-lg font-bold text-blue-300">
+                                Додијелите књигу овом кориснику
+                            </label>
+                            <div class="relative" data-book-autocomplete>
+                                <input type="search" id="book_search" autocomplete="off" required
+                                    role="combobox" aria-autocomplete="list" aria-controls="book_suggestions"
+                                    aria-expanded="false" placeholder="Изаберите књигу по наслову, аутору или другим подацима"
+                                    class="w-full rounded border border-gray-300 px-3 py-2">
+                                <input type="hidden" name="book_id" id="book_id">
 
-                    
-
+                                <div id="book_suggestions" role="listbox"
+                                    class="absolute z-20 mt-1 max-h-64 w-full overflow-y-auto rounded border border-gray-300 bg-white shadow-lg"
+                                    hidden>
+                                    @foreach ($books as $book)
+                                        <button type="button" role="option" aria-selected="false"
+                                            id="book_option_{{ $book->id }}" data-book-option="{{ $book->id }}"
+                                            class="block w-full border-b border-gray-100 bg-white px-3 py-2 text-left text-sm text-slate-900 opacity-100 hover:bg-gray-100">
+                                            {{ $book->id }} {{ $book->title }} / {{ $book->author_fname }} {{ $book->author_lname }}. - {{ $book->publisher_place }}: {{ $book->publisher_name }}, {{ $book->year }}
+                                        </button>
+                                    @endforeach
+                                </div>
+                                <div id="book_no_results" role="status"
+                                    class="absolute z-20 mt-1 w-full rounded border border-gray-300 bg-white px-3 py-2 text-sm text-gray-600 shadow-lg"
+                                    hidden>Нема резултата</div>
+                            </div>
+                            <x-forms.button>Потврди</x-forms.button>
+                        </x-forms.form>
+                    </div>
                 @endif
+                </div>
             </section>
 
             {{-- ================== ПРЕУЗИМАЊЕ У ТОКУ  ================== --}}
