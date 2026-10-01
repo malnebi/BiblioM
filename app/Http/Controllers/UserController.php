@@ -182,8 +182,9 @@ class UserController extends Controller
         $library = $user->ownLibrary;
 
         $roles = User::$schoolRoles;
+        $isFormerStudent = $user->role_type === User::FORMER_STUDENT;
 
-        return view('users.edit', compact('user', 'pendingChange', 'library', 'roles'));
+        return view('users.edit', compact('user', 'pendingChange', 'library', 'roles', 'isFormerStudent'));
     }
 
     /**

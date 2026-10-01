@@ -65,7 +65,7 @@
                 <h2 class="text-lg font-bold text-white">(У) ШКОЛИ САМ</h2>
                 <div>
                     <select id="role_type" name="role_type" class="custom-select w-full">
-                        <option value="">Задржи тренутну улогу</option>
+                        <option value="">{{ $isFormerStudent ? 'Бивши ученик (задржи тренутни статус)' : 'Задржи тренутну улогу' }}</option>
                         @foreach ($roles as $role => $details)
                             <option value="{{ $role }}" @selected(old('role_type', $pendingChange?->requested_role_type ?? $user->role_type) === $role)>
                                 {{ $role }}
