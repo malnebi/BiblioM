@@ -2,12 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Library;
-use App\Models\User;
 use App\Models\Book;
 use App\Models\Loan;
+use App\Models\User;
 use Carbon\Carbon;
-use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -23,22 +21,19 @@ class LoanController extends Controller
             ->with(['user', 'book', 'library'])
             ->paginate(20);
 
-
         $data = [
             'loans' => $loans,
         ];
+
         return view('loans.index', $data);
         //  return dd ($loans->toArray());
 
     }
 
-
     public function myLibraryLoans($id)
     {
-
-        if (Auth::user()->ownLibrary->id == $id) {
-            $library = Library::find($id);
-
+        $library = Auth::user()->ownLibrary;
+        if ($library && (int) $library->id === (int) $id) {
             // Помоћна функција да не бисмо понављали исти код
             $baseQuery = Loan::with(['user', 'book'])
                 ->where('library_id', $id)
@@ -53,6 +48,7 @@ class LoanController extends Controller
                 ->where(function ($query) {
                     $query->where('description', '=', null)->orWhere('description', '=', 'rezervisano');
                 })->get();
+            $hasPendingPickupConfirmations = $inProgressLoans->isNotEmpty();
 
             // 3. У току (враћање)
             $returnInProgress = (clone $baseQuery)->where(function ($query) {
@@ -93,19 +89,17 @@ class LoanController extends Controller
                 'groupedOverLoans',
                 'groupedActiveLoans',
                 'groupedReservedLoans',
-                'groupedProgressLoans'
+                'groupedProgressLoans',
+                'hasPendingPickupConfirmations'
             ));
         } else {
             abort(404);
         }
     }
 
-
     /**
      * Show the form for creating a new resource.
      */
-
-
     public function create($userId)
     { {
             $user = User::find($userId);
@@ -119,16 +113,15 @@ class LoanController extends Controller
             return view('loans.create', $data);
         }
     }
+
     /**
-     * 
      * ПОЗАЈМИЦА
-     * 
+     *
      * Унос записа о позајмици.
      */
     public function store(Request $request)
     {
         //return $request->date;        //$time = Carbon::parse($request->time);
-
 
         $loan = new Loan;
 
@@ -141,10 +134,9 @@ class LoanController extends Controller
         $loan->save();
 
         /** upis u tabelu book */
-
         $book = Book::find($loan->book_id);        // traži knjigu u tabeli book na osnovu broja klijent u loan
-        $book->loan = 1;                              // zaduženje knjige je aktivno 
-        $book->lib_user_id = $loan->user_id;           // upis broja korisnika koji je zadužio knjigu 
+        $book->loan = 1;                              // zaduženje knjige je aktivno
+        $book->lib_user_id = $loan->user_id;           // upis broja korisnika koji je zadužio knjigu
         $book->save();
 
         //        $id_user = $loan->user_id;
@@ -157,7 +149,11 @@ class LoanController extends Controller
      */
     public function loanLibraryConfirm($loan)
     {
-        $loan = Loan::find($loan);
+        $loan = Loan::findOrFail($loan);
+        $library = Auth::user()->ownLibrary;
+        abort_unless($library && (int) $loan->library_id === (int) $library->id, 403);
+        abort_unless($loan->active === null && $loan->description === 'rezervisano', 409);
+
         $loan->active = 1;
         $loan->return_deadline = Carbon::now()->addDays(30);   // rok za vraćanje knjige je 30 dana
         $loan->save();
@@ -165,9 +161,10 @@ class LoanController extends Controller
         /** upis u tabelu book */
         if ($loan->active == 1) {
             $book = Book::find($loan->book_id);        // traži knjigu u tabeli book na osnovu broja klijent u loan
-            $book->loan = 1;                              // zaduženje knjige je aktivno 
+            $book->loan = 1;                              // zaduženje knjige je aktivno
             $book->save();
         }
+
         return redirect()->action([UserController::class, 'show'], [$loan->user_id]);
     }
 
@@ -177,31 +174,34 @@ class LoanController extends Controller
     public function loanBookMemberConfirm($loan)
     {
 
-        $loan = Loan::find($loan);
+        $loan = Loan::findOrFail($loan);
+        abort_unless((int) $loan->user_id === (int) Auth::id(), 403);
+        abort_unless(
+            (int) $loan->active === 1 && in_array($loan->description, [null, 'rezervisano'], true),
+            409
+        );
+
         $loan->description = 'potpisano';
         $loan->save();
 
-
         /** upis u tabelu book */
-        if ($loan->loan == 1) {
-            $book = Book::find($loan->book_id);        // traži knjigu u tabeli book na osnovu broja klijent u loan
-            $book->loan = 1;
-            $book->lib_user_id = $loan->user_id;                            // zaduženje knjige je aktivno 
-            $book->save();
-        }
+        $book = $loan->book; // traži knjigu u tabeli book na osnovu broja klijent u loan
+        $book->loan = 1;
+        $book->lib_user_id = $loan->user_id; // zaduženje knjige je aktivno
+        $book->save();
+
         return redirect()->action([UserController::class, 'showLoggedUser'], [$loan->user_id]);
     }
 
     /**
      * Библиотека потврђује враћање књиге.
      */
-
     public function returnBookLibraryConfirm($loan)
     {
         $loan = Loan::find($loan);
         $loan->active = 0;
         $loan->description = null;
-        $loan->updated_at = Carbon::now();   // datum vraćanja knjige 
+        $loan->updated_at = Carbon::now();   // datum vraćanja knjige
         $loan->save();
 
         /** upis u tabelu book */
@@ -213,7 +213,6 @@ class LoanController extends Controller
         // return redirect()->action([UserController::class, 'show'], [$loan->user_id]);
         return redirect()->action([LoanController::class, 'myLibraryLoans'], [$loan->library_id]);
     }
-
 
     /**
      * Display the specified resource.
@@ -250,19 +249,18 @@ class LoanController extends Controller
 
             return redirect()->action([UserController::class, 'show'], [$loan->user_id]);
         }
+
     }
 
     /**
      * Update the specified resource in storage.    PRODUZAVA ROK ZA VRAĆANJE KNJIGE!!!
      */
-
     public function updateReturnDate($id)  // mijenja datum za 30 dana od danas
     {
 
         $loan = Loan::find($id);
-        $loan->return_deadline = Carbon::now()->addDays(60);   // rok za vraćanje knjige je 60 dana    
+        $loan->return_deadline = Carbon::now()->addDays(60);   // rok za vraćanje knjige je 60 dana
         $loan->save();
-
 
         return redirect()->action([UserController::class, 'show'], [$loan->user_id]);
     }

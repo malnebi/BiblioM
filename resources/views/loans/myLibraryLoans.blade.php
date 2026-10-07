@@ -101,7 +101,7 @@
             </div>
 
             {{-- --- СЕКЦИЈА: ПРЕУЗИМАЊЕ --- --}}
-            <div id="sec-preuzimanje" class="content-sec hidden animate-fade-in">
+            <div id="sec-preuzimanje" class="content-sec {{ $hasPendingPickupConfirmations ? '' : 'hidden' }} animate-fade-in">
                 <h2 class="text-blue-400 text-[11px] font-bold uppercase tracking-[0.2em] mb-8 flex items-center gap-2">
                     <div class="w-1.5 h-6 bg-blue-500 rounded-full"></div> Преузимање у току
                 </h2>
@@ -173,10 +173,13 @@
                                             <a href="/users/{{ $loan->user->id }}" class="block truncate text-[10px] font-bold text-slate-700 hover:text-blue-600 hover:underline">{{ $loan->user->name }} {{ $loan->user->last_name }}</a>
                                             <span class="block truncate text-[9px] text-slate-500">{{ $loan->user->role_type ?? 'Улога није наведена' }}@if ($loan->user->role_details) · {{ $loan->user->role_details }}@endif</span>
                                         </div>
-                                        <form method="POST" action="/loans/returnBookLibraryConfirm/{{ $loan->id }}">
-                                            @csrf @method('PUT')
-                                            <button class="px-3 py-1 bg-emerald-600 text-white text-[9px] font-black rounded uppercase hover:bg-emerald-700 transition-colors">Врати</button>
-                                        </form>
+                                        <div class="flex shrink-0 flex-col items-end gap-2">
+                                            <span class="rounded bg-emerald-100 px-2 py-1 text-[8px] font-black uppercase text-emerald-700">Преузимање потврђено</span>
+                                            <form method="POST" action="/loans/returnBookLibraryConfirm/{{ $loan->id }}">
+                                                @csrf @method('PUT')
+                                                <button class="px-3 py-1 bg-emerald-600 text-white text-[9px] font-black rounded uppercase hover:bg-emerald-700 transition-colors">Врати</button>
+                                            </form>
+                                        </div>
                                     </div>
                                 @endforeach
                             </div>

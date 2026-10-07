@@ -84,8 +84,16 @@
                                             <span class="sr-only">Отвори мени</span>
                                             <img class="h-9 w-9 rounded-full object-cover border border-white/20"
                                                 src="{{ Auth::user()->user_photo ? asset('storage/' . Auth::user()->user_photo) : Vite::asset('resources/images/user-placeholder.svg') }}"
-                                                alt="{{ Auth::user()->name }}">                                     
+                                                alt="{{ Auth::user()->name }}">
                                         </button>
+                                        <x-notification-help
+                                            :count="$pickupNotificationCount"
+                                            type="pickup"
+                                            label="Књига чека ваше преузимање"
+                                            message="Потврдите преузимање тек када вам библиотека физички преда књигу."
+                                            :href="url('/loggedUser/' . Auth::id())"
+                                            link-label="Моје позајмице"
+                                        />
                                     </div>
 
                                     {{-- Падајући мени --}}
@@ -128,7 +136,8 @@
                                     </div>
                                 </div>
 
-                                <div class="relative ml-3" x-data="{ libraryMenu: false }" @click.away="libraryMenu = false">
+                                @if (Auth::user()->ownLibrary)
+                                    <div class="relative ml-3" x-data="{ libraryMenu: false }" @click.away="libraryMenu = false">
                                     <div>
                                         <button @click="libraryMenu = !libraryMenu" type="button"
                                             :class="libraryMenu ||
@@ -142,7 +151,15 @@
                                             <x-library-logo :library="Auth::user()->ownLibrary" :width="40"
                                                 class="h-9 w-9 rounded-full object-cover border border-white/20 transition-transform duration-300" />
                                         </button>
-                                    </div>
+                                        </div>
+                                        <x-notification-help
+                                            :count="$libraryConfirmationNotificationCount"
+                                            type="library-confirmation"
+                                            label="Чека се потврда корисника"
+                                            message="Књигу предајте кориснику тек након што он потврди преузимање."
+                                            :href="url('/loans/myLibraryLoans/' . Auth::user()->ownLibrary->id)"
+                                            link-label="Отвори циркулацију"
+                                        />
                                     {{-- Садржај падајућег мениja --}}
                                     <div x-show="libraryMenu" x-cloak {{-- Poboljšane tranzicije za sam meni --}}
                                         x-transition:enter="transition ease-out duration-200"
@@ -177,6 +194,7 @@
 
                                     </div>
                                 </div>
+                                @endif
 
                             @endauth
 
@@ -209,11 +227,22 @@
             {{-- МОБИЛНИ МЕНИ --}}
             <div x-show="open" class="md:hidden border-t border-white/10 mt-2" style="display: none;">
                 @auth
-                    <div class="border-t border-white/10 pb-3 pt-4">
+                    @if (Auth::user()->ownLibrary)
+                        <div class="border-t border-white/10 pb-3 pt-4">
                         <div class="flex items-center px-5">
-                            <div class="shrink-0">
-                                <x-library-logo :library="Auth::user()->ownLibrary" :width="40"
-                                    class="h-10 w-10 rounded-full object-cover border border-white/20" />
+                            <div class="relative shrink-0">
+                                <div class="relative">
+                                    <x-library-logo :library="Auth::user()->ownLibrary" :width="40"
+                                        class="h-10 w-10 rounded-full object-cover border border-white/20" />
+                                </div>
+                                <x-notification-help
+                                    :count="$libraryConfirmationNotificationCount"
+                                    type="library-confirmation"
+                                    label="Чека се потврда корисника"
+                                    message="Књигу предајте кориснику тек након што он потврди преузимање."
+                                    :href="url('/loans/myLibraryLoans/' . Auth::user()->ownLibrary->id)"
+                                    link-label="Отвори циркулацију"
+                                />
                             </div>
                             <div class="ml-3">
                                 <div class="text-base font-medium leading-none text-white">
@@ -236,12 +265,23 @@
                                 role="menuitem">ЦИРКУЛАЦИЈА</a>
                         </div>
                     </div>
+                    @endif
                     <div class="border-t border-white/10 pb-3 pt-4">
                         <div class="flex items-center px-5">
-                            <div class="shrink-0">
-                                <img class="h-10 w-10 rounded-full border border-white/20"
-                                    src="{{ Auth::user()->user_photo ? asset('storage/' . Auth::user()->user_photo) : Vite::asset('resources/images/user-placeholder.svg') }}"
-                                    alt="">
+                            <div class="relative shrink-0">
+                                <div class="relative">
+                                    <img class="h-10 w-10 rounded-full border border-white/20"
+                                        src="{{ Auth::user()->user_photo ? asset('storage/' . Auth::user()->user_photo) : Vite::asset('resources/images/user-placeholder.svg') }}"
+                                        alt="{{ Auth::user()->name }}">
+                                </div>
+                                <x-notification-help
+                                    :count="$pickupNotificationCount"
+                                    type="pickup"
+                                    label="Књига чека ваше преузимање"
+                                    message="Потврдите преузимање тек када вам библиотека физички преда књигу."
+                                    :href="url('/loggedUser/' . Auth::id())"
+                                    link-label="Моје позајмице"
+                                />
                             </div>
                             <div class="ml-3">
                                 <div class="text-base font-medium leading-none text-white">{{ Auth::user()->name }}
