@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Notifications\AccountApproved;
+use Illuminate\Auth\MustVerifyEmail as MustVerifyEmailTrait;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use App\Models\Library;
 
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable;
+    use HasFactory, MustVerifyEmailTrait, Notifiable;
 
     public const FORMER_STUDENT = 'Бивши ученик';
 
@@ -27,6 +28,7 @@ class User extends Authenticatable
         'role_type',
         'role_details',
         'approved',
+        'email_verification_required',
         'user_photo',
     ];
 
@@ -62,26 +64,31 @@ class User extends Authenticatable
             'IV-1',
             'IV-2',
             'IV-3',
-            'IV-4'
+            'IV-4',
         ],
         'Радник школе' => [],
         'Родитељ' => [],
-        'Друго' => []
+        'Друго' => [],
     ];
+
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
+            'email_verification_required' => 'boolean',
             'password' => 'hashed',
         ];
     }
 
+    public function sendEmailVerificationNotification(): void
+    {
+        $this->notify(new AccountApproved);
+    }
 
     public function library()
     {
         return $this->belongsTo(Library::class);
     }
-
 
     public function ownLibrary()
     {
@@ -97,7 +104,6 @@ class User extends Authenticatable
     {
         return $this->hasMany('App\Models\Book');
     }
-
 
     public function loans()
     {

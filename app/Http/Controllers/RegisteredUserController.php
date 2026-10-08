@@ -79,6 +79,7 @@ class RegisteredUserController extends Controller
                 'role_type' => $userAttributes['role_type'],
                 'role_details' => $details,
                 'approved' => 0,
+                'email_verification_required' => true,
                 'remember_token' => \Illuminate\Support\Str::random(10),
                 'user_photo' => $userPhotoPath,
             ]);

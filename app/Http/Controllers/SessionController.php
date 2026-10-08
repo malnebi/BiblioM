@@ -19,7 +19,11 @@ class SessionController extends Controller
             'password' => ['required'],
         ]);
 
-        if (! Auth::attempt(['email' => $attributes['email'], 'password' => $attributes['password'], 'approved' => 1])) {
+        if (! Auth::attempt([
+            'email' => $attributes['email'],
+            'password' => $attributes['password'],
+            'approved' => 1,
+        ])) {
 
             $user = \App\Models\User::where('email', $attributes['email'])->first();
 
@@ -28,13 +32,21 @@ class SessionController extends Controller
                     'email' => 'Чека се на одобрење администратора.',
                 ]);
             }
-        }
-        if (! Auth::attempt($attributes)) {
+
             throw ValidationException::withMessages([
-                'email' => 'Погрешан унос, попробајте поново.',
+                'email' => 'Погрешан унос, покушајте поново.',
             ]);
         }
 
+        $user = Auth::user();
+
+        if ($user->email_verification_required && ! $user->hasVerifiedEmail()) {
+            Auth::logout();
+
+            throw ValidationException::withMessages([
+                'email' => 'Потврдите мејл адресу преко линка који сте добили.',
+            ]);
+        }
 
         request()->session()->regenerate();
 

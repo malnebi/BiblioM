@@ -30,10 +30,15 @@ class AdminController extends Controller
 
     public function approve(User $user)
     {
-        // Постављамо на true и чувамо
-        $user->update(['approved' => 1]);
+        abort_if($user->approved, 404);
 
-        return back()->with('status', 'Корисник је успjешно одобрен!');
+        $user->update([
+            'approved' => 1,
+            'email_verification_required' => true,
+        ]);
+        $user->sendEmailVerificationNotification();
+
+        return back()->with('status', 'Корисник је одобрен и послата му је порука за потврду мејла.');
     }
 
     public function updateRole(Request $request, User $user)
