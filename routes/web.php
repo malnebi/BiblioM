@@ -9,6 +9,7 @@ use App\Http\Controllers\LibraryController;
 use App\Http\Controllers\RegisteredUserController;
 use App\Http\Controllers\SessionController;
 use App\Http\Controllers\EmailVerificationController;
+use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\TagController;
 use App\Http\Controllers\PageController;
@@ -117,6 +118,17 @@ Route::middleware('guest')->group(function () {
 
     Route::get('/login', [SessionController::class, 'create'])->name('login');
     Route::post('/login', [SessionController::class, 'store']);
+
+    Route::get('/forgot-password', [PasswordResetController::class, 'create'])
+        ->name('password.request');
+    Route::post('/forgot-password', [PasswordResetController::class, 'store'])
+        ->middleware('throttle:6,1')
+        ->name('password.email');
+    Route::get('/reset-password/{token}', [PasswordResetController::class, 'edit'])
+        ->name('password.reset');
+    Route::post('/reset-password', [PasswordResetController::class, 'update'])
+        ->middleware('throttle:6,1')
+        ->name('password.update');
 });
 
 Route::post('/logout', [SessionController::class, 'destroy'])->middleware('auth')->name('logout');
@@ -124,4 +136,3 @@ Route::post('/logout', [SessionController::class, 'destroy'])->middleware('auth'
 Route::get('/email/verify/{id}/{hash}', EmailVerificationController::class)
     ->middleware(['signed', 'throttle:6,1'])
     ->name('verification.verify');
-

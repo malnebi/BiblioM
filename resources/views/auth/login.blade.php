@@ -14,4 +14,10 @@
 
         <x-forms.button>Пријава</x-forms.button>
     </x-forms.form>
+
+    <p class="mt-4 text-center">
+        <a href="{{ route('password.request') }}" class="text-blue-300 underline hover:text-blue-200">
+            Заборавили сте лозинку?
+        </a>
+    </p>
 </x-layout>

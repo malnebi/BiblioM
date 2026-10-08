@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Notifications\AccountApproved;
+use App\Notifications\UserPasswordReset;
 use Illuminate\Auth\MustVerifyEmail as MustVerifyEmailTrait;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -83,6 +84,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sendEmailVerificationNotification(): void
     {
         $this->notify(new AccountApproved);
+    }
+
+    public function sendPasswordResetNotification($token): void
+    {
+        $this->notify(new UserPasswordReset($token));
     }
 
     public function library()
