@@ -19,14 +19,26 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $user = User::latest()->where('approved', 1)->get();
-        $library = Library::all();
+        $libraries = Library::query()
+            ->join('users as owners', 'owners.id', '=', 'libraries.owner_id')
+            ->where('owners.approved', 1)
+            ->with('owner')
+            ->select('libraries.*')
+            ->orderByDesc('owners.created_at')
+            ->orderByDesc('owners.id')
+            ->paginate(12);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'html' => view('users.partials.community-cards', compact('libraries'))->render(),
+                'next_page_url' => $libraries->nextPageUrl(),
+            ]);
+        }
 
         return view('users.index', [
-            'users' => $user,
-            'libraries' => $library,
+            'communityLibraries' => $libraries,
         ]);
     }
 

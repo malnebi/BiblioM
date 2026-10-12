@@ -109,6 +109,76 @@ if (bookAutocomplete) {
     });
 }
 
+const communityList = document.querySelector('[data-community-list]');
+
+if (communityList) {
+    const cards = communityList.querySelector('[data-community-cards]');
+    const sentinel = communityList.querySelector('[data-community-sentinel]');
+    const status = communityList.querySelector('[data-community-status]');
+    let nextPageUrl = communityList.dataset.nextPage;
+    let loading = false;
+
+    const loadNextPage = async () => {
+        if (loading || !nextPageUrl) return;
+
+        loading = true;
+        status.textContent = 'Учитавање чланова...';
+
+        try {
+            const response = await fetch(nextPageUrl, {
+                headers: {
+                    Accept: 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            });
+
+            if (!response.ok) {
+                throw new Error(`Community page request failed with status ${response.status}`);
+            }
+
+            const page = await response.json();
+
+            if (typeof page.html !== 'string' || (page.next_page_url !== null && typeof page.next_page_url !== 'string')) {
+                throw new Error('Community page response has an invalid format');
+            }
+
+            cards.insertAdjacentHTML('beforeend', page.html);
+            nextPageUrl = page.next_page_url;
+
+            if (nextPageUrl) {
+                communityList.dataset.nextPage = nextPageUrl;
+                status.textContent = '';
+            } else {
+                sentinel?.remove();
+                status.remove();
+            }
+        } catch (error) {
+            console.error('Unable to load more community members.', error);
+            status.textContent = 'Чланови нису могли бити учитани. Освјежите страницу и покушајте поново.';
+        } finally {
+            loading = false;
+        }
+    };
+
+    if (sentinel && status) {
+        if ('IntersectionObserver' in window) {
+            const observer = new IntersectionObserver((entries) => {
+                if (entries.some((entry) => entry.isIntersecting)) loadNextPage();
+            }, { rootMargin: '300px' });
+
+            observer.observe(sentinel);
+        } else {
+            const checkSentinel = () => {
+                if (sentinel.getBoundingClientRect().top < window.innerHeight + 300) loadNextPage();
+            };
+
+            window.addEventListener('scroll', checkSentinel, { passive: true });
+            window.addEventListener('resize', checkSentinel);
+            checkSentinel();
+        }
+    }
+}
+
 import.meta.glob([
     '../images/**',
     '../fonts/**',

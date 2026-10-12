@@ -88,7 +88,7 @@ class RegisteredUserController extends Controller
                 'owner_id' => $user->id,
                 'name' => $libraryName !== ''
                     ? $libraryName
-                    : 'Библиотека ' . trim($userAttributes['name']),
+                    : 'Библио' . trim($userAttributes['name']),
                 'logo' => $logoPath,
                 'numbering_mode' => $libraryAttributes['numbering_mode'],
             ]);

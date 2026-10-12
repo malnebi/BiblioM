@@ -1,32 +1,33 @@
 <x-layout>
-    @php
-        $communityLibraries = $libraries->filter(fn ($library) => $users->contains('id', $library->owner_id))->values();
-    @endphp
-
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-md-8">
 
-                <section class="pt-6">
-                    <x-collapsible-section
-                        title="ЗАЈЕДНИЦА"
-                        :count="$communityLibraries->count()"
-                        :show-more="$communityLibraries->count() > 6"
-                    >
-                        <x-slot name="visible">
-                            <div class="grid lg:grid-cols-3 gap-8 mt-3">
-                                @foreach ($communityLibraries->take(6) as $library)
-                                    <x-userlib-card :user="$users->firstWhere('id', $library->owner_id)" :library="$library" />
-                                @endforeach
-                            </div>
-                        </x-slot>
+                <section class="pt-6" aria-labelledby="community-heading">
+                    <x-section-heading>
+                        <span id="community-heading">ЗАЈЕДНИЦА ({{ $communityLibraries->total() }})</span>
+                    </x-section-heading>
+                    <x-forms.divider />
 
-                        <div class="grid lg:grid-cols-3 gap-8 mt-3">
-                            @foreach ($communityLibraries->skip(6) as $library)
-                                <x-userlib-card :user="$users->firstWhere('id', $library->owner_id)" :library="$library" />
-                            @endforeach
+                    <div
+                        data-community-list
+                        data-next-page="{{ $communityLibraries->nextPageUrl() }}"
+                        class="mt-3"
+                    >
+                        <div data-community-cards class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+                            @include('users.partials.community-cards', ['libraries' => $communityLibraries])
                         </div>
-                    </x-collapsible-section>
+
+                        @if ($communityLibraries->hasMorePages())
+                            <div data-community-sentinel class="h-1" aria-hidden="true"></div>
+                            <p data-community-status class="py-3 text-center text-sm text-gray-300" aria-live="polite"></p>
+                        @endif
+                    </div>
+
+                    @if ($communityLibraries->isEmpty())
+                        <p class="mt-4 text-center text-sm text-gray-300">Тренутно нема чланова за приказ.</p>
+                    @endif
+                </section>
             </div>
         </div>
     </div>

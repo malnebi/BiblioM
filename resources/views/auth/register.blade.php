@@ -95,9 +95,9 @@
 
                             <div class="flex-grow">
                                 <x-forms.input label="Назив" name="library"
-                                    placeholder="Библиотека {{ old('name', 'Име корисника') }}" />
+                                    placeholder="Библио{{ old('name', 'Име корисника') }}" />
                                 <p class="text-xs text-slate-400 mt-2">
-                                    Ако оставите поље празно, користиће се предложени назив.
+                                    Ако поље оставите празно, назив ће бити „Библио“ и ваше име.
                                 </p>
                             </div>
                         </div>
@@ -141,10 +141,11 @@
 
         function updateLibraryPlaceholder() {
             const userName = userNameInput.value.trim() || 'Име корисника';
-            libraryNameInput.placeholder = `Библиотека ${userName}`;
+            libraryNameInput.placeholder = `Библио${userName}`;
         }
 
         userNameInput.addEventListener('input', updateLibraryPlaceholder);
+        updateLibraryPlaceholder();
 
         // Preview логика (унапређена да уклања текст)
         function setupPreview(inputId, previewId) {
