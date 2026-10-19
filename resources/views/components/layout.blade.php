@@ -104,6 +104,16 @@
                                             :href="url('/loggedUser/' . Auth::id())"
                                             link-label="Моје позајмице"
                                         />
+                                        @if (Auth::user()->role === 'admin')
+                                            <x-notification-help
+                                                :count="$adminNotificationCount"
+                                                type="admin"
+                                                label="Нови административни захтјеви"
+                                                :message="$adminNotificationMessage"
+                                                :href="route('admin.dashboard')"
+                                                link-label="Отвори администрацију"
+                                            />
+                                        @endif
                                     </div>
 
                                     {{-- Падајући мени --}}
@@ -292,6 +302,16 @@
                                     :href="url('/loggedUser/' . Auth::id())"
                                     link-label="Моје позајмице"
                                 />
+                                @if (Auth::user()->role === 'admin')
+                                    <x-notification-help
+                                        :count="$adminNotificationCount"
+                                        type="admin"
+                                        label="Нови административни захтјеви"
+                                        :message="$adminNotificationMessage"
+                                        :href="route('admin.dashboard')"
+                                        link-label="Отвори администрацију"
+                                    />
+                                @endif
                             </div>
                             <div class="ml-3">
                                 <div class="text-base font-medium leading-none text-white">{{ Auth::user()->name }}

@@ -3,11 +3,14 @@
 namespace App\Providers;
 
 use App\Models\Book;
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Database\Eloquent\Model;
 use App\Models\Loan;
+use App\Models\ProfileChangeRequest;
+use App\Models\Tag;
+use App\Models\User;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -29,6 +32,20 @@ class AppServiceProvider extends ServiceProvider
         View::composer('components.layout', function ($view): void {
             $user = Auth::user();
             $library = $user?->ownLibrary;
+            $adminNotificationCounts = $user?->role === 'admin'
+                ? [
+                    'Нови захтјеви за регистрацију' => User::where('approved', 0)
+                        ->where(fn ($query) => $query->whereNull('role')->orWhere('role', '!=', 'admin'))
+                        ->count(),
+                    'Захтјеви за измјену профила' => ProfileChangeRequest::where('status', 'pending')->count(),
+                    'Предлози нових ознака за књиге' => Tag::where('approved', false)->count(),
+                ]
+                : [];
+            $adminNotificationCount = array_sum($adminNotificationCounts);
+            $adminNotificationMessage = collect($adminNotificationCounts)
+                ->filter(fn (int $count) => $count > 0)
+                ->map(fn (int $count, string $label) => "{$label}: {$count}")
+                ->implode('. ');
 
             $view->with([
                 'pickupNotificationCount' => $user
@@ -54,6 +71,8 @@ class AppServiceProvider extends ServiceProvider
                         $user->books_notification_viewed_at ?? $user->created_at
                     )->count()
                     : 0,
+                'adminNotificationCount' => $adminNotificationCount,
+                'adminNotificationMessage' => $adminNotificationMessage,
             ]);
         });
     }
