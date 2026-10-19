@@ -3,7 +3,7 @@
 
 
     @if (session('message'))
-        <div class="alert alert-success">
+        <div role="alert" class="mb-4 rounded-lg border border-amber-400/40 bg-amber-400/10 p-4 text-sm text-amber-100">
             {{ session('message') }}
         </div>
     @endif
