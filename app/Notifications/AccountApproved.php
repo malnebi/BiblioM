@@ -15,6 +15,7 @@ class AccountApproved extends VerifyEmail
             ->line('Администратор је одобрио вашу регистрацију.')
             ->line('Потврдите своју мејл адресу да бисте приступили налогу.')
             ->action('Потврди мејл и приступи налогу', $this->verificationUrl($notifiable))
-            ->line('Линк важи '.config('auth.verification.expire', 60).' минута.');
+            ->line('Линк важи '.config('auth.verification.expire', 60).' минута.')
+            ->salutation('Срдачно');
     }
 }

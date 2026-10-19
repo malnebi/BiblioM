@@ -25,9 +25,12 @@ it('sends a password reset link and resets the password with it', function () {
 
     Notification::assertSentTo($user, UserPasswordReset::class);
     $notification = Notification::sent($user, UserPasswordReset::class)->first();
-    $resetUrl = $notification->toMail($user)->actionUrl;
+    $mail = $notification->toMail($user);
+    $resetUrl = $mail->actionUrl;
 
-    expect($resetUrl)->toContain(route('password.reset', ['token' => $notification->token], false));
+    expect($mail->greeting)->toBe('Здраво!')
+        ->and($mail->salutation)->toBe('Срдачно')
+        ->and($resetUrl)->toContain(route('password.reset', ['token' => $notification->token], false));
     $this->assertStringStartsWith(rtrim(config('app.url'), '/'), $resetUrl);
     $this->get($resetUrl)->assertOk()->assertSee('Постављање нове лозинке');
 

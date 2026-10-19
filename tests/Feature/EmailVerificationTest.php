@@ -25,6 +25,8 @@ it('sends an approved user a welcome message with a signed email verification li
     $message = $notification->toMail($user);
 
     expect($message->subject)->toBe('БиблиоМ – налог је одобрен')
+        ->and($message->greeting)->toBe('Добро дошли, '.$user->name.'!')
+        ->and($message->salutation)->toBe('Срдачно')
         ->and($message->actionUrl)->toContain('/email/verify/'.$user->id.'/')
         ->and(URL::hasValidSignature(Request::create($message->actionUrl)))->toBeTrue();
 
