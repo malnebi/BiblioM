@@ -53,7 +53,17 @@
                             <!-- Садржај падајућег менија -->
                             @auth
                                 <a href="/home" role="menuitem"
-                                    class="block rounded-md px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100">Почетна</a>
+                                    class="flex items-center justify-between rounded-md px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100">
+                                    <span>Почетна</span>
+                                    @if ($newBooksNotificationCount > 0)
+                                        <span data-notification-count="new-books"
+                                            data-count="{{ $newBooksNotificationCount }}"
+                                            aria-label="{{ $newBooksNotificationCount }} нових књига"
+                                            class="ml-3 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-red-600 px-1 text-[10px] font-bold text-white">
+                                            {{ $newBooksNotificationCount }}
+                                        </span>
+                                    @endif
+                                </a>
                                 <a href="/users" role="menuitem"
                                     class="block rounded-md px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100">Заједница</a>
                             @endauth

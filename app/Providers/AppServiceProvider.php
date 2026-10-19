@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Book;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Loan;
@@ -45,6 +46,13 @@ class AppServiceProvider extends ServiceProvider
                             $query->whereNull('description')->orWhere('description', 'rezervisano');
                         })
                         ->count()
+                    : 0,
+                'newBooksNotificationCount' => $user
+                    ? Book::where(
+                        'created_at',
+                        '>',
+                        $user->books_notification_viewed_at ?? $user->created_at
+                    )->count()
                     : 0,
             ]);
         });

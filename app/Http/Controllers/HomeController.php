@@ -17,6 +17,8 @@ class HomeController extends Controller
      */
     public function index()
     {
+        $user = Auth::user();
+        $user->forceFill(['books_notification_viewed_at' => now()])->save();
 
         $books = Book::latest()->with(['library', 'tags'])->get();  // use eager loading
 
