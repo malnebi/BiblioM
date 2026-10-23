@@ -38,7 +38,7 @@
 
                     {{-- СМАЊЕНИ ЛОГО БИБЛИОТЕКЕ --}}
                     <div class="shrink-0 opacity-40 group-hover:opacity-100 transition-opacity">
-                        <x-library-logo :library="$book->library" :width="30" class="w-2 h-2 object-contain" />
+                        <x-library-logo :library="$book->library" :width="40" class="h-10 w-10 object-contain" />
                         </p>
                     </div>
 
@@ -47,7 +47,7 @@
                 {{-- БИБЛИОГРАФИЈА --}}
                 <details class="mt-1">
                     <summary
-                        class="flex items-center gap-1 cursor-pointer text-[12px] text-gray-500 list-none hover:text-blue-300">
+                        class="flex items-center gap-1 cursor-pointer text-[10px] text-gray-500 list-none hover:text-blue-300">
                         <span class="truncate italic">{{ $book->publisher_place }}: {{ $book->publisher_name }},
                             {{ $book->year }}</span>
                         <span class="text-xs">⋯</span>

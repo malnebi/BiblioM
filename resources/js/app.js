@@ -24,7 +24,10 @@ if (bookCoverPreview) {
         placeholder.querySelector('[data-cover-initials]').textContent = initials.length
             ? `${initials.join('.')}.`
             : 'К.';
-        placeholder.querySelector('[data-cover-title]').textContent = bookTitleInput?.value.trim() || 'Наслов књиге';
+        const title = bookTitleInput?.value.trim() || 'Наслов књиге';
+        const coverTitle = placeholder.querySelector('[data-cover-title]');
+        coverTitle.textContent = title;
+        coverTitle.title = title;
     };
 
     [authorFirstNameInput, authorLastNameInput, bookTitleInput].forEach((input) => {

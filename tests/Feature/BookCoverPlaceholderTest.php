@@ -19,6 +19,9 @@ it('shows author initials and title when a book has no cover image', function ()
         ->assertOk()
         ->assertSee('И.А.')
         ->assertSee('На Дрини ћуприја')
+        ->assertSee('line-clamp-3', false)
+        ->assertSee('text-[6px]', false)
+        ->assertSee('sm:text-[7px]', false)
         ->assertSee('data-book-cover-placeholder', false);
 
     expect($book->book_cover)->toBeNull();
