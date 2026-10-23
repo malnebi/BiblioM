@@ -228,7 +228,9 @@ class BookController extends Controller
 
             // Обриши стару слику ако постоји
 
-            Storage::disk('public')->delete($book->book_cover);
+            if ($book->book_cover !== null) {
+                Storage::disk('public')->delete($book->book_cover);
+            }
 
             $attributes['book_cover'] = $request->file('book_cover')->store('book_covers', 'public');
         }
