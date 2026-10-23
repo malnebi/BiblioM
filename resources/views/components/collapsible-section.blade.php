@@ -21,13 +21,13 @@
     @if($showMore && isset($slot) && trim($slot) !== '')
         <details 
             id="{{ $id }}" 
-            class="group mt-4" 
+            class="group/more mt-4"
             ontoggle="if(this.open) { setTimeout(() => { this.scrollIntoView({ behavior: 'smooth', block: 'start' }); }, 100); }"
         >
             <summary class="list-none cursor-pointer outline-none">
                 <div class="flex items-center text-orange-500 font-bold hover:underline">
-                    <span class="group-open:hidden">Види више...</span>
-                    <span class="hidden group-open:inline text-gray-400 font-normal text-xs uppercase italic tracking-widest">Прикажи мање</span>
+                    <span class="group-open/more:hidden">Види више...</span>
+                    <span class="hidden group-open/more:inline text-gray-400 font-normal text-xs uppercase italic tracking-widest">Прикажи мање</span>
                 </div>
             </summary>
 

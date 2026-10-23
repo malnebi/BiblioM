@@ -16,10 +16,19 @@ class BookController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()   //  stranica sa svim knjigama u navigaciji je pod Zajednica
+    public function index(Request $request)   //  stranica sa svim knjigama u navigaciji je pod Zajednica
     {
-        $books = Book::latest()->with(['library', 'tags'])->get();  // use eager loading
+        $books = Book::with(['library', 'tags'])
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->paginate(6);
 
+        if ($request->expectsJson()) {
+            return response()->json([
+                'html' => view('books.partials.cards', compact('books'))->render(),
+                'next_page_url' => $books->nextPageUrl(),
+            ]);
+        }
 
         $tags = Tag::where('approved', true)->whereNotNull('name') // Избацујемо потпуно празне
             ->where('name', '!=', '')     // Избацујемо празне стрингове

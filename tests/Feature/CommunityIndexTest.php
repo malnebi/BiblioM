@@ -25,11 +25,15 @@ it('loads community library cards in pages when requested', function () {
     $firstPage = $this->getJson('/users?page=2');
 
     $firstPage->assertOk()
-        ->assertJsonStructure(['html', 'next_page_url'])
-        ->assertJsonPath('next_page_url', null);
+        ->assertJsonStructure(['html', 'next_page_url']);
+    expect($firstPage->json('next_page_url'))->toEndWith('/users?page=3');
 
     expect($firstPage->json('html'))
-        ->toContain('Community member 1');
-    $this->assertMatchesRegularExpression('/>\s*Community member 1\s*<\/h3>/', $firstPage->json('html'));
-    expect(substr_count($firstPage->json('html'), 'title="Библиотека"'))->toBe(1);
+        ->toContain('Community member 7')
+        ->toContain('Community member 2');
+    expect(substr_count($firstPage->json('html'), 'title="Библиотека"'))->toBe(6);
+
+    $lastPage = $this->getJson('/users?page=3');
+    $lastPage->assertOk()->assertJsonPath('next_page_url', null);
+    $this->assertMatchesRegularExpression('/>\s*Community member 1\s*<\/h3>/', $lastPage->json('html'));
 });

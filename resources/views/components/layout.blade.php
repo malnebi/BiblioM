@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="sr">
+<html lang="sr" class="scroll-smooth motion-reduce:scroll-auto">
 
 <head>
     <meta charset="UTF-8">
@@ -16,7 +16,7 @@
     <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
 </head>
 
-<body class="bg-green-900 text-white font-hanken-grotesk">
+<body id="page-top" class="bg-green-900 text-white font-hanken-grotesk">
 
     <div class="px-4 sm:px-6 lg:px-10">
         {{-- NAVBAR --}}
@@ -355,6 +355,19 @@
             {{ $slot }}
         </main>
     </div>
+
+    @if (request()->is('home') || request()->is('books') || request()->is('users') || request()->is('library/libraryBooks/*'))
+        <a
+            href="#page-top"
+            aria-label="Повратак на врх странице"
+            title="Повратак на врх странице"
+            class="fixed bottom-5 right-5 z-50 flex h-12 w-12 items-center justify-center rounded-full border-2 border-white bg-amber-300 text-emerald-950 shadow-[0_4px_20px_rgba(0,0,0,0.55)] transition hover:bg-amber-200 focus:outline-none focus:ring-2 focus:ring-amber-200 focus:ring-offset-2 focus:ring-offset-green-900"
+        >
+            <svg aria-hidden="true" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="m5 15 7-7 7 7" />
+            </svg>
+        </a>
+    @endif
 </body>
 
 </html>

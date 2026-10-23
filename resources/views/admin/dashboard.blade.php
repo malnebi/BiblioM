@@ -1,5 +1,4 @@
 <x-layout>
-    <x-page-heading>Захтjеви за регистрацију</x-page-heading>
     @if (session('status'))
         <div class="alert alert-success">
             {{ session('status') }}
@@ -14,6 +13,8 @@
             </ul>
         </div>
     @endif
+    @if ($pendingUsers->isNotEmpty())
+    <x-page-heading>Захтjеви за регистрацију</x-page-heading>
     <div class="mt-6 overflow-hidden bg-white shadow sm:rounded-lg">
         <table class="min-w-full divide-y divide-gray-200">
             <thead class="bg-gray-50">
@@ -25,7 +26,7 @@
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-                @forelse($pendingUsers as $user)
+                @foreach($pendingUsers as $user)
                     <tr>
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-3">
@@ -103,17 +104,13 @@
                             </div>
                         </td>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="4" class="px-6 py-4 text-center text-gray-500">
-                            Нема нових захтjева.
-                        </td>
-                    </tr>
-                @endforelse
+                @endforeach
             </tbody>
         </table>
     </div>
+    @endif
 
+    @if ($pendingProfileChanges->isNotEmpty())
     <x-page-heading>Захтјеви за измјену профила</x-page-heading>
     <div class="mt-6 overflow-hidden bg-white shadow sm:rounded-lg">
         <table class="min-w-full divide-y divide-gray-200">
@@ -126,7 +123,7 @@
                 </tr>
             </thead>
             <tbody class="divide-y divide-gray-200 bg-white">
-                @forelse ($pendingProfileChanges as $change)
+                @foreach ($pendingProfileChanges as $change)
                     <tr>
                         <td class="px-6 py-4 text-sm text-gray-700">
                             {{ $change->user?->email ?? 'Кориснички налог је уклоњен' }}
@@ -202,15 +199,13 @@
                             </div>
                         </td>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="4" class="px-6 py-4 text-center text-gray-500">Нема захтјева за измјену профила.</td>
-                    </tr>
-                @endforelse
+                @endforeach
             </tbody>
         </table>
     </div>
+    @endif
 
+    @if ($pendingTags->isNotEmpty())
     <x-page-heading>Приједлози нових ознака за књиге</x-page-heading>
     <div class="mt-6 overflow-hidden bg-white shadow sm:rounded-lg">
         <table class="min-w-full divide-y divide-gray-200">
@@ -223,7 +218,7 @@
                 </tr>
             </thead>
             <tbody class="bg-white divide-y divide-gray-200">
-                @forelse($pendingTags as $tag)
+                @foreach($pendingTags as $tag)
                     <tr>
                         <td class="px-6 py-4">
                             <form method="POST" action="{{ route('admin.tags.update-name', $tag) }}" class="flex items-center gap-2">
@@ -254,12 +249,15 @@
                             </div>
                         </td>
                     </tr>
-                @empty
-                    <tr>
-                        <td colspan="4" class="px-6 py-4 text-center text-gray-500">Нема нових предлога ознака.</td>
-                    </tr>
-                @endforelse
+                @endforeach
             </tbody>
         </table>
     </div>
+    @endif
+
+    @if ($pendingUsers->isEmpty() && $pendingProfileChanges->isEmpty() && $pendingTags->isEmpty())
+        <div class="mt-6 rounded-lg border border-slate-200 bg-white px-6 py-8 text-center text-slate-600 shadow">
+            Тренутно нема захтјева за администратора.
+        </div>
+    @endif
 </x-layout>

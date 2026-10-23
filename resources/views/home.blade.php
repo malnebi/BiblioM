@@ -43,25 +43,21 @@
         </section>
         
         <section>
-            <x-collapsible-section
-                title="Најновије књиге у апликацији"
-                :count="$books->count()"
-                :show-more="$books->count() > 6"
+            <x-section-heading>Најновије књиге у апликацији ({{ $books->total() }})</x-section-heading>
+            <div
+                data-scroll-list
+                data-next-page="{{ $books->nextPageUrl() }}"
+                class="mt-8"
             >
-                <x-slot name="visible">
-                    <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
-                        @foreach ($books->take(6) as $book)
-                            <x-book-card-wide :$book />
-                        @endforeach
-                    </div>
-                </x-slot>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
-                    @foreach ($books->skip(6) as $book)
-                        <x-book-card-wide :$book />
-                    @endforeach
+                <div data-scroll-cards class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
+                    @include('books.partials.cards', ['books' => $books])
                 </div>
-            </x-collapsible-section>
+
+                @if ($books->hasMorePages())
+                    <div data-scroll-sentinel class="h-1" aria-hidden="true"></div>
+                    <p data-scroll-status class="py-3 text-center text-sm text-gray-300" aria-live="polite"></p>
+                @endif
+            </div>
         </section>
     </div>
 </x-layout>

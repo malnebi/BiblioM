@@ -28,7 +28,7 @@ class UserController extends Controller
             ->select('libraries.*')
             ->orderByDesc('owners.created_at')
             ->orderByDesc('owners.id')
-            ->paginate(12);
+            ->paginate(6);
 
         if ($request->expectsJson()) {
             return response()->json([

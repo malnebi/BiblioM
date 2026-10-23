@@ -15,12 +15,22 @@ class HomeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        $books = Book::with(['library', 'tags'])
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->paginate(6);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'html' => view('books.partials.cards', compact('books'))->render(),
+                'next_page_url' => $books->nextPageUrl(),
+            ]);
+        }
+
         $user = Auth::user();
         $user->forceFill(['books_notification_viewed_at' => now()])->save();
-
-        $books = Book::latest()->with(['library', 'tags'])->get();  // use eager loading
 
         $tags = Tag::where('approved', true)->whereNotNull('name') // Избацујемо потпуно празне
             ->where('name', '!=', '')     // Избацујемо празне стрингове

@@ -36,10 +36,12 @@
                                     <img src="{{ asset('storage/' . $book->book_cover) }}"
                                         class="w-full h-full object-cover">
                                 @else
-                                    <span id="placeholder-text"
-                                        class="text-slate-500 text-[10px] font-bold text-center px-2 uppercase">
-                                        Кликни за слику
-                                    </span>
+                                    <x-book-cover-placeholder
+                                        :author-fname="old('author_fname', $book->author_fname)"
+                                        :author-lname="old('author_lname', $book->author_lname)"
+                                        :title="old('title', $book->title)"
+                                        class="h-full w-full"
+                                    />
                                 @endif
                             </div>
 
@@ -47,6 +49,7 @@
                             <input type="file" id="book_cover_input" name="book_cover" class="hidden"
                                 accept="image/*">
                         </label>
+                        <p class="mt-2 text-center text-xs text-slate-400">Кликните на корице да додате или промијените слику.</p>
                     </div>
                     {{-- Име и презиме аутора --}}
                     <div class="flex-1 space-y-4">
@@ -130,30 +133,4 @@
 
     </x-forms.form>
 
-    {{-- 2. JavaScript за Preview слике --}}
-    <script>
-        function setupPreview(inputId, previewId) {
-            const input = document.getElementById(inputId);
-            const preview = document.getElementById(previewId);
-
-            if (input && preview) {
-                input.addEventListener('change', function(e) {
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                        // Ово мења постојећу слику (или текст) новом изабраном сликом
-                        preview.innerHTML =
-                            `<img src="${event.target.result}" class="w-full h-full object-cover">`;
-                        preview.classList.remove('border-dashed');
-                        preview.classList.add('border-solid', 'border-blue-500');
-                    };
-                    if (e.target.files[0]) {
-                        reader.readAsDataURL(e.target.files[0]);
-                    }
-                });
-            }
-        }
-
-        // Само позовемо функцију са одговарајућим ID-јевима
-        setupPreview('book_cover_input', 'book_cover_preview');
-    </script>
 </x-layout>

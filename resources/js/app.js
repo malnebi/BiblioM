@@ -4,6 +4,51 @@ import Alpine from 'alpinejs'; // Додајте ово
 window.Alpine = Alpine; // Додајте ово
 Alpine.start(); // Додајте ово
 
+const bookCoverPreview = document.querySelector('#book_cover_preview');
+
+if (bookCoverPreview) {
+    const coverInput = document.querySelector('#book_cover_input');
+    const authorFirstNameInput = document.querySelector('#author_fname');
+    const authorLastNameInput = document.querySelector('#author_lname');
+    const bookTitleInput = document.querySelector('#title');
+
+    const updateBookCoverPlaceholder = () => {
+        const placeholder = bookCoverPreview.querySelector('[data-book-cover-placeholder]');
+        if (!placeholder) return;
+
+        const initials = [authorFirstNameInput?.value, authorLastNameInput?.value]
+            .map((name) => name.trim())
+            .filter(Boolean)
+            .map((name) => Array.from(name)[0].toLocaleUpperCase());
+
+        placeholder.querySelector('[data-cover-initials]').textContent = initials.length
+            ? `${initials.join('.')}.`
+            : 'К.';
+        placeholder.querySelector('[data-cover-title]').textContent = bookTitleInput?.value.trim() || 'Наслов књиге';
+    };
+
+    [authorFirstNameInput, authorLastNameInput, bookTitleInput].forEach((input) => {
+        input?.addEventListener('input', updateBookCoverPlaceholder);
+    });
+
+    coverInput?.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            const image = document.createElement('img');
+            image.src = reader.result;
+            image.alt = 'Преглед корица књиге';
+            image.className = 'h-full w-full object-cover';
+            bookCoverPreview.replaceChildren(image);
+            bookCoverPreview.classList.remove('border-dashed');
+            bookCoverPreview.classList.add('border-solid');
+        };
+        reader.readAsDataURL(file);
+    });
+}
+
 const bookAutocomplete = document.querySelector('[data-book-autocomplete]');
 
 if (bookAutocomplete) {
@@ -109,20 +154,20 @@ if (bookAutocomplete) {
     });
 }
 
-const communityList = document.querySelector('[data-community-list]');
+const scrollList = document.querySelector('[data-scroll-list]');
 
-if (communityList) {
-    const cards = communityList.querySelector('[data-community-cards]');
-    const sentinel = communityList.querySelector('[data-community-sentinel]');
-    const status = communityList.querySelector('[data-community-status]');
-    let nextPageUrl = communityList.dataset.nextPage;
+if (scrollList) {
+    const cards = scrollList.querySelector('[data-scroll-cards]');
+    const sentinel = scrollList.querySelector('[data-scroll-sentinel]');
+    const status = scrollList.querySelector('[data-scroll-status]');
+    let nextPageUrl = scrollList.dataset.nextPage;
     let loading = false;
 
     const loadNextPage = async () => {
-        if (loading || !nextPageUrl) return;
+        if (loading || !nextPageUrl || !sentinel || !status) return;
 
         loading = true;
-        status.textContent = 'Учитавање чланова...';
+        status.textContent = 'Учитавање картица...';
 
         try {
             const response = await fetch(nextPageUrl, {
@@ -133,28 +178,28 @@ if (communityList) {
             });
 
             if (!response.ok) {
-                throw new Error(`Community page request failed with status ${response.status}`);
+                throw new Error(`Card page request failed with status ${response.status}`);
             }
 
             const page = await response.json();
 
             if (typeof page.html !== 'string' || (page.next_page_url !== null && typeof page.next_page_url !== 'string')) {
-                throw new Error('Community page response has an invalid format');
+                throw new Error('Scroll page response has an invalid format');
             }
 
             cards.insertAdjacentHTML('beforeend', page.html);
             nextPageUrl = page.next_page_url;
 
             if (nextPageUrl) {
-                communityList.dataset.nextPage = nextPageUrl;
+                scrollList.dataset.nextPage = nextPageUrl;
                 status.textContent = '';
             } else {
                 sentinel?.remove();
                 status.remove();
             }
         } catch (error) {
-            console.error('Unable to load more community members.', error);
-            status.textContent = 'Чланови нису могли бити учитани. Освјежите страницу и покушајте поново.';
+            console.error('Unable to load the next page of cards.', error);
+            status.textContent = 'Сљедеће картице нису могле бити учитане. Освјежите страницу и покушајте поново.';
         } finally {
             loading = false;
         }
@@ -164,12 +209,12 @@ if (communityList) {
         if ('IntersectionObserver' in window) {
             const observer = new IntersectionObserver((entries) => {
                 if (entries.some((entry) => entry.isIntersecting)) loadNextPage();
-            }, { rootMargin: '300px' });
+            }, { rootMargin: '100px' });
 
             observer.observe(sentinel);
         } else {
             const checkSentinel = () => {
-                if (sentinel.getBoundingClientRect().top < window.innerHeight + 300) loadNextPage();
+                if (sentinel.getBoundingClientRect().top < window.innerHeight + 100) loadNextPage();
             };
 
             window.addEventListener('scroll', checkSentinel, { passive: true });

@@ -79,19 +79,28 @@ class LibraryController extends Controller
     /** 
      * prikaz svih knjiga biblioteke ulogovanog člana
      *  */
-    public function libraryBooks($id)
+    public function libraryBooks(Request $request, $id)
     {
 
-        $library = Library::find($id);
+        $library = Library::findOrFail($id);
         $user = User::find($library->owner_id);
-        $books = Book::where('library_id', $id)->with(['library'])->get();
-        $featuredBooks = $books->where('featured', 1);
+        $books = Book::where('library_id', $id)
+            ->with(['library', 'tags', 'loans'])
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->paginate(6);
+
+        if ($request->expectsJson()) {
+            return response()->json([
+                'html' => view('books.partials.cards', compact('books'))->render(),
+                'next_page_url' => $books->nextPageUrl(),
+            ]);
+        }
 
         $data = [
             'library' => $library,
             'user' => $user,
             'books' => $books,
-            'featuredBooks' => $featuredBooks,
         ];
 
         return view('libraries.libraryBooks', $data);

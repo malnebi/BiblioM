@@ -2,8 +2,8 @@
 
 @if($library instanceof \App\Models\Library)
     <img src="{{ $library->logo ? asset('storage/' . $library->logo) : Vite::asset('resources/images/library-placeholder.svg') }}"
-        alt="Лого библиотеке" class="rounded-xl" width="{{ $width }}">
+        alt="Лого библиотеке" {{ $attributes->merge(['class' => 'rounded-xl']) }} width="{{ $width }}">
 @else
     <img src="{{ Vite::asset('resources/images/library-placeholder.svg') }}" alt="Подразумијевани лого библиотеке"
-        class="rounded-xl" width="{{ $width }}">
+        {{ $attributes->merge(['class' => 'rounded-xl']) }} width="{{ $width }}">
 @endif

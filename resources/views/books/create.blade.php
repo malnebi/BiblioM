@@ -22,15 +22,18 @@
                             <label for="book_cover_input" class="cursor-pointer group block">
                                 {{-- Овде ће JS убацити слику --}}
                                 <div id="book_cover_preview"
-                                    class="w-32 h-44 bg-[#1e293b] border-2 border-dashed border-slate-600 rounded-lg flex flex-col items-center justify-center group-hover:border-blue-500 transition-all overflow-hidden">
-                                    <span id="placeholder-text"
-                                        class="text-slate-500 text-[10px] font-bold text-center px-2 uppercase">
-                                        Додај слику књиге
-                                    </span>
+                                    class="w-32 h-44 bg-[#1e293b] border-2 border-dashed border-slate-600 rounded-lg group-hover:border-blue-500 transition-all overflow-hidden">
+                                    <x-book-cover-placeholder
+                                        :author-fname="old('author_fname', '')"
+                                        :author-lname="old('author_lname', '')"
+                                        :title="old('title', '')"
+                                        class="h-full w-full"
+                                    />
                                 </div>
                                 <input type="file" id="book_cover_input" name="book_cover" class="hidden"
                                     accept="image/*">
                             </label>
+                            <p class="mt-2 text-center text-xs text-slate-400">Кликните на корице да додате слику.</p>
                         </div>
                         {{-- Име и презиме аутора --}}
                         <div class="flex-1 space-y-4">
@@ -117,29 +120,4 @@
         </x-forms.form>
     </div>
 
-    {{-- 2. JavaScript за Preview слике --}}
-    <script>
-        function setupPreview(inputId, previewId) {
-            const input = document.getElementById(inputId);
-            const preview = document.getElementById(previewId);
-
-            if (input && preview) {
-                input.addEventListener('change', function(e) {
-                    const reader = new FileReader();
-                    reader.onload = (event) => {
-                        // Ово мења комплетан садржај дива сликом
-                        preview.innerHTML =
-                            `<img src="${event.target.result}" class="w-full h-full object-cover">`;
-                        preview.classList.remove('border-dashed');
-                        preview.classList.add('border-solid');
-                    };
-                    if (e.target.files[0]) {
-                        reader.readAsDataURL(e.target.files[0]);
-                    }
-                });
-            }
-        }
-        // Покрећемо функцију за књигу
-        setupPreview('book_cover_input', 'book_cover_preview');
-    </script>
 </x-layout>

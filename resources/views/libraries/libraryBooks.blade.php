@@ -7,8 +7,8 @@
             <div class="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-blue-600/10 rounded-full blur-3xl"></div>
             
             <div class="flex flex-col items-center text-center relative z-10">
-                <div class="mb-4 p-4 bg-slate-900/50 rounded-2xl border border-slate-700 shadow-inner">
-                    <x-library-logo :library="$library ?? 'No library'" width="80" />
+                <div class="mb-4 flex h-28 w-28 items-center justify-center rounded-2xl border border-slate-700 bg-slate-900/50 p-4 shadow-inner">
+                    <x-library-logo :library="$library" width="80" class="h-20 w-20 object-contain" />
                 </div>
                 <h1 class="font-black text-xl md:text-4xl text-white tracking-tight uppercase">
                     @unless (str_starts_with($library->name, 'Библиотека '))
@@ -20,12 +20,12 @@
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5s3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                     </svg>
-                    <span>Укупан број наслова: {{ $books->count() }}</span>
+                    <span>Укупан број наслова: {{ $books->total() }}</span>
                 </div>
             </div>
 
             {{-- ПРЕТРАГА (Унутар заглавља ради бољег фокуса) --}}
-            @if ($books->count() > 0)
+            @if ($books->total() > 0)
             <div class="mt-8 max-w-2xl mx-auto">
                 <x-forms.form action="/search/oneLibraryBooks/{{ $library->id }}" class="relative">
                     <x-forms.input :label="false" name="q" placeholder="Претражи наслов, аутора или годину издања..." class="pl-4 pr-32 py-4 bg-slate-900 border-slate-700 focus:border-blue-500 text-white rounded-xl shadow-2xl" />
@@ -56,29 +56,23 @@
 
                 {{-- КАРТИЦЕ КЊИГА - ГРИД СА ТРИ КОЛОНЕ --}}
                 <section>
-                    <x-collapsible-section
-                        title="Најновије књиге библиотеке"
-                        :count="$books->count()"
-                        :show-more="$books->count() > 6"
+                    <x-section-heading>
+                        Најновије књиге библиотеке ({{ $books->total() }})
+                    </x-section-heading>
+                    <div
+                        data-scroll-list
+                        data-next-page="{{ $books->nextPageUrl() }}"
+                        class="mt-8"
                     >
-                        <x-slot name="visible">
-                            <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
-                                @foreach ($books->take(6) as $book)
-                                    <div class="flex flex-col h-full">
-                                        <x-book-card-wide :$book />
-                                    </div>
-                                @endforeach
-                            </div>
-                        </x-slot>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
-                            @foreach ($books->skip(6) as $book)
-                                <div class="flex flex-col h-full">
-                                    <x-book-card-wide :$book />
-                                </div>
-                            @endforeach
+                        <div data-scroll-cards class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
+                            @include('books.partials.cards', ['books' => $books])
                         </div>
-                    </x-collapsible-section>
+
+                        @if ($books->hasMorePages())
+                            <div data-scroll-sentinel class="h-1" aria-hidden="true"></div>
+                            <p data-scroll-status class="py-3 text-center text-sm text-gray-300" aria-live="polite"></p>
+                        @endif
+                    </div>
                 </section>
 
             </div>

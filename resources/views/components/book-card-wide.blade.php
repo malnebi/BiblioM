@@ -7,8 +7,17 @@
             {{-- ЛИЈЕВО: СЛИКА --}}
             <div class="shrink-0">
                 <a href="/books/{{ $book->id }}/book" target="_blank">
-                    <img src="{{ asset('storage/' . $book->book_cover) }}" alt="{{ $book->title }}"
-                        class="w-20 h-28 object-cover rounded shadow-sm group-hover:scale-105 transition-transform duration-300">
+                    @if ($book->book_cover)
+                        <img src="{{ asset('storage/' . $book->book_cover) }}" alt="Корице књиге {{ $book->title }}"
+                            class="w-20 h-28 object-cover rounded shadow-sm group-hover:scale-105 transition-transform duration-300">
+                    @else
+                        <x-book-cover-placeholder
+                            :author-fname="$book->author_fname"
+                            :author-lname="$book->author_lname"
+                            :title="$book->title"
+                            class="w-20 h-28 shadow-sm group-hover:scale-105 transition-transform duration-300"
+                        />
+                    @endif
                 </a>
             </div>
 
