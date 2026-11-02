@@ -22,7 +22,7 @@ it('shows the back-to-top button on the books and community pages only', functio
         ->assertOk()
         ->assertSee('href="#page-top"', false);
 
-    $this->get('/users')
+    $this->get('/community')
         ->assertOk()
         ->assertSee('href="#page-top"', false);
 

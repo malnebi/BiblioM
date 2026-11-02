@@ -30,7 +30,7 @@
                         <div>
                             <button @click="logoAppMenu = !logoAppMenu" type="button"
                                 :class="logoAppMenu ||
-                                    {{ request()->is('home*', 'privacy*', 'about-app*', 'users*') ? 'true' : 'false' }} ?
+                                    {{ request()->is('home*', 'privacy*', 'about-app*', 'users*', 'community*') ? 'true' : 'false' }} ?
                                     'ring-2 ring-white ring-offset-2 ring-offset-green-800 scale-105' :
                                     'focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-green-800'"
                                 class="relative flex max-w-xs items-center rounded-full bg-green-800 text-sm transition-all duration-300 ease-in-out focus:outline-none"
@@ -64,7 +64,7 @@
                                         </span>
                                     @endif
                                 </a>
-                                <a href="/users" role="menuitem"
+                                <a href="{{ route('community.index') }}" role="menuitem"
                                     class="block rounded-md px-3 py-2 text-sm font-medium text-gray-900 hover:bg-gray-100">Заједница</a>
                             @endauth
                             <a href="/privacy"
@@ -356,7 +356,7 @@
         </main>
     </div>
 
-    @if (request()->is('home') || request()->is('books') || request()->is('users') || request()->is('library/libraryBooks/*'))
+    @if (request()->is('home') || request()->is('books') || request()->is('users') || request()->is('community') || request()->is('library/libraryBooks/*'))
         <a
             href="#page-top"
             aria-label="Повратак на врх странице"

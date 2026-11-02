@@ -58,7 +58,7 @@ Route::get('/library/libraryBooks/{id}', [LibraryController::class, 'libraryBook
 
 
 /** Члан */
-Route::get('/users', [UserController::class, 'index']); // Навигацијски линк за приказ странице са члановима и њиховим библиотекама
+Route::get('/community', [UserController::class, 'index'])->name('community.index'); // Заједница чланова и њихових библиотека
 Route::get('/users/{id}', [UserController::class, 'show']);   // профил корисника - члана 
 Route::get('/loggedUser/{id}', [UserController::class, 'showLoggedUser'])->middleware('auth'); // профил улогованог корисника    
 Route::get('/settings', [UserController::class, 'edit'])->middleware('auth')->name('settings.edit');
