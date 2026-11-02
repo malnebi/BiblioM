@@ -19,6 +19,12 @@ it('shows member school role and profile link on loan pages', function () {
         'lib_user_id' => $member->id,
         'loan' => 1,
     ]);
+    $availableBook = Book::factory()->create([
+        'library_id' => $library->id,
+        'lib_book_id' => 7,
+        'title' => 'Слободна књига',
+        'loan' => 0,
+    ]);
 
     $loan = new Loan();
     $loan->user_id = $member->id;
@@ -32,7 +38,10 @@ it('shows member school role and profile link on loan pages', function () {
         ->get('/users/' . $member->id)
         ->assertOk()
         ->assertDontSee('Улога у школи:')
-        ->assertSee('Ученик · III-2');
+        ->assertSee('Ученик · III-2')
+        ->assertSee('data-book-inventory="7"', false)
+        ->assertSee('7 Слободна књига /', false)
+        ->assertDontSee($availableBook->id . ' Слободна књига /', false);
 
     $this->actingAs($libraryOwner)
         ->get('/loans/myLibraryLoans/' . $library->id)

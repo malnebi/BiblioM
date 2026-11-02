@@ -73,7 +73,8 @@ if (bookAutocomplete) {
     };
 
     const updateSuggestions = () => {
-        const search = bookInput.value.trim().toLocaleLowerCase();
+        const rawSearch = bookInput.value.toLocaleLowerCase();
+        const search = rawSearch.trim();
         bookId.value = '';
         bookInput.setCustomValidity('');
         activeOptionIndex = -1;
@@ -84,9 +85,19 @@ if (bookAutocomplete) {
             return;
         }
 
-        matchingOptions = allBookOptions.filter((option) =>
-            option.textContent.trim().toLocaleLowerCase().includes(search)
-        );
+        const completedInventoryNumber = rawSearch.match(/^\s*(\d+)\s+$/);
+        if (completedInventoryNumber) {
+            const inventoryNumber = completedInventoryNumber[1].replace(/^0+(?=\d)/, '');
+            matchingOptions = allBookOptions.filter((option) =>
+                option.dataset.bookInventory.replace(/^0+(?=\d)/, '') === inventoryNumber
+            );
+        } else {
+            const normalizedInventorySearch = search.replace(/^0+(?=\d)/, '');
+            matchingOptions = allBookOptions.filter((option) =>
+                option.textContent.trim().toLocaleLowerCase().includes(search)
+                || option.dataset.bookInventory.includes(normalizedInventorySearch)
+            );
+        }
 
         allBookOptions.forEach((option) => {
             option.hidden = !matchingOptions.includes(option);
@@ -157,6 +168,28 @@ if (bookAutocomplete) {
     });
 }
 
+document.querySelectorAll('[data-home-panel-toggle]').forEach((toggle) => {
+    toggle.addEventListener('click', () => {
+        const panelId = toggle.dataset.homePanelToggle;
+
+        document.querySelectorAll('[data-home-panel-toggle]').forEach((button) => {
+            button.setAttribute('aria-pressed', String(button === toggle));
+        });
+
+        document.querySelectorAll('[data-home-panel]').forEach((panel) => {
+            const isSelected = panel.id === panelId;
+            panel.hidden = !isSelected;
+            if (isSelected) {
+                panel.classList.remove('home-panel-enter');
+                void panel.offsetWidth;
+                panel.classList.add('home-panel-enter');
+            }
+        });
+
+        window.dispatchEvent(new CustomEvent('section:revealed', { detail: panelId }));
+    });
+});
+
 const scrollList = document.querySelector('[data-scroll-list]');
 
 if (scrollList) {
@@ -217,11 +250,15 @@ if (scrollList) {
             observer.observe(sentinel);
         } else {
             const checkSentinel = () => {
+                if (scrollList.closest('[hidden]')) return;
                 if (sentinel.getBoundingClientRect().top < window.innerHeight + 100) loadNextPage();
             };
 
             window.addEventListener('scroll', checkSentinel, { passive: true });
             window.addEventListener('resize', checkSentinel);
+            window.addEventListener('section:revealed', (event) => {
+                if (event.detail === scrollList.closest('[data-home-panel]')?.id) checkSentinel();
+            });
             checkSentinel();
         }
     }

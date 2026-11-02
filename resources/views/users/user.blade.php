@@ -36,8 +36,9 @@
                                 @foreach ($books as $book)
                                     <button type="button" role="option" aria-selected="false"
                                         id="book_option_{{ $book->id }}" data-book-option="{{ $book->id }}"
+                                        data-book-inventory="{{ $book->lib_book_id }}"
                                         class="block w-full border-b border-gray-100 bg-white px-3 py-2 text-left text-sm text-slate-900 opacity-100 hover:bg-gray-100">
-                                        {{ $book->id }} {{ $book->title }} / {{ $book->author_fname }} {{ $book->author_lname }}. - {{ $book->publisher_place }}: {{ $book->publisher_name }}, {{ $book->year }}
+                                        {{ $book->lib_book_id }} {{ $book->title }} / {{ $book->author_fname }} {{ $book->author_lname }}. - {{ $book->publisher_place }}: {{ $book->publisher_name }}, {{ $book->year }}
                                     </button>
                                 @endforeach
                             </div>

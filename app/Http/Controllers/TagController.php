@@ -31,7 +31,19 @@ class TagController extends Controller
  }      
 
  public function tags(){
-   $tags = Tag::where('approved', true)->get();
+   $tags = Tag::where('approved', true)
+    ->whereNotNull('name')
+    ->where('name', '!=', '')
+    ->get()
+    ->map(function ($tag) {
+        $tag->name = trim($tag->name);
+        return $tag;
+    })
+    ->filter(fn ($tag) => $tag->name !== '')
+    ->unique('name')
+    ->sortBy('name', SORT_LOCALE_STRING)
+    ->values();
+
     return view('tags', ['tags' => $tags]);
  }
 

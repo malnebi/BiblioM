@@ -9,7 +9,7 @@
 
         <x-forms.select label="Book" name="book_id">
             @foreach($books as $book)
-                <option value="{{ $book->id }}" selected> {{ $book->id }} {{ $book->title }} / {{ $book->author_fname }} {{ $book->author_lname}} </option>
+                <option value="{{ $book->id }}" selected> {{ $book->lib_book_id }} {{ $book->title }} / {{ $book->author_fname }} {{ $book->author_lname}} </option>
             @endforeach
         </x-forms.select> 
 

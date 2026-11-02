@@ -46,7 +46,6 @@ class HomeController extends Controller
         return view('home', [
             'books' => $books,
             'tags' => $tags,
-            'limit' => 5
         ]);
     }
 }

@@ -21,14 +21,29 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        $validated = $request->validate([
+            'q' => ['nullable', 'string', 'max:100'],
+        ]);
+        $search = trim($validated['q'] ?? '');
+
         $libraries = Library::query()
             ->join('users as owners', 'owners.id', '=', 'libraries.owner_id')
             ->where('owners.approved', 1)
+            ->when($search !== '', function ($query) use ($search) {
+                foreach (preg_split('/\s+/', $search) as $term) {
+                    $query->where(function ($query) use ($term) {
+                        $query->where('libraries.name', 'like', "%{$term}%")
+                            ->orWhere('owners.name', 'like', "%{$term}%")
+                            ->orWhere('owners.last_name', 'like', "%{$term}%");
+                    });
+                }
+            })
             ->with('owner')
             ->select('libraries.*')
             ->orderByDesc('owners.created_at')
             ->orderByDesc('owners.id')
-            ->paginate(6);
+            ->paginate(6)
+            ->withQueryString();
 
         if ($request->expectsJson()) {
             return response()->json([
@@ -39,6 +54,7 @@ class UserController extends Controller
 
         return view('users.index', [
             'communityLibraries' => $libraries,
+            'search' => $search,
         ]);
     }
 

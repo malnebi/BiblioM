@@ -4,6 +4,46 @@
 /* resources/css/app.css */
 
 @layer components {
+    [data-home-panel][hidden] {
+        display: none !important;
+    }
+
+    [data-home-panel-toggle][aria-pressed="true"] {
+        background-color: rgb(30 41 59 / 0.8);
+    }
+
+    [data-home-panel-toggle][data-panel-color="blue"][aria-pressed="true"] {
+        border-color: #3b82f6;
+    }
+
+    [data-home-panel-toggle][data-panel-color="emerald"][aria-pressed="true"] {
+        border-color: #10b981;
+    }
+
+    [data-home-panel-toggle][aria-pressed="true"] span {
+        color: #fff;
+    }
+
+    .home-panel-enter {
+        animation: homePanelEnter 400ms ease-out both;
+    }
+
+    @keyframes homePanelEnter {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    [data-book-option][hidden] {
+        display: none;
+    }
+
     .custom-select {
         @apply bg-[#1e293b] text-white border border-slate-700 rounded-lg px-4 py-[0.6rem] outline-none appearance-none;
         background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2394a3b8' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");

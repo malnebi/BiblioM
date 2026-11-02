@@ -1,9 +1,11 @@
 
 <x-layout>
-    <x-page-heading>Тражена одредница {{$tags->name}}</x-page-heading>
+    <x-page-heading>Резултати претраге описних ознака</x-page-heading>
     <div class="space-y-6">
-        @foreach($tags as $tag)
+        @forelse($tags as $tag)
             <x-tag-card :$tag />
-        @endforeach
+        @empty
+            <p class="text-center text-sm text-gray-300">Нема описних ознака за ову претрагу.</p>
+        @endforelse
     </div>
 </x-layout>

@@ -7,43 +7,69 @@
             </div>
         @endif
 
-        <section class="text-center">
-            <h1 class="font-bold text-4xl"> Пронађи књигу </h1>
-
-            <x-forms.form action="/search" class="mt-6">
-                <x-forms.input :label="false" name="q" placeholder="Наслов, име аутора, описна ознака..." />
-                 <x-forms.button>ПРЕТРАЖИ</x-forms.button>
-
-            </x-forms.form>
-
-        </section>
-
-        <section>
-            <x-section-heading>Описне ознаке</x-section-heading>
-            <div x-data="{ expanded: false, limit: {{ $limit }} }" class="mt-6">
-                <div class="flex flex-wrap gap-2">
-                    @foreach ($tags as $index => $tag)
-                        <div x-show="expanded || {{ $index }} < limit"
-                            x-transition:enter="transition ease-out duration-200"
-                            x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100"
-                            {{-- Ово спречава 'треперење' пре него што се Alpine учита --}} style="display: {{ $index < $limit ? 'block' : 'none' }}">
-                            <x-tag :$tag />
-                        </div>
-                    @endforeach
-
-                    @if ($tags->count() > $limit)
-                        <button @click="expanded = !expanded" type="button"
-                            class="text-xs font-bold px-2 py-1 rounded bg-gray-700 hover:bg-gray-500 text-white transition-colors self-center">
-                            <span x-show="!expanded">+ Прикажи још ({{ $tags->count() - $limit }})</span>
-                            <span x-show="expanded">- Сакриј</span>
+        <section aria-label="Претрага књига и описних ознака">
+            <div class="grid grid-cols-4 gap-2 sm:gap-3">
+                <div class="col-span-3 flex min-w-0 flex-col justify-center gap-1.5 rounded-xl border border-slate-800 bg-[#1e293b]/40 p-2.5 text-center transition-all hover:border-blue-500 sm:gap-2 sm:p-3 md:col-span-1 md:min-h-[76px]">
+                    <h1 id="book-search-heading" class="text-[9px] font-bold uppercase text-slate-300 sm:text-xs">
+                        Претрага књига
+                    </h1>
+                    <form method="GET" action="/search" role="search" class="flex min-w-0 flex-col items-center gap-1 md:flex-row">
+                        <label for="book-search" class="sr-only">Претражите књиге</label>
+                        <input id="book-search" type="search" name="q"
+                            placeholder="Наслов или аутор" aria-label="Наслов или аутор"
+                            class="h-6 min-h-0 w-full min-w-0 rounded-lg border border-slate-600 px-2 py-0.5 text-[10px] sm:h-7 md:flex-1 md:text-xs">
+                        <button type="submit"
+                            class="self-center rounded-lg border border-blue-400/50 px-2 py-1 text-[9px] font-bold text-blue-200/90 transition-colors hover:bg-blue-400/70 hover:text-slate-950 sm:text-[10px] md:shrink-0 md:self-auto">
+                            Претражи
                         </button>
-                    @endif
+                    </form>
                 </div>
+
+                <button type="button" data-home-panel-toggle="latest-books" data-panel-color="blue"
+                    aria-controls="latest-books" aria-pressed="false"
+                    class="group col-span-1 flex min-w-0 min-h-[64px] flex-col items-center justify-center rounded-xl border border-slate-800 bg-[#1e293b]/40 p-1.5 text-center text-slate-400 transition-all duration-300 hover:border-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 sm:p-2 md:min-h-[76px] md:p-3">
+                    <span class="mb-1 text-[8px] font-bold uppercase text-slate-500 transition-colors group-hover:text-white sm:text-[9px] md:text-xs">
+                        Све књиге у апликацији
+                    </span>
+                    <span class="text-lg font-black text-blue-400 transition-colors group-hover:text-white sm:text-xl md:text-2xl">
+                        {{ $books->total() }}
+                    </span>
+                </button>
+
+                <div class="col-span-3 flex min-w-0 flex-col justify-center gap-1.5 rounded-xl border border-slate-800 bg-[#1e293b]/40 p-2.5 text-center transition-all hover:border-emerald-500 sm:gap-2 sm:p-3 md:col-span-1 md:min-h-[76px]">
+                    <h2 id="tag-search-heading" class="text-[9px] font-bold uppercase text-slate-300 sm:text-xs">
+                        Претрага описних ознака
+                    </h2>
+                    <form method="GET" action="/search-tag" role="search" class="flex min-w-0 flex-col items-center gap-1 md:flex-row">
+                        <label for="tag-search" class="sr-only">Претражите описне ознаке</label>
+                        <input id="tag-search" type="search" name="q"
+                            placeholder="Описна ознака" aria-label="Описна ознака"
+                            class="h-6 min-h-0 w-full min-w-0 rounded-lg border border-slate-600 px-2 py-0.5 text-[10px] sm:h-7 md:flex-1 md:text-xs">
+                        <button type="submit"
+                            class="self-center rounded-lg border border-emerald-400/50 px-2 py-1 text-[9px] font-bold text-emerald-200/90 transition-colors hover:bg-emerald-400/70 hover:text-slate-950 sm:text-[10px] md:shrink-0 md:self-auto">
+                            Претражи
+                        </button>
+                    </form>
+                </div>
+
+                <button type="button" data-home-panel-toggle="all-tags" data-panel-color="emerald"
+                    aria-controls="all-tags" aria-pressed="false" aria-labelledby="tag-list-heading"
+                    class="group col-span-1 flex min-w-0 min-h-[64px] flex-col items-center justify-center rounded-xl border border-slate-800 bg-[#1e293b]/40 p-1.5 text-center text-slate-400 transition-all duration-300 hover:border-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400 sm:p-2 md:min-h-[76px] md:p-3">
+                    <span id="tag-list-heading" class="mb-1 text-[8px] font-bold uppercase text-slate-500 transition-colors group-hover:text-white sm:text-[9px] md:text-xs">
+                        Описне ознаке
+                    </span>
+                    <span class="text-lg font-black text-emerald-400 transition-colors group-hover:text-white sm:text-xl md:text-2xl">
+                        {{ $tags->count() }}
+                    </span>
+                </button>
             </div>
         </section>
-        
-        <section>
-            <x-section-heading>Најновије књиге у апликацији ({{ $books->total() }})</x-section-heading>
+
+        <section id="latest-books" data-home-panel data-panel-color="blue" hidden>
+            <h2 class="mb-6 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-blue-400 sm:mb-8 sm:text-xs">
+                <span class="h-6 w-1.5 rounded-full bg-blue-500"></span>
+                Најновије књиге у апликацији
+            </h2>
             <div
                 data-scroll-list
                 data-next-page="{{ $books->nextPageUrl() }}"
@@ -58,6 +84,21 @@
                     <p data-scroll-status class="py-3 text-center text-sm text-gray-300" aria-live="polite"></p>
                 @endif
             </div>
+        </section>
+
+        <section id="all-tags" data-home-panel data-panel-color="emerald" aria-labelledby="all-tags-heading" hidden>
+            <h2 id="all-tags-heading" class="mb-6 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-emerald-400 sm:mb-8 sm:text-xs">
+                <span class="h-6 w-1.5 rounded-full bg-emerald-500"></span>
+                Описне ознаке ({{ $tags->count() }})
+            </h2>
+            <div class="mt-6 flex flex-wrap gap-2">
+                @foreach ($tags as $tag)
+                    <x-tag :$tag />
+                @endforeach
+            </div>
+            @if ($tags->isEmpty())
+                <p class="mt-6 text-center text-sm text-gray-300">Тренутно нема описних ознака.</p>
+            @endif
         </section>
     </div>
 </x-layout>
