@@ -1,35 +1,35 @@
 <x-layout>
-    <div class="space-y-12 max-w-7xl mx-auto py-8 px-4">
+    <div class="mx-auto max-w-7xl space-y-8 px-3 py-5 text-slate-200 sm:space-y-12 sm:px-4 sm:py-8">
 
         {{-- ===== 1. DASHBOARD СТАТИСТИКА ===== --}}
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-4">
+        <div class="grid grid-cols-1 gap-4 lg:grid-cols-4">
             {{-- Biblioteka --}}
-            <div class="lg:col-span-1 bg-[#1e293b] border border-slate-700 p-5 rounded-2xl flex items-center gap-4 shadow-xl">
-                <div class="p-3 bg-slate-900/50 rounded-xl border border-slate-700">
-                    <x-library-logo :library="$library" width="45" />
+            <div class="flex min-w-0 items-center gap-3 rounded-2xl border border-slate-700 bg-[#1e293b] p-4 shadow-xl sm:gap-4 sm:p-5 lg:col-span-1">
+                <div class="shrink-0 rounded-xl border border-slate-700 bg-slate-900/50 p-2.5 sm:p-3">
+                    <x-library-logo :library="$library" width="40" class="h-10 w-10 object-contain sm:h-[45px] sm:w-[45px]" />
                 </div>
                 <div class="min-w-0">
-                    <h1 class="font-bold text-white truncate text-base">{{ $library->name }}</h1>
-                    <p class="text-blue-400 text-[10px] uppercase font-black tracking-widest">Админ Панел</p>
+                    <h1 class="truncate text-base font-bold text-white sm:text-lg">{{ $library->name }}</h1>
+                    <p class="text-[10px] font-black uppercase tracking-widest text-blue-400">Циркулација библиотеке</p>
                 </div>
             </div>
 
-            <div class="lg:col-span-3 grid grid-cols-2 md:grid-cols-4 gap-3">
-                <button onclick="toggleSection('sec-preuzimanje', this)" class="stat-btn bg-[#1e293b]/40 border border-slate-800 p-3 rounded-xl transition-all text-center text-slate-400">
-                    <span class="block text-slate-500 text-[9px] font-bold uppercase mb-1">Преузимање</span>
-                    <span class="text-2xl font-black text-blue-400 block">{{ $groupedProgressLoans->count() }}</span>
+            <div class="grid grid-cols-2 gap-2 md:grid-cols-4 sm:gap-3 lg:col-span-3">
+                <button type="button" aria-pressed="false" onclick="toggleSection('sec-preuzimanje', this)" class="stat-btn min-h-[76px] rounded-xl border border-slate-800 bg-[#1e293b]/40 p-2.5 text-center text-slate-400 transition-all hover:border-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 sm:p-3">
+                    <span class="stat-label mb-1 block text-[9px] font-bold uppercase text-slate-500 transition-colors sm:text-[10px]">Преузимање</span>
+                    <span class="block text-2xl font-black text-blue-400 sm:text-3xl">{{ $groupedProgressLoans->count() }}</span>
                 </button>
-                <button onclick="toggleSection('sec-rezervacije', this)" class="stat-btn bg-[#1e293b]/40 border border-slate-800 p-3 rounded-xl transition-all text-center text-slate-400">
-                    <span class="block text-slate-500 text-[9px] font-bold uppercase mb-1">Резервације</span>
-                    <span class="text-2xl font-black text-amber-500 block">{{ $groupedReservedLoans->count() }}</span>
+                <button type="button" aria-pressed="false" onclick="toggleSection('sec-rezervacije', this)" class="stat-btn min-h-[76px] rounded-xl border border-slate-800 bg-[#1e293b]/40 p-2.5 text-center text-slate-400 transition-all hover:border-amber-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-amber-400 sm:p-3">
+                    <span class="stat-label mb-1 block text-[9px] font-bold uppercase text-slate-500 transition-colors sm:text-[10px]">Резервације</span>
+                    <span class="block text-2xl font-black text-amber-500 sm:text-3xl">{{ $groupedReservedLoans->count() }}</span>
                 </button>
-                <button onclick="toggleSection('sec-citanje', this)" class="stat-btn bg-[#1e293b]/40 border border-slate-800 p-3 rounded-xl transition-all text-center text-slate-400">
-                    <span class="block text-slate-500 text-[9px] font-bold uppercase mb-1">На читању</span>
-                    <span class="text-2xl font-black text-emerald-500 block">{{ $groupedActiveLoans->count() }}</span>
+                <button type="button" aria-pressed="false" onclick="toggleSection('sec-citanje', this)" class="stat-btn min-h-[76px] rounded-xl border border-slate-800 bg-[#1e293b]/40 p-2.5 text-center text-slate-400 transition-all hover:border-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400 sm:p-3">
+                    <span class="stat-label mb-1 block text-[9px] font-bold uppercase text-slate-500 transition-colors sm:text-[10px]">На читању</span>
+                    <span class="block text-2xl font-black text-emerald-500 sm:text-3xl">{{ $groupedActiveLoans->count() }}</span>
                 </button>
-                <button onclick="toggleSection('sec-procitano', this)" class="stat-btn bg-[#1e293b]/40 border border-slate-800 p-3 rounded-xl transition-all text-center text-slate-400">
-                    <span class="block text-slate-500 text-[9px] font-bold uppercase mb-1">Враћено</span>
-                    <span class="text-2xl font-black text-indigo-400 block">{{ $groupedOverLoans->count() }}</span>
+                <button type="button" aria-pressed="false" onclick="toggleSection('sec-procitano', this)" class="stat-btn min-h-[76px] rounded-xl border border-slate-800 bg-[#1e293b]/40 p-2.5 text-center text-slate-400 transition-all hover:border-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-400 sm:p-3">
+                    <span class="stat-label mb-1 block text-[9px] font-bold uppercase text-slate-500 transition-colors sm:text-[10px]">Враћено</span>
+                    <span class="block text-2xl font-black text-indigo-400 sm:text-3xl">{{ $groupedOverLoans->count() }}</span>
                 </button>
             </div>
         </div>
@@ -43,10 +43,10 @@
 
             {{-- --- СЕКЦИЈА: ВРАЋЕНО --- --}}
             <div id="sec-procitano" class="content-sec hidden animate-fade-in">
-                <h2 class="text-indigo-400 text-[11px] font-bold uppercase tracking-[0.2em] mb-8 flex items-center gap-2">
+                <h2 class="mb-6 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-indigo-400 sm:mb-8 sm:text-xs">
                     <div class="w-1.5 h-6 bg-indigo-500 rounded-full"></div> Историја враћених књига
                 </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-16">
+                <div class="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3 sm:gap-x-6 sm:gap-y-12 lg:gap-y-16">
                     @foreach ($groupedOverLoans as $bookId => $loans)
                         <div class="flex flex-col relative group">
                             <x-book-card-wide :book="$loans->first()->book" />
@@ -87,7 +87,7 @@
                                 {{-- Дугме --}}
                                 <div class="p-1 bg-slate-50/50 rounded-b-xl border-t border-slate-100">
                                     @if($loans->count() > 1)
-                                        <button onclick="softExpand('{{ $bookId }}', this)" class="w-full py-1.5 text-[9px] font-black text-indigo-500 hover:text-indigo-700 transition-colors uppercase tracking-widest">
+                                        <button type="button" onclick="softExpand('{{ $bookId }}', this)" class="min-h-9 w-full py-1.5 text-[10px] font-black uppercase tracking-widest text-indigo-500 transition-colors hover:text-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-indigo-500">
                                             види још ({{ $loans->count() - 1 }})
                                         </button>
                                     @else
@@ -102,10 +102,10 @@
 
             {{-- --- СЕКЦИЈА: ПРЕУЗИМАЊЕ --- --}}
             <div id="sec-preuzimanje" class="content-sec {{ $hasPendingPickupConfirmations ? '' : 'hidden' }} animate-fade-in">
-                <h2 class="text-blue-400 text-[11px] font-bold uppercase tracking-[0.2em] mb-8 flex items-center gap-2">
+                <h2 class="mb-6 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-blue-400 sm:mb-8 sm:text-xs">
                     <div class="w-1.5 h-6 bg-blue-500 rounded-full"></div> Преузимање у току
                 </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-16">
+                <div class="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3 sm:gap-x-6 sm:gap-y-12 lg:gap-y-16">
                     @foreach ($groupedProgressLoans as $bookId => $loans)
                         <div class="flex flex-col">
                             <x-book-card-wide :book="$loans->first()->book" />
@@ -119,7 +119,7 @@
                                         @if ($loan->active != 1)
                                             <form method="POST" action="/loans/loanLibraryConfirm/{{ $loan->id }}">
                                                 @csrf @method('PUT')
-                                                <button class="text-[9px] font-black text-blue-600 hover:text-blue-800 uppercase">Потврди</button>
+                                                <button class="inline-flex min-h-9 items-center justify-center rounded-lg bg-blue-600 px-3 py-2 text-[10px] font-black uppercase text-white transition-colors hover:bg-blue-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">Потврди</button>
                                             </form>
                                         @else
                                             <span class="text-[9px] font-black text-slate-400 uppercase italic">Чека се потпис</span>
@@ -134,10 +134,10 @@
 
             {{-- --- СЕКЦИЈА: РЕЗЕРВАЦИЈЕ --- --}}
             <div id="sec-rezervacije" class="content-sec hidden animate-fade-in">
-                <h2 class="text-amber-500 text-[11px] font-bold uppercase tracking-[0.2em] mb-8 flex items-center gap-2">
+                <h2 class="mb-6 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-amber-500 sm:mb-8 sm:text-xs">
                     <div class="w-1.5 h-6 bg-amber-500 rounded-full"></div> Активне резервације
                 </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-16">
+                <div class="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3 sm:gap-x-6 sm:gap-y-12 lg:gap-y-16">
                     @foreach ($groupedReservedLoans as $bookId => $loans)
                         <div class="flex flex-col">
                             <x-book-card-wide :book="$loans->first()->book" />
@@ -159,10 +159,10 @@
 
             {{-- --- СЕКЦИЈА: НА ЧИТАЊУ --- --}}
             <div id="sec-citanje" class="content-sec hidden animate-fade-in">
-                <h2 class="text-emerald-500 text-[11px] font-bold uppercase tracking-[0.2em] mb-8 flex items-center gap-2">
+                <h2 class="mb-6 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-emerald-500 sm:mb-8 sm:text-xs">
                     <div class="w-1.5 h-6 bg-emerald-500 rounded-full"></div> Књиге код чланова
                 </h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-16">
+                <div class="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3 sm:gap-x-6 sm:gap-y-12 lg:gap-y-16">
                     @foreach ($groupedActiveLoans as $bookId => $loans)
                         <div class="flex flex-col">
                             <x-book-card-wide :book="$loans->first()->book" />
@@ -177,7 +177,7 @@
                                             <span class="rounded bg-emerald-100 px-2 py-1 text-[8px] font-black uppercase text-emerald-700">Преузимање потврђено</span>
                                             <form method="POST" action="/loans/returnBookLibraryConfirm/{{ $loan->id }}">
                                                 @csrf @method('PUT')
-                                                <button class="px-3 py-1 bg-emerald-600 text-white text-[9px] font-black rounded uppercase hover:bg-emerald-700 transition-colors">Врати</button>
+                                                <button class="inline-flex min-h-9 items-center justify-center rounded-lg bg-emerald-600 px-3 py-2 text-[10px] font-black uppercase text-white transition-colors hover:bg-emerald-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600">Врати</button>
                                             </form>
                                         </div>
                                     </div>
@@ -219,6 +219,7 @@
             document.querySelectorAll('.stat-btn').forEach(b => {
                 b.classList.remove('active-btn', 'border-blue-500', 'border-amber-500', 'border-emerald-500', 'border-indigo-500', 'bg-[#1e293b]', 'text-white');
                 b.classList.add('bg-[#1e293b]/40', 'border-slate-800', 'text-slate-400');
+                b.setAttribute('aria-pressed', 'false');
             });
 
             const target = document.getElementById(id);
@@ -226,6 +227,7 @@
 
             btn.classList.remove('bg-[#1e293b]/40', 'border-slate-800', 'text-slate-400');
             btn.classList.add('active-btn', 'bg-[#1e293b]', 'text-white');
+            btn.setAttribute('aria-pressed', 'true');
             if (id === 'sec-preuzimanje') btn.classList.add('border-blue-500');
             if (id === 'sec-rezervacije') btn.classList.add('border-amber-500');
             if (id === 'sec-citanje') btn.classList.add('border-emerald-500');
@@ -238,10 +240,12 @@
     </script>
 
     <style>
+        .stat-btn:hover .stat-label,
+        .stat-btn[aria-pressed="true"] .stat-label {
+            color: #fff;
+        }
+
         .animate-fade-in { animation: fadeIn 0.4s ease-out forwards; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        
-        /* Фиксна висина грид контејнера за симетрију */
-        .grid-cols-1 > div { min-height: 240px; }
     </style>
 </x-layout>

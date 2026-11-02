@@ -232,5 +232,4 @@ import.meta.glob([
     '../fonts/**',
     '../styles/**',
     '../scripts/**',
-    '../views/**',
 ]);
