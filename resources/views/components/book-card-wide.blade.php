@@ -1,7 +1,7 @@
 {{-- resources/views/components/book-card-wide.blade.php --}}
 @props(['book'])
 
-<x-panel class="group p-3 h-full flex flex-col relative overflow-hidden">
+<x-panel data-book-card class="group p-3 h-full flex flex-col relative overflow-hidden">
     @if (isset($book) && $book)
         <div class="flex gap-x-3 items-start">
             {{-- ЛИЈЕВО: СЛИКА --}}
@@ -28,34 +28,34 @@
                         <p class="text-[12px] text-gray-400 uppercase tracking-tight leading-none mb-1">
                             {{ $book->author_lname }}, {{ $book->author_fname }}
                         </p>
-                        <h3
-                            class="font-bold text-md leading-tight group-hover:text-blue-400 transition-colors truncate">
-                            <a href="/books/{{ $book->id }}/book" target="_blank">
-                                {{ $book->title }}
-                            </a>
-                        </h3>
                     </div>
 
                     {{-- СМАЊЕНИ ЛОГО БИБЛИОТЕКЕ --}}
-                    <div class="shrink-0 opacity-40 group-hover:opacity-100 transition-opacity">
+                    <div data-book-library-logo class="shrink-0 opacity-40 group-hover:opacity-100 transition-opacity">
                         <x-library-logo :library="$book->library" :width="40" class="h-10 w-10 object-contain" />
                         </p>
                     </div>
 
                 </div>
 
+                <h3 data-book-title
+                    class="mt-1 line-clamp-2 font-bold text-md leading-tight group-hover:text-blue-400 transition-colors">
+                    <a href="/books/{{ $book->id }}/book" target="_blank">
+                        {{ $book->title }}
+                    </a>
+                </h3>
+
                 {{-- БИБЛИОГРАФИЈА --}}
-                <details class="mt-1">
+                <details class="mt-2">
                     <summary
-                        class="flex items-center gap-1 cursor-pointer text-[10px] text-gray-500 list-none hover:text-blue-300">
-                        <span class="truncate italic">{{ $book->publisher_place }}: {{ $book->publisher_name }},
-                            {{ $book->year }}</span>
-                        <span class="text-xs">⋯</span>
+                        aria-label="Прикажи податке о издавачу, инвентарном броју и библиотеци"
+                        class="w-fit cursor-pointer list-none text-sm leading-none text-gray-500 hover:text-blue-300">
+                        ⋯
                     </summary>
-                    <div class="mt-1 text-[9px] text-gray-400 bg-black/20 p-1.5 rounded leading-tight">
-                        <strong>Инвентарни број:</strong> #{{ $book->lib_book_id }}
-                        </br> <strong>Број у апликацији:</strong> #{{ $book->id }}
-                        </br> <strong>БИБЛИОТЕКА:</strong> {{ $book->library->name }}
+                    <div class="mt-1 space-y-0.5 rounded bg-black/20 p-1.5 text-[9px] leading-tight text-gray-400">
+                        <p><strong>Издавач:</strong> {{ $book->publisher_place }}: {{ $book->publisher_name }}, {{ $book->year }}</p>
+                        <p><strong>Инв. бр.:</strong> #{{ $book->lib_book_id }}</p>
+                        <p>{{ $book->library->name }}</p>
                     </div>
                 </details>
             </div>
@@ -64,7 +64,7 @@
         {{-- ДОЊИ РЕД: СТАТУС (ЛЕВО) + ТАГОВИ (ДЕСНО) --}}
         <div class="mt-auto pt-2 flex items-end justify-between border-t border-slate-700/30">
             {{-- СТАТУС --}}
-            <div class="shrink-0">
+            <div data-book-status class="shrink-0">
                 @if ($book->loan == 1)
                     <span class="text-red-500 text-[9px] font-black uppercase tracking-tighter">На читању</span>
                 @elseif ($book->loans->where('description', 'rezervisano')->where('user_id', Auth::id())->first())
@@ -75,7 +75,7 @@
             </div>
 
             {{-- ТАГОВИ - ПОРЕЂАНИ УДЕСНО У ИСТОЈ ВИСИНИ --}}
-            <div class="flex flex-wrap justify-end gap-1 ml-4">
+            <div data-book-tags class="flex flex-wrap justify-end gap-1 ml-4">
                 @foreach ($book->tags->take(3) as $tag)
                     <x-tag :$tag size="small"
                         class="text-[8px] px-1 py-0 h-4 flex items-center bg-slate-700/40 border-slate-600" />

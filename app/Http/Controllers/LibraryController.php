@@ -29,18 +29,51 @@ class LibraryController extends Controller
     }
 
 
-    public function show($id) // prikaži biblioteku člana sa svim knjigama njegove biblioteke 
+    public function show(Request $request, $id) // prikaži biblioteku člana sa svim knjigama njegove biblioteke
     {
-
-        // Прво дохватимо библиотеку (или је већ имаш)
         $library = Library::findOrFail($id);
+        $books = $library->books()
+            ->with(['library', 'tags', 'loans'])
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->get();
+        $bookSearch = trim((string) $request->query('q', ''));
+        $panel = $request->query('panel');
+        $panel = in_array($panel, ['search-books', 'all-books'], true) ? $panel : null;
 
-        
-        $books = Book::where('library_id', $id)->with(['library'])->get();
+        if ($panel === 'all-books') {
+            $bookSearch = '';
+        }
+
+        $activePanel = $panel ?? ($bookSearch !== '' ? 'search-books' : null);
+        $searchBooks = collect();
+
+        if ($activePanel === 'search-books' && mb_strlen($bookSearch) >= 3) {
+            $searchBooks = $library->books()
+                ->with(['library', 'tags', 'loans'])
+                ->where(function ($query) use ($bookSearch) {
+                    $query->where('title', 'LIKE', "%{$bookSearch}%")
+                        ->orWhere('author_fname', 'LIKE', "%{$bookSearch}%")
+                        ->orWhere('author_lname', 'LIKE', "%{$bookSearch}%")
+                        ->orWhere('publisher_name', 'LIKE', "%{$bookSearch}%")
+                        ->orWhereHas('tags', function ($tagQuery) use ($bookSearch) {
+                            $tagQuery->where('name', 'LIKE', "%{$bookSearch}%");
+                        });
+                })
+                ->orderByDesc('created_at')
+                ->orderByDesc('id')
+                ->get();
+        }
 
         $data = [
             'library' => $library,
             'books' => $books,
+            'isOwnLibrary' => Auth::id() === (int) $library->owner_id,
+            'allBooksCount' => $books->count(),
+            'searchBooks' => $searchBooks,
+            'bookSearch' => $bookSearch,
+            'bookSearchTooShort' => $activePanel === 'search-books' && $bookSearch !== '' && mb_strlen($bookSearch) < 3,
+            'activePanel' => $activePanel,
         ];
 
         return view('libraries.library', $data);
@@ -84,11 +117,38 @@ class LibraryController extends Controller
 
         $library = Library::findOrFail($id);
         $user = User::find($library->owner_id);
-        $books = Book::where('library_id', $id)
+        $allBooksCount = $library->books()->count();
+        $bookSearch = trim((string) $request->query('q', ''));
+        $panel = $request->query('panel');
+        $panel = in_array($panel, ['search-books', 'all-books'], true) ? $panel : null;
+
+        if ($panel === 'all-books') {
+            $bookSearch = '';
+        }
+
+        $activePanel = $panel ?? ($bookSearch !== '' ? 'search-books' : null);
+        $booksQuery = $library->books()
             ->with(['library', 'tags', 'loans'])
             ->orderByDesc('created_at')
-            ->orderByDesc('id')
-            ->paginate(6);
+            ->orderByDesc('id');
+
+        if ($activePanel === 'search-books') {
+            if ($bookSearch === '' || mb_strlen($bookSearch) < 3) {
+                $booksQuery->whereRaw('1 = 0');
+            } else {
+                $booksQuery->where(function ($query) use ($bookSearch) {
+                    $query->where('title', 'LIKE', "%{$bookSearch}%")
+                        ->orWhere('author_fname', 'LIKE', "%{$bookSearch}%")
+                        ->orWhere('author_lname', 'LIKE', "%{$bookSearch}%")
+                        ->orWhere('publisher_name', 'LIKE', "%{$bookSearch}%")
+                        ->orWhereHas('tags', function ($tagQuery) use ($bookSearch) {
+                            $tagQuery->where('name', 'LIKE', "%{$bookSearch}%");
+                        });
+                });
+            }
+        }
+
+        $books = $booksQuery->paginate(6)->withQueryString();
 
         if ($request->expectsJson()) {
             return response()->json([
@@ -101,6 +161,11 @@ class LibraryController extends Controller
             'library' => $library,
             'user' => $user,
             'books' => $books,
+            'isOwnLibrary' => Auth::id() === (int) $library->owner_id,
+            'allBooksCount' => $allBooksCount,
+            'bookSearch' => $bookSearch,
+            'bookSearchTooShort' => $activePanel === 'search-books' && $bookSearch !== '' && mb_strlen($bookSearch) < 3,
+            'activePanel' => $activePanel,
         ];
 
         return view('libraries.libraryBooks', $data);

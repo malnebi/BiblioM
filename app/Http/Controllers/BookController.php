@@ -50,6 +50,8 @@ class BookController extends Controller
             'bookSearch' => '',
             'tagSearch' => '',
             'bookSearchTooShort' => false,
+            'activePanel' => null,
+            'activeCard' => null,
         ]);
     }
 

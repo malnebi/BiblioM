@@ -44,7 +44,7 @@
             {{-- 1. ПРЕУЗИМАЊЕ --}}
             <div id="det-preuzimanje" class="detail-sec hidden animate-fade-in">
                 <h2 class="text-blue-400 text-[11px] font-bold uppercase tracking-[0.2em] mb-8">Књиге за преузимање</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12">
                     @foreach ($inProgressLoans as $loansBook)
                         <div class="flex flex-col">
                             <x-book-card-wide :book="$loansBook->book" />
@@ -62,7 +62,7 @@
             {{-- 2. ЧИТАЊЕ --}}
             <div id="det-citanje" class="detail-sec hidden animate-fade-in">
                 <h2 class="text-emerald-400 text-[11px] font-bold uppercase tracking-[0.2em] mb-8">Тренутно на читању</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12">
                     @foreach ($activeLoans as $loansBook)
                         <x-book-card-wide :book="$loansBook->book" />
                     @endforeach
@@ -72,7 +72,7 @@
             {{-- 3. РЕЗЕРВАЦИЈЕ --}}
             <div id="det-rezervacije" class="detail-sec hidden animate-fade-in">
                 <h2 class="text-amber-400 text-[11px] font-bold uppercase tracking-[0.2em] mb-8">Ваше резервације</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-16">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-16">
                     @foreach ($reservedLoans as $loansBook)
                         <div class="flex flex-col">
                             <x-book-card-wide :book="$loansBook->book" />
@@ -88,7 +88,7 @@
             {{-- 4. ПРОЧИТАНО --}}
             <div id="det-procitano" class="detail-sec hidden animate-fade-in">
                 <h2 class="text-indigo-400 text-[11px] font-bold uppercase tracking-[0.2em] mb-8 text-center md:text-left">Историја прочитаних књига</h2>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-16">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-16">
                     @foreach ($overLoans as $loan)
                         <div class="flex flex-col">
                             <x-book-card-wide :book="$loan->book" />

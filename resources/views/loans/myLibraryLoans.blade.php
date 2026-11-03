@@ -46,7 +46,7 @@
                 <h2 class="mb-6 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-indigo-400 sm:mb-8 sm:text-xs">
                     <div class="w-1.5 h-6 bg-indigo-500 rounded-full"></div> Историја враћених књига
                 </h2>
-                <div class="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3 sm:gap-x-6 sm:gap-y-12 lg:gap-y-16">
+                <div class="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-4 sm:gap-x-6 sm:gap-y-12 lg:gap-y-16">
                     @foreach ($groupedOverLoans as $bookId => $loans)
                         <div class="flex flex-col relative group">
                             <x-book-card-wide :book="$loans->first()->book" />
@@ -105,7 +105,7 @@
                 <h2 class="mb-6 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-blue-400 sm:mb-8 sm:text-xs">
                     <div class="w-1.5 h-6 bg-blue-500 rounded-full"></div> Преузимање у току
                 </h2>
-                <div class="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3 sm:gap-x-6 sm:gap-y-12 lg:gap-y-16">
+                <div class="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-4 sm:gap-x-6 sm:gap-y-12 lg:gap-y-16">
                     @foreach ($groupedProgressLoans as $bookId => $loans)
                         <div class="flex flex-col">
                             <x-book-card-wide :book="$loans->first()->book" />
@@ -137,7 +137,7 @@
                 <h2 class="mb-6 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-amber-500 sm:mb-8 sm:text-xs">
                     <div class="w-1.5 h-6 bg-amber-500 rounded-full"></div> Активне резервације
                 </h2>
-                <div class="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3 sm:gap-x-6 sm:gap-y-12 lg:gap-y-16">
+                <div class="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-4 sm:gap-x-6 sm:gap-y-12 lg:gap-y-16">
                     @foreach ($groupedReservedLoans as $bookId => $loans)
                         <div class="flex flex-col">
                             <x-book-card-wide :book="$loans->first()->book" />
@@ -162,7 +162,7 @@
                 <h2 class="mb-6 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-emerald-500 sm:mb-8 sm:text-xs">
                     <div class="w-1.5 h-6 bg-emerald-500 rounded-full"></div> Књиге код чланова
                 </h2>
-                <div class="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3 sm:gap-x-6 sm:gap-y-12 lg:gap-y-16">
+                <div class="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-4 sm:gap-x-6 sm:gap-y-12 lg:gap-y-16">
                     @foreach ($groupedActiveLoans as $bookId => $loans)
                         <div class="flex flex-col">
                             <x-book-card-wide :book="$loans->first()->book" />

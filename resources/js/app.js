@@ -172,8 +172,19 @@ document.querySelectorAll('[data-home-panel-toggle]').forEach((toggle) => {
     toggle.addEventListener('click', () => {
         const panelId = toggle.dataset.homePanelToggle;
 
-        document.querySelectorAll('[data-home-panel-toggle]').forEach((button) => {
-            button.setAttribute('aria-pressed', String(button === toggle));
+        if (
+            toggle.hasAttribute('data-panel-reset-on-click')
+            || document.querySelector('#book-search')?.value
+            || document.querySelector('#tag-search')?.value
+        ) {
+            const resetUrl = new URL(toggle.dataset.panelResetUrl, window.location.origin);
+            resetUrl.searchParams.set('panel', panelId);
+            window.location.assign(resetUrl);
+            return;
+        }
+
+        document.querySelectorAll('[data-home-card]').forEach((card) => {
+            card.setAttribute('aria-pressed', String(card.dataset.homeCard === panelId));
         });
 
         document.querySelectorAll('[data-home-panel]').forEach((panel) => {

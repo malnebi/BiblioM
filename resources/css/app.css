@@ -8,24 +8,82 @@
         display: none !important;
     }
 
-    [data-home-panel-toggle][aria-pressed="true"] {
+    [data-home-card][aria-pressed="true"] {
         background-color: rgb(30 41 59 / 0.8);
     }
 
-    [data-home-panel-toggle][data-panel-color="blue"][aria-pressed="true"] {
+    [data-home-card][data-panel-color="blue"][aria-pressed="true"] {
         border-color: #3b82f6;
     }
 
-    [data-home-panel-toggle][data-panel-color="emerald"][aria-pressed="true"] {
+    [data-home-card][data-panel-color="emerald"][aria-pressed="true"] {
         border-color: #10b981;
     }
 
-    [data-home-panel-toggle][aria-pressed="true"] span {
+    [data-home-card][aria-pressed="true"] span,
+    [data-home-card][aria-pressed="true"] h1,
+    [data-home-card][aria-pressed="true"] h2 {
         color: #fff;
     }
 
     .home-panel-enter {
         animation: homePanelEnter 400ms ease-out both;
+    }
+
+    @media (max-width: 639px) {
+        [data-mobile-book-grid] [data-book-card] {
+            padding: 0.5rem;
+        }
+
+        [data-mobile-book-grid] [data-book-card] > div:first-child {
+            gap: 0.5rem;
+        }
+
+        [data-mobile-book-grid] [data-book-card] img,
+        [data-mobile-book-grid] [data-book-card] [data-book-cover-placeholder] {
+            width: 3rem;
+            height: 4rem;
+        }
+
+        [data-mobile-book-grid] [data-book-card] [data-book-library-logo] img {
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 0.25rem;
+        }
+
+        [data-mobile-book-grid] [data-book-card] [data-book-library-logo] {
+            opacity: 0.7;
+        }
+
+        [data-mobile-book-grid] [data-book-card] > div:first-child > div:nth-child(2) > div:first-child p {
+            font-size: 0.5625rem;
+        }
+
+        [data-mobile-book-grid] [data-book-card] [data-book-title] {
+            font-size: 0.75rem;
+            line-height: 1rem;
+        }
+
+        [data-mobile-book-grid] [data-book-card] [data-book-status] span {
+            font-size: 0.375rem;
+            line-height: 0.75rem;
+        }
+
+        [data-mobile-book-grid] [data-book-card] [data-book-tags] {
+            gap: 0.125rem;
+            margin-left: 0.25rem;
+        }
+
+        [data-mobile-book-grid] [data-book-card] [data-book-tags] a,
+        [data-mobile-book-grid] [data-book-card] [data-book-tags] span {
+            font-size: 0.375rem;
+            line-height: 0.75rem;
+        }
+
+        [data-mobile-book-grid] [data-book-card] [data-book-tags] a {
+            padding: 0 0.125rem;
+            height: 0.75rem;
+        }
     }
 
     @keyframes homePanelEnter {

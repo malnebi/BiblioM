@@ -82,7 +82,7 @@
                 <h2 class="mb-6 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-blue-400 sm:mb-8 sm:text-xs">
                     <span class="h-6 w-1.5 rounded-full bg-blue-500"></span> Књиге за преузимање
                 </h2>
-                <div class="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3 sm:gap-x-6 sm:gap-y-12">
+                <div class="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-4 sm:gap-x-6 sm:gap-y-12">
                     @forelse ($inProgressLoans as $loan)
                         <article class="flex flex-col">
                             <x-book-card-wide :book="$loan->book" />
@@ -102,7 +102,7 @@
                 <h2 class="mb-6 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-amber-400 sm:mb-8 sm:text-xs">
                     <span class="h-6 w-1.5 rounded-full bg-amber-500"></span> Активне резервације
                 </h2>
-                <div class="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3 sm:gap-x-6 sm:gap-y-12">
+                <div class="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-4 sm:gap-x-6 sm:gap-y-12">
                     @forelse ($reservedLoans as $loan)
                         <article class="flex flex-col">
                             <x-book-card-wide :book="$loan->book" />
@@ -127,7 +127,7 @@
                 <h2 class="mb-6 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-emerald-400 sm:mb-8 sm:text-xs">
                     <span class="h-6 w-1.5 rounded-full bg-emerald-500"></span> Књиге код корисника
                 </h2>
-                <div class="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3 sm:gap-x-6 sm:gap-y-12">
+                <div class="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-4 sm:gap-x-6 sm:gap-y-12">
                     @forelse ($activeLoans as $loan)
                         <article class="flex flex-col">
                             <x-book-card-wide :book="$loan->book" />
@@ -154,7 +154,7 @@
                 <h2 class="mb-6 flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-indigo-400 sm:mb-8 sm:text-xs">
                     <span class="h-6 w-1.5 rounded-full bg-indigo-500"></span> Историја прочитаних књига
                 </h2>
-                <div class="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-3 sm:gap-x-6 sm:gap-y-12">
+                <div class="grid grid-cols-1 gap-x-4 gap-y-8 md:grid-cols-2 lg:grid-cols-4 sm:gap-x-6 sm:gap-y-12">
                     @forelse ($overLoans as $loan)
                         <article class="flex flex-col">
                             <x-book-card-wide :book="$loan->book" />

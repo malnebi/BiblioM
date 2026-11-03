@@ -2,91 +2,107 @@
     <div class="space-y-12 max-w-7xl mx-auto py-8 px-4">
         
         {{-- 1. ЗАГЛАВЉЕ БИБЛИОТЕКЕ --}}
-        <section class="bg-[#1e293b] border border-slate-700 p-8 rounded-3xl shadow-2xl relative overflow-hidden">
+        <section data-library-header="{{ $isOwnLibrary ? 'own' : 'public' }}" class="relative overflow-hidden rounded-3xl border border-slate-700 bg-[#1e293b] p-4 shadow-2xl sm:p-8">
             {{-- Суптилна декорација у позадини --}}
             <div class="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-blue-600/10 rounded-full blur-3xl"></div>
             
-            <div class="flex flex-col items-center text-center relative z-10">
-                <div class="mb-4 flex h-28 w-28 items-center justify-center rounded-2xl border border-slate-700 bg-slate-900/50 p-4 shadow-inner">
-                    <x-library-logo :library="$library" width="80" class="h-20 w-20 object-contain" />
+            <div class="relative z-10 flex flex-row items-center gap-3 text-left sm:flex-col sm:gap-0 sm:text-center">
+                <div class="mb-0 flex h-14 w-14 shrink-0 items-center justify-center rounded-xl border border-slate-700 bg-slate-900/50 p-2 shadow-inner sm:mb-4 sm:h-28 sm:w-28 sm:rounded-2xl sm:p-4">
+                    <x-library-logo :library="$library" width="80" class="h-10 w-10 object-contain sm:h-20 sm:w-20" />
                 </div>
-                <h1 class="font-black text-xl md:text-4xl text-white tracking-tight uppercase">
-                    @unless (str_starts_with($library->name, 'Библиотека '))
-                        БИБЛИОТЕКА
-                    @endunless
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">{{ $library->name }}</span>
-                </h1>
-                <div class="mt-2 flex items-center gap-2 text-slate-400 text-sm font-medium">
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5s3.332.477 4.5 1.253v13C19.832 18.477 18.246 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                    </svg>
-                    <span>Укупан број наслова: {{ $books->total() }}</span>
+                <div class="min-w-0">
+                    <h1 class="text-sm font-black uppercase tracking-tight text-white sm:text-xl md:text-4xl">
+                        <span class="mb-0.5 block text-[9px] tracking-[0.16em] text-emerald-300 sm:text-xs">
+                            {{ $isOwnLibrary ? 'Моја библиотека' : 'Библиотека' }}
+                        </span>
+                        <span class="block break-words bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">{{ $library->name }}</span>
+                    </h1>
                 </div>
             </div>
 
-            {{-- ПРЕТРАГА (Унутар заглавља ради бољег фокуса) --}}
-            @if ($books->total() > 0)
-            <div class="mt-8 max-w-2xl mx-auto">
-                <x-forms.form action="/search/oneLibraryBooks/{{ $library->id }}" class="relative">
-                    <x-forms.input :label="false" name="q" placeholder="Претражи наслов, аутора или годину издања..." class="pl-4 pr-32 py-4 bg-slate-900 border-slate-700 focus:border-blue-500 text-white rounded-xl shadow-2xl" />
-                    <div class="absolute right-2 top-2">
-                        <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white font-black text-[10px] px-6 py-2.5 rounded-lg transition-all uppercase tracking-widest shadow-lg">
+        </section>
+
+        <section aria-label="Претрага књига и приказ библиотеке">
+            <div class="grid grid-cols-4 gap-2 sm:gap-3 md:grid-cols-2">
+                <div data-home-card="search-books" data-panel-color="blue"
+                    aria-pressed="{{ $activePanel === 'search-books' ? 'true' : 'false' }}"
+                    class="col-span-3 flex min-w-0 flex-col justify-center gap-1 rounded-xl border border-slate-800 bg-[#1e293b]/40 p-1.5 text-center transition-all hover:border-blue-500 sm:gap-2 sm:p-3 md:col-span-1 md:min-h-[76px]">
+                    <h2 class="text-[8px] font-bold uppercase text-slate-300 sm:text-xs">Претрага књига</h2>
+                    <form method="GET" action="{{ url('/library/libraryBooks/' . $library->id) }}" role="search"
+                        class="flex min-w-0 flex-col items-center gap-1 md:flex-row">
+                        <label for="book-search" class="sr-only">Претражите књиге библиотеке</label>
+                        <input id="book-search" type="search" name="q" value="{{ $bookSearch }}"
+                            placeholder="Наслов или аутор" aria-label="Наслов или аутор"
+                            class="h-3.5 min-h-0 w-full min-w-0 rounded-lg border border-slate-600 px-2 py-0 text-[9px] leading-[10px] sm:h-7 md:flex-1 md:text-xs">
+                        <input type="hidden" name="panel" value="search-books">
+                        <button type="submit"
+                            class="self-center rounded-lg border border-blue-400/50 px-2 py-0.5 text-[8px] font-bold text-blue-200/90 transition-colors hover:bg-blue-400/70 hover:text-slate-950 sm:py-1 sm:text-[10px] md:shrink-0 md:self-auto">
                             Претражи
                         </button>
-                    </div>
-                </x-forms.form>
+                    </form>
+                </div>
+
+                <button type="button" data-home-panel-toggle="all-books" data-panel-color="blue"
+                    data-home-card="all-books" data-panel-reset-on-click data-panel-reset-url="{{ url('/library/libraryBooks/' . $library->id) }}"
+                    aria-controls="all-books" aria-pressed="{{ $activePanel === 'all-books' ? 'true' : 'false' }}"
+                    class="group col-span-1 flex min-w-0 min-h-[56px] flex-col items-center justify-center rounded-xl border border-slate-800 bg-[#1e293b]/40 p-1.5 text-center text-slate-400 transition-all duration-300 hover:border-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 sm:min-h-[64px] sm:p-2 md:min-h-[76px] md:p-3">
+                    <span class="mb-0.5 text-[7px] font-bold uppercase leading-tight text-slate-500 transition-colors group-hover:text-white sm:mb-1 sm:text-[9px] md:text-xs">
+                        <span class="block">Све</span>
+                        <span class="block">књиге</span>
+                        <span class="block">библиотеке</span>
+                    </span>
+                    <span class="text-sm font-black text-blue-400 transition-colors group-hover:text-white sm:text-lg md:text-xl">
+                        {{ $allBooksCount }}
+                    </span>
+                </button>
             </div>
+        </section>
+
+        <section id="search-books" data-home-panel data-panel-color="blue" aria-labelledby="library-search-results-heading"
+            @if ($activePanel !== 'search-books') hidden @endif>
+            <h2 id="library-search-results-heading"
+                class="mb-6 flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.1em] text-blue-400 sm:mb-8 sm:text-xs sm:tracking-[0.2em]">
+                <span class="h-6 w-1.5 rounded-full bg-blue-500"></span>
+                Резултати претраге књига ({{ $books->total() }})
+            </h2>
+            @if ($bookSearchTooShort)
+                <p class="mb-4 text-sm text-gray-300">Унесите најмање 3 карактера за претрагу књига.</p>
+            @elseif ($bookSearch === '')
+                <p class="mb-4 text-sm text-gray-300">Унесите појам за претрагу књига.</p>
+            @elseif ($books->isEmpty())
+                <p class="mb-4 text-sm text-gray-300">Нема књига за унесени појам.</p>
+            @else
+                <div data-scroll-list data-next-page="{{ $books->nextPageUrl() }}" class="mt-8">
+                    <div data-scroll-cards data-mobile-book-grid class="grid grid-cols-2 gap-x-2 gap-y-4 sm:gap-x-6 sm:gap-y-12 md:grid-cols-2 lg:grid-cols-4">
+                        @include('books.partials.cards', ['books' => $books])
+                    </div>
+                    @if ($books->hasMorePages())
+                        <div data-scroll-sentinel class="h-1" aria-hidden="true"></div>
+                        <p data-scroll-status class="py-3 text-center text-sm text-gray-300" aria-live="polite"></p>
+                    @endif
+                </div>
             @endif
         </section>
 
-        {{-- 2. САДРЖАЈ БИБЛИОТЕКЕ --}}
-        @if ($books->count() > 0)
-            <div class="space-y-16">
-                
-                {{-- ОПИСНЕ ОЗНАКЕ (У ИЗРАДИ) --}}
-                <section>
-                    <x-section-heading>Ознаке књига моје библиотеке</x-section-heading>
-                    <div class="flex flex-wrap gap-2 mt-6">
-                        {{-- Овде ће ићи тагови кад буду готови --}}
-                        <span class="px-4 py-2 bg-slate-800/40 border border-slate-700 rounded-lg text-slate-500 text-xs italic">
-                            Функционалност филтрирања по ознакама је у изради...
-                        </span>
+        <section id="all-books" data-home-panel data-panel-color="blue" aria-labelledby="library-all-books-heading"
+            @if ($activePanel !== 'all-books') hidden @endif>
+            <h2 id="library-all-books-heading"
+                class="mb-6 flex items-center gap-2 text-[9px] font-bold uppercase tracking-[0.1em] text-blue-400 sm:mb-8 sm:text-xs sm:tracking-[0.2em]">
+                <span class="h-6 w-1.5 rounded-full bg-blue-500"></span>
+                Све књиге библиотеке ({{ $allBooksCount }})
+            </h2>
+            @if ($activePanel !== 'search-books')
+                <div data-scroll-list data-next-page="{{ $books->nextPageUrl() }}" class="mt-8">
+                    <div data-scroll-cards data-mobile-book-grid class="grid grid-cols-2 gap-x-2 gap-y-4 sm:gap-x-6 sm:gap-y-12 md:grid-cols-2 lg:grid-cols-4">
+                        @include('books.partials.cards', ['books' => $books])
                     </div>
-                </section>
-
-                {{-- КАРТИЦЕ КЊИГА - ГРИД СА ТРИ КОЛОНЕ --}}
-                <section>
-                    <x-section-heading>
-                        Најновије књиге библиотеке ({{ $books->total() }})
-                    </x-section-heading>
-                    <div
-                        data-scroll-list
-                        data-next-page="{{ $books->nextPageUrl() }}"
-                        class="mt-8"
-                    >
-                        <div data-scroll-cards class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
-                            @include('books.partials.cards', ['books' => $books])
-                        </div>
-
-                        @if ($books->hasMorePages())
-                            <div data-scroll-sentinel class="h-1" aria-hidden="true"></div>
-                            <p data-scroll-status class="py-3 text-center text-sm text-gray-300" aria-live="polite"></p>
-                        @endif
-                    </div>
-                </section>
-
-            </div>
-        @else
-            {{-- ПРАЗНА БИБЛИОТЕКА СЦЕНАРИО --}}
-            <section class="text-center py-24 bg-[#1e293b]/30 rounded-3xl border-2 border-dashed border-slate-800">
-                <div class="max-w-md mx-auto px-6">
-                    <a href="/books/create"
-                       class="inline-block bg-blue-600 hover:bg-blue-700 text-white font-black text-xs px-10 py-4 rounded-xl shadow-xl transform hover:-translate-y-1 transition-all uppercase tracking-widest">
-                        + Додај прву књигу
-                    </a>
+                    @if ($books->hasMorePages())
+                        <div data-scroll-sentinel class="h-1" aria-hidden="true"></div>
+                        <p data-scroll-status class="py-3 text-center text-sm text-gray-300" aria-live="polite"></p>
+                    @endif
                 </div>
-            </section>
-        @endif
+            @endif
+        </section>
 
         <x-forms.divider />
     </div>

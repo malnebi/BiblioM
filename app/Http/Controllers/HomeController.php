@@ -20,9 +20,16 @@ class HomeController extends Controller
         $validated = $request->validate([
             'q' => ['nullable', 'string', 'max:100'],
             'tag_q' => ['nullable', 'string', 'max:100'],
+            'panel' => ['nullable', Rule::in(['latest-books', 'all-tags'])],
         ]);
         $bookSearch = trim($validated['q'] ?? '');
         $tagSearch = trim($validated['tag_q'] ?? '');
+        $panel = $validated['panel'] ?? null;
+
+        if ($panel !== null) {
+            $bookSearch = '';
+            $tagSearch = '';
+        }
 
         $booksQuery = Book::with(['library', 'tags']);
 
@@ -78,6 +85,11 @@ class HomeController extends Controller
             )->values();
         }
 
+        $activePanel = $panel
+            ?? ($bookSearch !== '' ? 'latest-books' : ($tagSearch !== '' ? 'all-tags' : null));
+        $activeCard = $panel
+            ?? ($bookSearch !== '' ? 'search-books' : ($tagSearch !== '' ? 'search-tags' : null));
+
         return view('home', [
             'books' => $books,
             'tags' => $tags,
@@ -86,6 +98,8 @@ class HomeController extends Controller
             'bookSearch' => $bookSearch,
             'tagSearch' => $tagSearch,
             'bookSearchTooShort' => $bookSearch !== '' && mb_strlen($bookSearch) < 3,
+            'activePanel' => $activePanel,
+            'activeCard' => $activeCard,
         ]);
     }
 }
