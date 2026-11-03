@@ -17,10 +17,37 @@ class HomeController extends Controller
      */
     public function index(Request $request)
     {
-        $books = Book::with(['library', 'tags'])
+        $validated = $request->validate([
+            'q' => ['nullable', 'string', 'max:100'],
+            'tag_q' => ['nullable', 'string', 'max:100'],
+        ]);
+        $bookSearch = trim($validated['q'] ?? '');
+        $tagSearch = trim($validated['tag_q'] ?? '');
+
+        $booksQuery = Book::with(['library', 'tags']);
+
+        if ($bookSearch !== '') {
+            if (mb_strlen($bookSearch) < 3) {
+                $booksQuery->whereRaw('1 = 0');
+            } else {
+                $booksQuery->where(function ($query) use ($bookSearch) {
+                    $query->where('title', 'LIKE', "%{$bookSearch}%")
+                        ->orWhere('author_fname', 'LIKE', "%{$bookSearch}%")
+                        ->orWhere('author_lname', 'LIKE', "%{$bookSearch}%")
+                        ->orWhere('publisher_name', 'LIKE', "%{$bookSearch}%")
+                        ->orWhereHas('tags', function ($tagQuery) use ($bookSearch) {
+                            $tagQuery->where('name', 'LIKE', "%{$bookSearch}%");
+                        });
+                });
+            }
+        }
+
+        $books = $booksQuery
             ->orderByDesc('created_at')
             ->orderByDesc('id')
-            ->paginate(6);
+            ->paginate(6)
+            ->withQueryString();
+        $allBooksCount = $bookSearch === '' ? $books->total() : Book::count();
 
         if ($request->expectsJson()) {
             return response()->json([
@@ -42,10 +69,23 @@ class HomeController extends Controller
             ->unique('name') // Склањамо дупле тагове ако имају исто име
             ->sortBy('name', SORT_LOCALE_STRING) // Сортирамо азбучно (Ћирилица/Латиница)
             ->values(); // ПРЕСУДНО: Ресетујемо индексе на 0, 1, 2, 3...
+        $allTagsCount = $tags->count();
+
+        if ($tagSearch !== '') {
+            $normalizedTagSearch = mb_strtolower($tagSearch);
+            $tags = $tags->filter(
+                fn ($tag) => str_contains(mb_strtolower($tag->name), $normalizedTagSearch)
+            )->values();
+        }
 
         return view('home', [
             'books' => $books,
             'tags' => $tags,
+            'allBooksCount' => $allBooksCount,
+            'allTagsCount' => $allTagsCount,
+            'bookSearch' => $bookSearch,
+            'tagSearch' => $tagSearch,
+            'bookSearchTooShort' => $bookSearch !== '' && mb_strlen($bookSearch) < 3,
         ]);
     }
 }

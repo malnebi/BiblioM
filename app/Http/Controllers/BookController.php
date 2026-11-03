@@ -44,7 +44,12 @@ class BookController extends Controller
         return view('home', [
             'books' => $books,
             'tags' => $tags,
-            'limit' => 5
+            'allBooksCount' => $books->total(),
+            'allTagsCount' => $tags->count(),
+            'limit' => 5,
+            'bookSearch' => '',
+            'tagSearch' => '',
+            'bookSearchTooShort' => false,
         ]);
     }
 

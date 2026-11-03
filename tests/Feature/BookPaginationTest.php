@@ -18,13 +18,12 @@ it('loads book cards progressively on the home and books pages', function () {
         ]);
     }
 
-    $this->actingAs($user)
-        ->get('/home')
-        ->assertOk()
-        ->assertSee('id="latest-books" data-home-panel data-panel-color="blue" hidden', false)
-        ->assertSee('id="all-tags" data-home-panel data-panel-color="emerald"', false)
+    $homePage = $this->actingAs($user)->get('/home');
+    $homePage->assertOk()
         ->assertSee('data-home-panel-toggle="latest-books"', false)
         ->assertSee('data-home-panel-toggle="all-tags"', false);
+    $this->assertMatchesRegularExpression('/<section id="latest-books"[^>]*\shidden\s*>/', $homePage->getContent());
+    $this->assertMatchesRegularExpression('/<section id="all-tags"[^>]*\shidden\s*>/', $homePage->getContent());
 
     $nextHomePage = $this->getJson('/home?page=2')
         ->assertOk()
@@ -61,12 +60,12 @@ it('shows separate book and tag searches on the home page and returns matching t
         ->assertSee('Све књиге у апликацији')
         ->assertSee('Претрага описних ознака')
         ->assertSee('Описне ознаке')
-        ->assertSee('action="/search"', false)
+        ->assertSee(route('home'), false)
         ->assertSee('data-home-panel-toggle="latest-books"', false)
         ->assertSee('data-home-panel-toggle="all-tags"', false)
         ->assertSee('aria-pressed="false"', false)
-        ->assertSee('action="/search-tag"', false)
         ->assertSee('name="q"', false)
+        ->assertSee('name="tag_q"', false)
         ->assertSee('id="all-tags"', false)
         ->assertSee('Наука');
 
@@ -81,6 +80,49 @@ it('shows separate book and tag searches on the home page and returns matching t
         ->assertSee('Наука');
 
     $this->get('/search-tag?q=непостојећа')
+        ->assertOk()
+        ->assertSee('Нема описних ознака за ову претрагу.');
+});
+
+it('shows book and tag search results in their selected homepage sections', function () {
+    $user = User::factory()->create(['approved' => true]);
+    $library = Library::factory()->create(['owner_id' => $user->id]);
+    Book::factory()->create([
+        'library_id' => $library->id,
+        'title' => 'Потражена књига',
+        'loan' => 0,
+    ]);
+    Book::factory()->create([
+        'library_id' => $library->id,
+        'title' => 'Друга књига',
+        'loan' => 0,
+    ]);
+    Tag::factory()->create(['name' => 'Потражена ознака', 'approved' => true]);
+    Tag::factory()->create(['name' => 'Друга ознака', 'approved' => true]);
+
+    $bookSearch = $this->actingAs($user)->get('/home?q=Потражена');
+    $bookSearch->assertOk()
+        ->assertSee('value="Потражена"', false)
+        ->assertSee('Резултати претраге књига (1)')
+        ->assertSee('Потражена књига')
+        ->assertDontSee('Друга књига')
+        ->assertSee('aria-pressed="true"', false);
+    $this->assertMatchesRegularExpression('/<section id="all-tags"[^>]*\shidden\s*>/', $bookSearch->getContent());
+
+    $tagSearch = $this->get('/home?tag_q=Потражена');
+    $tagSearch->assertOk()
+        ->assertSee('value="Потражена"', false)
+        ->assertSee('Резултати претраге описних ознака (1)')
+        ->assertSee('Потражена ознака')
+        ->assertDontSee('Друга ознака')
+        ->assertSee('aria-pressed="true"', false);
+    $this->assertMatchesRegularExpression('/<section id="latest-books"[^>]*\shidden\s*>/', $tagSearch->getContent());
+
+    $this->get('/home?q=непостојећа')
+        ->assertOk()
+        ->assertSee('Нема књига за унесени појам.');
+
+    $this->get('/home?tag_q=непостојећа')
         ->assertOk()
         ->assertSee('Нема описних ознака за ову претрагу.');
 });
