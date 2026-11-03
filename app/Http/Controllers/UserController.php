@@ -79,6 +79,9 @@ class UserController extends Controller
      */
     public function show($id)
     {
+        $library = Auth::user()->ownLibrary;
+        abort_unless($library, 403);
+
         $user = User::find($id);
 
         if (!$user) {
@@ -87,28 +90,28 @@ class UserController extends Controller
 
         $user_photo = $user->user_photo;
 
-        $reservedLoans = Loan::where([['user_id', '=', $id], ['library_id', '=', Auth::user()->ownLibrary->id], ['active', '=', null], ['description', '=', 'rezervisano']])->get();
-        $inProgressLoans = Loan::where([['user_id', '=', $id], ['active', '=', '1']])
+        $reservedLoans = Loan::where([['user_id', '=', $id], ['library_id', '=', $library->id], ['active', '=', null], ['description', '=', 'rezervisano']])->get();
+        $inProgressLoans = Loan::where([['user_id', '=', $id], ['library_id', '=', $library->id], ['active', '=', '1']])
             ->where(function ($query) {
                 $query->where('description', '=', null)
                     ->orWhere('description', '=', 'rezervisano');
             })->get();
-        $activeLoans = Loan::where([['user_id', '=', $id], ['library_id', '=', Auth::user()->ownLibrary->id], ['active', '=', '1'], ['description', '=', 'potpisano']])->get();
+        $activeLoans = Loan::where([['user_id', '=', $id], ['library_id', '=', $library->id], ['active', '=', '1'], ['description', '=', 'potpisano']])->get();
 
-        $returnInProgress = Loan::where('user_id', '=', $id)
+        $returnInProgress = Loan::where([['user_id', '=', $id], ['library_id', '=', $library->id]])
             ->where(function ($query) {
                 $query->where([['description', '=', null], ['active', '=', '1']]) // potvrđeno vraćanje od strane člana
                     ->orWhere([['description', '=', 'potpisano'], ['active', '=', '0']]); // potvrđeno vraćanje od strane biblioteke
             })->get();
 
-        $overLoans = Loan::where([['user_id', '=', $id], ['active', '=', '0'], ['description', '=', null]])->get();
+        $overLoans = Loan::where([['user_id', '=', $id], ['library_id', '=', $library->id], ['active', '=', '0'], ['description', '=', null]])->get();
 
         $activeLoansCount = $activeLoans->count();
         $overLoansCount = $overLoans->count();
-        $allLoansCount = Loan::where('user_id', '=', $id)->count();
+        $allLoansCount = Loan::where([['user_id', '=', $id], ['library_id', '=', $library->id]])->count();
 
 
-        $loans = Loan::where('library_id', Auth::user()->ownLibrary->id)
+        $loans = Loan::where('library_id', $library->id)
             ->orderBy('created_at', 'asc')
             ->with(['user', 'book', 'library'])
             ->paginate(20);
@@ -117,7 +120,7 @@ class UserController extends Controller
         // ИД корисника на чијој смо страници 
         $targetUserId = $user->id;
 
-        $books = Book::where('library_id', Auth::user()->ownLibrary->id)
+        $books = Book::where('library_id', $library->id)
             ->where('loan', 0) // Слободне књиге
             ->whereDoesntHave('loans', function ($query) use ($targetUserId) {
                 $query->where('description', 'rezervisano')

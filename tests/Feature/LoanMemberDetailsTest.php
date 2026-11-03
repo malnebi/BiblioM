@@ -5,6 +5,18 @@ use App\Models\Library;
 use App\Models\Loan;
 use App\Models\User;
 
+it('requires authentication to view a member loan page', function () {
+    $this->get('/users/1')->assertRedirect('/login');
+});
+
+it('only allows users with a library to view member loan pages', function () {
+    $member = User::factory()->create();
+
+    $this->actingAs($member)
+        ->get('/users/' . $member->id)
+        ->assertForbidden();
+});
+
 it('shows member school role and profile link on loan pages', function () {
     $libraryOwner = User::factory()->create();
     $library = Library::factory()->create(['owner_id' => $libraryOwner->id]);
