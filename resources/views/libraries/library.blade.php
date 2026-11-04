@@ -39,9 +39,9 @@
                     </form>
                 </div>
 
-                <button type="button" data-home-panel-toggle="all-books" data-panel-color="blue"
+                <a href="{{ url('/libraries/' . $library->id) }}?panel=all-books" data-home-panel-toggle="all-books" data-panel-color="blue"
                     data-home-card="all-books" data-panel-reset-on-click data-panel-reset-url="{{ url('/libraries/' . $library->id) }}"
-                    aria-controls="all-books" aria-pressed="{{ $activePanel === 'all-books' ? 'true' : 'false' }}"
+                    aria-controls="all-books" aria-current="{{ $activePanel === 'all-books' ? 'location' : 'false' }}"
                     class="group col-span-1 flex min-w-0 min-h-[56px] flex-col items-center justify-center rounded-xl border border-slate-800 bg-[#1e293b]/40 p-1.5 text-center text-slate-400 transition-all duration-300 hover:border-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 sm:min-h-[64px] sm:p-2 md:min-h-[76px] md:p-3">
                     <span class="mb-0.5 text-[7px] font-bold uppercase leading-tight text-slate-500 transition-colors group-hover:text-white sm:mb-1 sm:text-[9px] md:text-xs">
                         <span class="block">Све</span>
@@ -51,7 +51,7 @@
                     <span class="text-sm font-black text-blue-400 transition-colors group-hover:text-white sm:text-lg md:text-xl">
                         {{ $allBooksCount }}
                     </span>
-                </button>
+                </a>
             </div>
         </section>
 
@@ -85,21 +85,15 @@
                 Све књиге библиотеке ({{ $allBooksCount }})
             </h2>
             @if ($books->isNotEmpty())
-                <div data-mobile-book-grid class="grid grid-cols-2 gap-x-2 gap-y-4 sm:gap-x-6 sm:gap-y-12 md:grid-cols-2 lg:grid-cols-4">
-                    @foreach ($books->take(6) as $book)
-                        <x-book-card-wide :$book />
-                    @endforeach
+                <div data-scroll-list data-next-page="{{ $books->nextPageUrl() }}" class="mt-8">
+                    <div data-scroll-cards data-mobile-book-grid class="grid grid-cols-2 gap-x-2 gap-y-4 sm:gap-x-6 sm:gap-y-12 md:grid-cols-2 lg:grid-cols-4">
+                        @include('books.partials.cards', ['books' => $books])
+                    </div>
+                    @if ($books->hasMorePages())
+                        <div data-scroll-sentinel class="h-1" aria-hidden="true"></div>
+                        <p data-scroll-status class="py-3 text-center text-sm text-gray-300" aria-live="polite"></p>
+                    @endif
                 </div>
-                @if ($books->count() > 6)
-                    <details class="mt-4">
-                        <summary class="list-none cursor-pointer font-bold text-orange-500 hover:underline">Види више...</summary>
-                        <div data-mobile-book-grid class="mt-4 grid grid-cols-2 gap-x-2 gap-y-4 sm:gap-x-6 sm:gap-y-12 md:grid-cols-2 lg:grid-cols-4">
-                            @foreach ($books->skip(6) as $book)
-                                <x-book-card-wide :$book />
-                            @endforeach
-                        </div>
-                    </details>
-                @endif
             @else
                 <p class="text-sm text-slate-400">Библиотека тренутно нема књига.</p>
             @endif

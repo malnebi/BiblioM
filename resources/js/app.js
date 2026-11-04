@@ -169,7 +169,8 @@ if (bookAutocomplete) {
 }
 
 document.querySelectorAll('[data-home-panel-toggle]').forEach((toggle) => {
-    toggle.addEventListener('click', () => {
+    toggle.addEventListener('click', (event) => {
+        event.preventDefault();
         const panelId = toggle.dataset.homePanelToggle;
 
         if (
@@ -184,7 +185,16 @@ document.querySelectorAll('[data-home-panel-toggle]').forEach((toggle) => {
         }
 
         document.querySelectorAll('[data-home-card]').forEach((card) => {
-            card.setAttribute('aria-pressed', String(card.dataset.homeCard === panelId));
+            const isSelected = card.dataset.homeCard === panelId;
+            if (card instanceof HTMLAnchorElement) {
+                if (isSelected) {
+                    card.setAttribute('aria-current', 'location');
+                } else {
+                    card.removeAttribute('aria-current');
+                }
+            } else {
+                card.setAttribute('aria-pressed', String(isSelected));
+            }
         });
 
         document.querySelectorAll('[data-home-panel]').forEach((panel) => {
@@ -209,6 +219,11 @@ if (scrollList) {
     const status = scrollList.querySelector('[data-scroll-status]');
     let nextPageUrl = scrollList.dataset.nextPage;
     let loading = false;
+    let scrollLoadingStarted = false;
+
+    if (window.matchMedia('(max-width: 639px)').matches && cards.children.length > 4) {
+        cards.classList.add('scroll-list-initial-collapsed');
+    }
 
     const loadNextPage = async () => {
         if (loading || !nextPageUrl || !sentinel || !status) return;
@@ -252,7 +267,13 @@ if (scrollList) {
         }
     };
 
-    if (sentinel && status) {
+    const startScrollLoading = () => {
+        if (scrollLoadingStarted || scrollList.closest('[hidden]')) return;
+        scrollLoadingStarted = true;
+        cards.classList.remove('scroll-list-initial-collapsed');
+
+        if (!sentinel || !status) return;
+
         if ('IntersectionObserver' in window) {
             const observer = new IntersectionObserver((entries) => {
                 if (entries.some((entry) => entry.isIntersecting)) loadNextPage();
@@ -272,7 +293,21 @@ if (scrollList) {
             });
             checkSentinel();
         }
-    }
+    };
+
+    const onScrollIntent = (event) => {
+        if (
+            event.type !== 'keydown'
+            || ['ArrowDown', 'PageDown', ' ', 'End'].includes(event.key)
+        ) {
+            startScrollLoading();
+        }
+    };
+
+    window.addEventListener('scroll', onScrollIntent, { passive: true });
+    window.addEventListener('wheel', onScrollIntent, { passive: true });
+    window.addEventListener('touchmove', onScrollIntent, { passive: true });
+    window.addEventListener('keydown', onScrollIntent);
 }
 
 import.meta.glob([

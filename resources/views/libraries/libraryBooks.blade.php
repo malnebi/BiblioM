@@ -42,9 +42,9 @@
                     </form>
                 </div>
 
-                <button type="button" data-home-panel-toggle="all-books" data-panel-color="blue"
+                <a href="{{ url('/library/libraryBooks/' . $library->id) }}?panel=all-books" data-home-panel-toggle="all-books" data-panel-color="blue"
                     data-home-card="all-books" data-panel-reset-on-click data-panel-reset-url="{{ url('/library/libraryBooks/' . $library->id) }}"
-                    aria-controls="all-books" aria-pressed="{{ $activePanel === 'all-books' ? 'true' : 'false' }}"
+                    aria-controls="all-books" aria-current="{{ $activePanel === 'all-books' ? 'location' : 'false' }}"
                     class="group col-span-1 flex min-w-0 min-h-[56px] flex-col items-center justify-center rounded-xl border border-slate-800 bg-[#1e293b]/40 p-1.5 text-center text-slate-400 transition-all duration-300 hover:border-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 sm:min-h-[64px] sm:p-2 md:min-h-[76px] md:p-3">
                     <span class="mb-0.5 text-[7px] font-bold uppercase leading-tight text-slate-500 transition-colors group-hover:text-white sm:mb-1 sm:text-[9px] md:text-xs">
                         <span class="block">Све</span>
@@ -54,7 +54,7 @@
                     <span class="text-sm font-black text-blue-400 transition-colors group-hover:text-white sm:text-lg md:text-xl">
                         {{ $allBooksCount }}
                     </span>
-                </button>
+                </a>
             </div>
         </section>
 

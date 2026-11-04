@@ -52,7 +52,7 @@ class HomeController extends Controller
         $books = $booksQuery
             ->orderByDesc('created_at')
             ->orderByDesc('id')
-            ->paginate(6)
+            ->paginate(8)
             ->withQueryString();
         $allBooksCount = $bookSearch === '' ? $books->total() : Book::count();
 

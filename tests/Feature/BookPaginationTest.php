@@ -9,11 +9,11 @@ it('loads book cards progressively on the home and books pages', function () {
     $user = User::factory()->create(['approved' => true]);
     $library = Library::factory()->create(['owner_id' => $user->id]);
 
-    foreach (range(1, 7) as $number) {
+    foreach (range(1, 9) as $number) {
         Book::factory()->create([
             'library_id' => $library->id,
             'title' => "Book {$number}",
-            'created_at' => now()->subDays(7 - $number),
+            'created_at' => now()->subDays(9 - $number),
             'loan' => 0,
         ]);
     }
@@ -21,7 +21,9 @@ it('loads book cards progressively on the home and books pages', function () {
     $homePage = $this->actingAs($user)->get('/home');
     $homePage->assertOk()
         ->assertSee('data-home-panel-toggle="latest-books"', false)
-        ->assertSee('data-home-panel-toggle="all-tags"', false);
+        ->assertSee('data-home-panel-toggle="all-tags"', false)
+        ->assertSee('href="' . route('home', ['panel' => 'latest-books']) . '"', false)
+        ->assertSee('href="' . route('home', ['panel' => 'all-tags']) . '"', false);
     $this->assertMatchesRegularExpression('/data-home-card="search-books"[^>]*class="col-span-3/', $homePage->getContent());
     $this->assertMatchesRegularExpression('/data-home-card="search-tags"[^>]*class="col-span-3/', $homePage->getContent());
     $this->assertMatchesRegularExpression('/data-home-card="latest-books"[^>]*class="group col-span-1/', $homePage->getContent());
@@ -52,9 +54,10 @@ it('loads book cards progressively on the home and books pages', function () {
     $initialLibraryPage->assertOk()
         ->assertSee('data-library-header="own"', false)
         ->assertSee('Моја библиотека')
-        ->assertDontSee('Укупно књига: 7')
+        ->assertDontSee('Укупно књига: 9')
         ->assertSee('data-home-card="search-books"', false)
         ->assertSee('data-home-panel-toggle="all-books"', false)
+        ->assertSee('href="' . url("/libraries/{$library->id}") . '?panel=all-books"', false)
         ->assertSee('Све књиге библиотеке')
         ->assertSee('text-[7px] font-bold uppercase leading-tight', false)
         ->assertSee('text-sm font-black text-blue-400', false)
@@ -62,6 +65,8 @@ it('loads book cards progressively on the home and books pages', function () {
         ->assertSee('p-4 shadow-2xl sm:p-8', false)
         ->assertSee('h-3.5 min-h-0 w-full min-w-0', false)
         ->assertSee('data-mobile-book-grid', false)
+        ->assertSee('data-scroll-list', false)
+        ->assertDontSee('Види више...')
         ->assertSee('grid grid-cols-2 gap-x-2 gap-y-4 sm:gap-x-6 sm:gap-y-12 md:grid-cols-2 lg:grid-cols-4', false)
         ->assertSee('data-book-title', false);
     $this->assertMatchesRegularExpression('/<section id="search-books"[^>]*\shidden\s*>/', $initialLibraryPage->getContent());
@@ -81,22 +86,26 @@ it('loads book cards progressively on the home and books pages', function () {
 
     $allBooksLibraryPage = $this->get("/libraries/{$library->id}?q=Book%203&panel=all-books");
     $allBooksLibraryPage->assertOk()
-        ->assertSee('Све књиге библиотеке (7)')
+        ->assertSee('Све књиге библиотеке (9)')
+        ->assertSee('Book 9')
+        ->assertDontSee('Book 1')
         ->assertSee('value=""', false);
     $this->assertMatchesRegularExpression('/<section id="search-books"[^>]*\shidden\s*>/', $allBooksLibraryPage->getContent());
+    expect($this->getJson("/libraries/{$library->id}?panel=all-books&page=2")->json('html'))->toContain('Book 1');
 
     $initialLibraryBooksPage = $this->actingAs($user)->get($libraryBooksUrl);
     $initialLibraryBooksPage->assertOk()
         ->assertSee('data-library-header="own"', false)
         ->assertSee('Моја библиотека')
-        ->assertDontSee('Укупно књига: 7')
+        ->assertDontSee('Укупно књига: 9')
         ->assertSee('data-home-card="search-books"', false)
         ->assertSee('data-home-panel-toggle="all-books"', false)
+        ->assertSee('href="' . url($libraryBooksUrl) . '?panel=all-books"', false)
         ->assertSee('text-[7px] font-bold uppercase leading-tight', false)
         ->assertSee('text-sm font-black text-blue-400', false)
         ->assertSee('flex flex-row items-center gap-3 text-left sm:flex-col', false)
         ->assertSee('h-14 w-14 shrink-0', false)
-        ->assertSee('Book 7')
+        ->assertSee('Book 9')
         ->assertDontSee('Book 1')
         ->assertSee('href="#page-top"', false)
         ->assertDontSee('Види више...')
@@ -120,7 +129,7 @@ it('loads book cards progressively on the home and books pages', function () {
 
     $this->actingAs($user)->get("{$libraryBooksUrl}?q=Book%203&panel=all-books")
         ->assertOk()
-        ->assertSee('Све књиге библиотеке (7)')
+        ->assertSee('Све књиге библиотеке (9)')
         ->assertSee('value=""', false)
         ->assertSee('Book 7')
         ->assertDontSee('Резултати претраге књига (1)');
@@ -156,6 +165,11 @@ it('shows separate book and tag searches on the home page and returns matching t
         ->assertSee('name="tag_q"', false)
         ->assertSee('id="all-tags"', false)
         ->assertSee('Наука');
+
+    $allTagsPanel = $this->get('/home?panel=all-tags');
+    $allTagsPanel->assertOk()
+        ->assertSee('Наука');
+    $this->assertMatchesRegularExpression('/<section id="all-tags"[^>]*aria-labelledby="all-tags-heading"[^>]*>/', $allTagsPanel->getContent());
 
     $this->get('/tags')
         ->assertOk()
@@ -209,7 +223,7 @@ it('shows book and tag search results in their selected homepage sections', func
         ->assertSee('font-light', false)
         ->assertDontSee('Друга књига');
     $this->assertMatchesRegularExpression('/<div data-home-card="search-books"[^>]*aria-pressed="true"/', $bookSearch->getContent());
-    $this->assertMatchesRegularExpression('/<button[^>]*data-home-card="latest-books"[^>]*aria-pressed="false"/', $bookSearch->getContent());
+    $this->assertMatchesRegularExpression('/<a[^>]*data-home-card="latest-books"[^>]*aria-current="false"/', $bookSearch->getContent());
     $this->assertMatchesRegularExpression('/<section id="all-tags"[^>]*\shidden\s*>/', $bookSearch->getContent());
 
     $tagSearch = $this->get('/home?tag_q=Потражена');
@@ -235,6 +249,6 @@ it('shows book and tag search results in their selected homepage sections', func
         ->assertSee('Потражена књига')
         ->assertSee('Друга књига')
         ->assertDontSee('value="Потражена"', false)
-        ->assertSee('aria-pressed="true"', false);
-    $this->assertMatchesRegularExpression('/<button[^>]*data-home-card="latest-books"[^>]*aria-pressed="true"/', $allBooksPanel->getContent());
+        ->assertSee('aria-current="location"', false);
+    $this->assertMatchesRegularExpression('/<a[^>]*data-home-card="latest-books"[^>]*aria-current="location"/', $allBooksPanel->getContent());
 });

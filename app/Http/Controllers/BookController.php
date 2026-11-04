@@ -21,7 +21,7 @@ class BookController extends Controller
         $books = Book::with(['library', 'tags'])
             ->orderByDesc('created_at')
             ->orderByDesc('id')
-            ->paginate(6);
+            ->paginate(8);
 
         if ($request->expectsJson()) {
             return response()->json([

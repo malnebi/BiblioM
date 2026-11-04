@@ -27,10 +27,10 @@
                     </form>
                 </div>
 
-                <button type="button" data-home-panel-toggle="latest-books" data-panel-color="blue"
+                <a href="{{ route('home', ['panel' => 'latest-books']) }}" data-home-panel-toggle="latest-books" data-panel-color="blue"
                     data-home-card="latest-books"
                     data-panel-reset-url="{{ route('home') }}" aria-controls="latest-books"
-                    aria-pressed="{{ $activeCard === 'latest-books' ? 'true' : 'false' }}"
+                    aria-current="{{ $activeCard === 'latest-books' ? 'location' : 'false' }}"
                     class="group col-span-1 flex min-w-0 min-h-[56px] flex-col items-center justify-center rounded-xl border border-slate-800 bg-[#1e293b]/40 p-1.5 text-center text-slate-400 transition-all duration-300 hover:border-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-400 sm:min-h-[64px] sm:p-2 md:col-span-1 md:min-h-[76px] md:p-3">
                     <span class="mb-1 text-[8px] font-bold uppercase text-slate-500 transition-colors group-hover:text-white sm:text-[9px] md:text-xs">
                         Све књиге у апликацији
@@ -38,7 +38,7 @@
                     <span class="text-lg font-black text-blue-400 transition-colors group-hover:text-white sm:text-xl md:text-2xl">
                         {{ $allBooksCount }}
                     </span>
-                </button>
+                </a>
 
                 <div data-home-card="search-tags" data-panel-color="emerald"
                     aria-pressed="{{ $activeCard === 'search-tags' ? 'true' : 'false' }}"
@@ -58,10 +58,10 @@
                     </form>
                 </div>
 
-                <button type="button" data-home-panel-toggle="all-tags" data-panel-color="emerald"
+                <a href="{{ route('home', ['panel' => 'all-tags']) }}" data-home-panel-toggle="all-tags" data-panel-color="emerald"
                     data-home-card="all-tags"
                     data-panel-reset-url="{{ route('home') }}" aria-controls="all-tags"
-                    aria-pressed="{{ $activeCard === 'all-tags' ? 'true' : 'false' }}" aria-labelledby="tag-list-heading"
+                    aria-current="{{ $activeCard === 'all-tags' ? 'location' : 'false' }}" aria-labelledby="tag-list-heading"
                     class="group col-span-1 flex min-w-0 min-h-[56px] flex-col items-center justify-center rounded-xl border border-slate-800 bg-[#1e293b]/40 p-1.5 text-center text-slate-400 transition-all duration-300 hover:border-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-400 sm:min-h-[64px] sm:p-2 md:col-span-1 md:min-h-[76px] md:p-3">
                     <span id="tag-list-heading" class="mb-1 text-[8px] font-bold uppercase text-slate-500 transition-colors group-hover:text-white sm:text-[9px] md:text-xs">
                         Описне ознаке
@@ -69,7 +69,7 @@
                     <span class="text-lg font-black text-emerald-400 transition-colors group-hover:text-white sm:text-xl md:text-2xl">
                         {{ $allTagsCount }}
                     </span>
-                </button>
+                </a>
             </div>
         </section>
 

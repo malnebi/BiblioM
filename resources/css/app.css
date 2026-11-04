@@ -4,6 +4,12 @@
 /* resources/css/app.css */
 
 @layer components {
+    @media (max-width: 639px) {
+        [data-scroll-cards].scroll-list-initial-collapsed > :nth-child(n + 5) {
+            display: none !important;
+        }
+    }
+
     [data-home-panel][hidden] {
         display: none !important;
     }

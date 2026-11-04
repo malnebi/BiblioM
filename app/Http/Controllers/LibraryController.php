@@ -32,11 +32,13 @@ class LibraryController extends Controller
     public function show(Request $request, $id) // prikaži biblioteku člana sa svim knjigama njegove biblioteke
     {
         $library = Library::findOrFail($id);
+        $allBooksCount = $library->books()->count();
         $books = $library->books()
             ->with(['library', 'tags', 'loans'])
             ->orderByDesc('created_at')
             ->orderByDesc('id')
-            ->get();
+            ->paginate(8)
+            ->withQueryString();
         $bookSearch = trim((string) $request->query('q', ''));
         $panel = $request->query('panel');
         $panel = in_array($panel, ['search-books', 'all-books'], true) ? $panel : null;
@@ -65,11 +67,18 @@ class LibraryController extends Controller
                 ->get();
         }
 
+        if ($request->expectsJson()) {
+            return response()->json([
+                'html' => view('books.partials.cards', compact('books'))->render(),
+                'next_page_url' => $books->nextPageUrl(),
+            ]);
+        }
+
         $data = [
             'library' => $library,
             'books' => $books,
             'isOwnLibrary' => Auth::id() === (int) $library->owner_id,
-            'allBooksCount' => $books->count(),
+            'allBooksCount' => $allBooksCount,
             'searchBooks' => $searchBooks,
             'bookSearch' => $bookSearch,
             'bookSearchTooShort' => $activePanel === 'search-books' && $bookSearch !== '' && mb_strlen($bookSearch) < 3,
@@ -148,7 +157,7 @@ class LibraryController extends Controller
             }
         }
 
-        $books = $booksQuery->paginate(6)->withQueryString();
+        $books = $booksQuery->paginate(8)->withQueryString();
 
         if ($request->expectsJson()) {
             return response()->json([
