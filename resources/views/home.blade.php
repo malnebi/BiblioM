@@ -18,7 +18,7 @@
                     <form method="GET" action="{{ route('home') }}" role="search" class="flex min-w-0 flex-col items-center gap-1 md:flex-row">
                         <label for="book-search" class="sr-only">Претражите књиге</label>
                         <input id="book-search" type="search" name="q"
-                            value="{{ $bookSearch }}" placeholder="Наслов или аутор" aria-label="Наслов или аутор"
+                            value="{{ $bookSearch }}" placeholder="Наслов, аутор, година издања" aria-label="Наслов или аутор"
                             class="h-1 min-h-0 w-full min-w-0 rounded-lg border border-slate-600 px-2 py-0 text-[9px] leading-[10px] sm:h-7 md:flex-1 md:text-xs">
                         <button type="submit"
                             class="self-center rounded-lg border border-blue-400/50 px-2 py-0.5 text-[8px] font-bold text-blue-200/90 transition-colors hover:bg-blue-400/70 hover:text-slate-950 sm:py-1 sm:text-[10px] md:shrink-0 md:self-auto">
